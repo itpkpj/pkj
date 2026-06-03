@@ -1,0 +1,1557 @@
+﻿<!DOCTYPE html>
+<html lang="ms" data-theme="dark" data-lang="ms">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permohonan Perumahan Kasih Johor (PKJ) 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --mono: 'JetBrains Mono',monospace;
+            --radius: 14px;
+            --transition: .25s cubic-bezier(.4,0,.2,1);
+            --green: #10b981;
+            --red: #dc2626;
+            --acc: #2563eb;
+            --acc-focus: rgba(37,99,235,.2);
+            --acc-shadow: rgba(37,99,235,.35);
+            --pri: #1a3a5c;
+            --pri-dark: #0a2040;
+            --pri-shadow: rgba(26,58,92,.45);
+            --glow: rgba(37,99,235,.10);
+            --glow2: rgba(26,58,92,.07);
+            --badge-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --bg: #07111e;
+            --surface: #0d1f33;
+            --card: #0f2540;
+            --border: #1e3a58;
+            --border2: #254870;
+            --text: #e8edf5;
+            --text2: #94a3b8;
+            --text3: #546e8a;
+            --shadow: rgba(0,0,0,.65);
+        }
+
+        [data-theme="light"] {
+            --bg: #eef3fa;
+            --surface: #ffffff;
+            --card: #ffffff;
+            --border: #c8d8ea;
+            --border2: #b0c8e0;
+            --text: #07111e;
+            --text2: #3a5068;
+            --text3: #7a99b8;
+            --shadow: rgba(10,30,60,.10);
+        }
+
+        [data-program="rm5000"] {
+            --acc: #d4a017;
+            --acc-focus: rgba(212,160,23,.2);
+            --acc-shadow: rgba(212,160,23,.35);
+            --pri: #1a3a5c;
+            --pri-dark: #0a2040;
+            --pri-shadow: rgba(26,58,92,.45);
+            --glow: rgba(212,160,23,.10);
+            --glow2: rgba(26,58,92,.06);
+            --badge-text: #07111e;
+            --hb-bg: linear-gradient(135deg,#1a3a5c 0%,#0d2340 55%,#071828 100%);
+        }
+
+        [data-program="rm2000"] {
+            --acc: #0891b2;
+            --acc-focus: rgba(8,145,178,.2);
+            --acc-shadow: rgba(8,145,178,.35);
+            --pri: #134e3a;
+            --pri-dark: #0a3328;
+            --pri-shadow: rgba(19,78,58,.45);
+            --glow: rgba(8,145,178,.10);
+            --glow2: rgba(19,78,58,.06);
+            --badge-text: #fff;
+            --hb-bg: linear-gradient(135deg,#134e3a 0%,#0a3328 55%,#051e17 100%);
+        }
+
+        [data-program="sewa"] {
+            --acc: #7c3aed;
+            --acc-focus: rgba(124,58,237,.2);
+            --acc-shadow: rgba(124,58,237,.35);
+            --pri: #3b0764;
+            --pri-dark: #2d0550;
+            --pri-shadow: rgba(59,7,100,.45);
+            --glow: rgba(124,58,237,.12);
+            --glow2: rgba(59,7,100,.06);
+            --badge-text: #fff;
+            --hb-bg: linear-gradient(135deg,#3b0764 0%,#1e0438 55%,#0f021e 100%);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Sora',sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 64px;
+            transition: background var(--transition),color var(--transition);
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                background: radial-gradient(ellipse 80% 40% at 15% 0%,var(--glow),transparent 55%),radial-gradient(ellipse 50% 30% at 85% 90%,var(--glow2),transparent 55%);
+                transition: background .5s ease;
+            }
+
+        .topbar {
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 10;
+            animation: fadeDown .4s ease both;
+        }
+
+        .lang-sw {
+            display: flex;
+            gap: 3px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            padding: 4px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: var(--text3);
+            font-family: 'Sora',sans-serif;
+            font-size: 10.5px;
+            font-weight: 600;
+            padding: 5px 9px;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+            .lang-btn:hover {
+                color: var(--text2);
+            }
+
+            .lang-btn.active {
+                background: var(--pri);
+                color: #fff;
+                box-shadow: 0 2px 8px var(--pri-shadow);
+            }
+
+        .theme-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--surface);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all var(--transition);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+            .theme-btn:hover {
+                border-color: var(--acc);
+                transform: rotate(20deg);
+            }
+
+        .wrapper {
+            width: 100%;
+            max-width: 640px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .setup-warn {
+            width: 100%;
+            background: rgba(220,38,38,.12);
+            border: 1.5px solid rgba(220,38,38,.4);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #fca5a5;
+            line-height: 1.6;
+            display: none;
+            position: relative;
+            z-index: 2;
+        }
+
+            .setup-warn strong {
+                color: #f87171;
+                display: block;
+                margin-bottom: 4px;
+                font-size: 13px;
+            }
+
+            .setup-warn code {
+                background: rgba(0,0,0,.3);
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-family: var(--mono);
+                font-size: 11px;
+            }
+
+        .hb {
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 18px;
+            animation: fadeUp .5s ease both;
+            box-shadow: 0 16px 40px var(--shadow);
+        }
+
+        .hb-inner {
+            background: var(--hb-bg,linear-gradient(135deg,#1a3a5c,#071828));
+            padding: 22px 26px;
+            position: relative;
+            overflow: hidden;
+            transition: background .4s ease;
+        }
+
+            .hb-inner::before {
+                content: '';
+                position: absolute;
+                top: -50px;
+                right: -50px;
+                width: 180px;
+                height: 180px;
+                border-radius: 50%;
+                background: rgba(255,255,255,.04);
+            }
+
+        .hb-logos {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hb-logo {
+            background: rgba(255,255,255,.09);
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 9px;
+            padding: 5px 11px;
+            font-size: 10.5px;
+            font-weight: 700;
+            color: var(--acc);
+            letter-spacing: .05em;
+        }
+
+            .hb-logo small {
+                display: block;
+                font-size: 8px;
+                color: rgba(255,255,255,.35);
+                letter-spacing: .06em;
+                margin-top: 1px;
+            }
+
+        .hb-top {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.45);
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hb-main {
+            font-size: clamp(14px,3.5vw,20px);
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.2;
+            letter-spacing: -.02em;
+            position: relative;
+            z-index: 1;
+            min-height: 26px;
+            transition: all .3s ease;
+        }
+
+            .hb-main em {
+                font-style: normal;
+                color: var(--acc);
+            }
+
+        .hb-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            position: relative;
+            z-index: 1;
+            min-height: 32px;
+        }
+
+        .bdg {
+            display: inline-flex;
+            align-items: center;
+            background: var(--acc);
+            color: var(--badge-text);
+            border-radius: 99px;
+            padding: 5px 14px;
+            font-weight: 800;
+            font-family: var(--mono);
+            font-size: 13px;
+            box-shadow: 0 3px 12px var(--acc-shadow);
+            transition: all .3s ease;
+        }
+
+            .bdg.sec {
+                background: rgba(255,255,255,.08);
+                color: rgba(255,255,255,.7);
+                border: 1px solid rgba(255,255,255,.15);
+                box-shadow: none;
+                font-size: 11.5px;
+                font-family: 'Sora',sans-serif;
+                font-weight: 600;
+            }
+
+        .prog-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 24px;
+            width: 100%;
+            box-shadow: 0 16px 48px var(--shadow);
+            transition: background var(--transition),border-color var(--transition);
+            animation: fadeUp .55s .05s ease both;
+            opacity: 0;
+            animation-fill-mode: both;
+            margin-bottom: 14px;
+        }
+
+        .prog-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 10px;
+        }
+
+        .prog-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 9px;
+        }
+
+        .prog-opt {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 16px;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: all .2s ease;
+            text-align: left;
+            position: relative;
+        }
+
+            .prog-opt:hover {
+                border-color: var(--border2);
+                transform: translateY(-1px);
+            }
+
+            .prog-opt.selected {
+                border-color: var(--acc);
+                box-shadow: 0 0 0 3px var(--acc-focus);
+            }
+
+        .poi {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+            .poi.gold {
+                background: rgba(212,160,23,.15);
+            }
+
+            .poi.teal {
+                background: rgba(8,145,178,.15);
+            }
+
+            .poi.purple {
+                background: rgba(124,58,237,.15);
+            }
+
+        .pob {
+            flex: 1;
+        }
+
+        .pon {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .pod {
+            font-size: 10.5px;
+            color: var(--text3);
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .poa {
+            font-family: var(--mono);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 99px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+            .poa.gold {
+                background: rgba(212,160,23,.15);
+                color: #d4a017;
+            }
+
+            .poa.teal {
+                background: rgba(8,145,178,.15);
+                color: #0891b2;
+            }
+
+            .poa.purple {
+                background: rgba(124,58,237,.15);
+                color: #7c3aed;
+            }
+
+        .chk {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all .2s;
+            background: var(--surface);
+            flex-shrink: 0;
+        }
+
+        .prog-opt.selected .chk {
+            background: var(--acc);
+            border-color: var(--acc);
+            color: #fff;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 26px;
+            width: 100%;
+            box-shadow: 0 16px 48px var(--shadow);
+            transition: background var(--transition),border-color var(--transition);
+            display: none;
+        }
+
+            .card.visible {
+                display: block;
+                animation: fadeUp .45s ease both;
+            }
+
+        .sdiv {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0 14px;
+        }
+
+        .sdiv-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .sdiv-text {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--acc);
+            white-space: nowrap;
+            transition: color .3s;
+        }
+
+        .fg {
+            margin-bottom: 13px;
+        }
+
+        .fl {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .req {
+            color: var(--red);
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        .opt {
+            font-size: 9px;
+            color: var(--text3);
+            font-weight: 500;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .fhint {
+            font-size: 10px;
+            color: var(--text3);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .iw {
+            position: relative;
+        }
+
+            .iw .ico {
+                position: absolute;
+                left: 13px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text3);
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+            }
+
+            .iw.taw .ico {
+                top: 13px;
+                transform: none;
+            }
+
+        input[type=text], input[type=email], input[type=tel], select, textarea {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 12px 12px 40px;
+            font-family: 'Sora',sans-serif;
+            font-size: 13.5px;
+            color: var(--text);
+            outline: none;
+            transition: border-color var(--transition),box-shadow var(--transition),background var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        textarea {
+            padding-top: 12px;
+            resize: vertical;
+            min-height: 78px;
+            line-height: 1.55;
+        }
+
+            input::placeholder, textarea::placeholder {
+                color: var(--text3);
+                font-size: 12.5px;
+            }
+
+            input:focus, select:focus, textarea:focus {
+                border-color: var(--acc);
+                box-shadow: 0 0 0 3px var(--acc-focus);
+            }
+
+            input.inv, select.inv, textarea.inv {
+                border-color: var(--red);
+                box-shadow: 0 0 0 3px rgba(220,38,38,.12);
+            }
+
+        .ferr {
+            font-size: 10.5px;
+            color: var(--red);
+            margin-top: 4px;
+            display: none;
+            font-weight: 600;
+        }
+
+            .ferr.show {
+                display: block;
+            }
+
+        .sw {
+            position: relative;
+        }
+
+            .sw select {
+                padding-right: 34px;
+                cursor: pointer;
+            }
+
+            .sw .arr {
+                position: absolute;
+                right: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+                color: var(--text3);
+            }
+
+        select option {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 11px;
+        }
+
+        @media(max-width:460px) {
+            .two {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cond {
+            display: none;
+        }
+
+            .cond.show {
+                display: block;
+            }
+
+        .sub-btn {
+            width: 100%;
+            background: linear-gradient(135deg,var(--pri) 0%,var(--pri-dark) 100%);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: var(--radius);
+            padding: 15px;
+            font-family: 'Sora',sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity .2s,transform .15s;
+            margin-top: 18px;
+            box-shadow: 0 4px 20px var(--pri-shadow);
+        }
+
+            .sub-btn:hover {
+                opacity: .9;
+            }
+
+            .sub-btn:active {
+                transform: scale(.98);
+            }
+
+            .sub-btn:disabled {
+                opacity: .4;
+                cursor: not-allowed;
+            }
+
+        .spin {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            display: none;
+        }
+
+        .sub-btn.loading .spin {
+            display: block;
+        }
+
+        .sub-btn.loading .blabel {
+            display: none;
+        }
+
+        #succ {
+            display: none;
+            text-align: center;
+            animation: fadeUp .4s ease both;
+        }
+
+        .s-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            background: rgba(16,185,129,.15);
+            border: 2px solid rgba(16,185,129,.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .s-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 7px;
+        }
+
+        .s-sub {
+            font-size: 13px;
+            color: var(--text2);
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .ref-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-family: var(--mono);
+            font-size: 12.5px;
+            color: var(--acc);
+            margin-bottom: 18px;
+            letter-spacing: .04em;
+        }
+
+        .reset-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text2);
+            padding: 11px 22px;
+            font-family: 'Sora',sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+            .reset-btn:hover {
+                border-color: var(--acc);
+                color: var(--text);
+            }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            color: #fff;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 999;
+            opacity: 0;
+            transition: all .35s cubic-bezier(.4,0,.2,1);
+            max-width: 92vw;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+
+            .toast.err {
+                background: #dc2626;
+                box-shadow: 0 8px 24px rgba(220,38,38,.4);
+            }
+
+            .toast.ok {
+                background: #059669;
+                box-shadow: 0 8px 24px rgba(5,150,105,.4);
+            }
+
+        .req-note {
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 14px;
+        }
+
+            .req-note span {
+                color: var(--red);
+            }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="lang-sw">
+            <button class="lang-btn active" onclick="setLang('ms',this)">BM</button>
+            <button class="lang-btn" onclick="setLang('en',this)">EN</button>
+            <!--<button class="lang-btn" onclick="setLang('zh',this)">&#20013;&#25991;</button>
+            <button class="lang-btn" onclick="setLang('ta',this)">&#2980;&#2990;&#3007;&#2996;&#3021;</button>-->
+        </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#127769;</button>
+    </div>
+    <div class="wrapper">
+        <div class="setup-warn" id="setupWarn">
+            <strong>&#9888;&#65039; Konfigurasi Diperlukan</strong>
+            Cari <code>MASUKKAN_SCRIPT_ID_ANDA_DI_SINI</code> dalam fail ini dan gantikan dengan ID deployment Apps Script anda. Pastikan juga <code>SECRET_TOKEN</code> sepadan dengan nilai dalam Apps Script.
+        </div>
+        <div class="hb">
+            <div class="hb-inner">
+                <div class="hb-logos">
+                    <div class="hb-logo">PKPJ<small>Perumahan Kasih Johor</small></div>
+                    <div class="hb-logo" style="color:#94a3b8;">JOHOR 2026<small>Maju Johor</small></div>
+                </div>
+                <div class="hb-top" id="txt-hbTop">Permohonan Rasmi &#8226; Perumahan Kasih Johor</div>
+                <div class="hb-main" id="hbMain">Pilih <em>Program PKJ</em> Untuk Memohon</div>
+                <div class="hb-badges" id="hbBadges"><div class="bdg sec" id="hbHint">&#8595; Sila pilih program di bawah</div></div>
+            </div>
+        </div>
+        <div class="prog-card">
+            <div class="prog-title" id="txt-progTitle">Pilih Program PKJ</div>
+            <div class="prog-options">
+                <div class="prog-opt" id="opt-rm5000" onclick="selectProgram('rm5000')">
+                    <div class="poi gold">&#127968;</div>
+                    <div class="pob">
+                        <div class="pon" id="txt-pn1">Bantuan Beli Rumah Pertama</div>
+                        <div class="pod" id="txt-pd1">Untuk pembeli rumah pertama kategori RMMJ / lot Bumiputera</div>
+                    </div>
+                    <div class="poa gold">RM 5,000</div>
+                    <div class="chk" id="chk-rm5000"></div>
+                </div>
+                <div class="prog-opt" id="opt-rm2000" onclick="selectProgram('rm2000')">
+                    <div class="poi teal">&#128273;</div>
+                    <div class="pob">
+                        <div class="pon" id="txt-pn2">Bantuan Masuk Rumah Pertama</div>
+                        <div class="pod" id="txt-pd2">Untuk pembeli yang menerima kunci rumah (VP) 2025&#8211;2026</div>
+                    </div>
+                    <div class="poa teal">RM 2,000</div>
+                    <div class="chk" id="chk-rm2000"></div>
+                </div>
+                <div class="prog-opt" id="opt-sewa" onclick="selectProgram('sewa')">
+                    <div class="poi purple">&#128203;</div>
+                    <div class="pob">
+                        <div class="pon" id="txt-pn3">Bantuan Sewa Rumah</div>
+                        <div class="pod" id="txt-pd3">Untuk penyewa berumur 25&#8211;40 tahun yang bekerja di Johor</div>
+                    </div>
+                    <div class="poa purple">RM 200/bln</div>
+                    <div class="chk" id="chk-sewa"></div>
+                </div>
+            </div>
+        </div>
+        <div class="card" id="mainCard">
+            <div id="succ">
+                <div class="s-icon">&#10003;</div>
+                <div class="s-title" id="txt-succTitle">Permohonan Berjaya!</div>
+                <div class="s-sub" id="succSub">Permohonan anda telah berjaya dihantar. Pihak PKPJ akan menghubungi anda tidak lama lagi.</div>
+                <div class="ref-box" id="refCode"></div>
+                <button class="reset-btn" onclick="doReset()">&#8617; <span id="txt-resetBtn">Hantar Permohonan Baharu</span></button>
+            </div>
+            <div id="formContent">
+                <p class="req-note"><span>*</span> <span id="txt-reqNote">Medan bertanda wajib diisi</span></p>
+                <div class="sdiv"><div class="sdiv-line"></div><div class="sdiv-text" id="txt-s1">Maklumat Peribadi</div><div class="sdiv-line"></div></div>
+                <div class="fg">
+                    <div class="fl"><span id="txt-lNama">Nama Pemohon</span><span class="req">*</span></div>
+                    <div class="iw"><span class="ico" id="ico-user"></span><input type="text" id="nama" placeholder="Nama penuh seperti dalam IC" /></div>
+                    <div class="ferr" id="err-nama" data-ms="Sila masukkan nama pemohon."></div>
+                </div>
+                <div class="two">
+                    <div class="fg">
+                        <div class="fl"><span id="txt-lIC">No. Kad Pengenalan</span><span class="req">*</span></div>
+                        <div class="iw"><span class="ico" id="ico-ic"></span><input type="text" id="ic" maxlength="12" placeholder="12 digit tanpa -" inputmode="numeric" /></div>
+                        <div class="ferr" id="err-ic" data-ms="12 digit, tanpa tanda -."></div>
+                    </div>
+                    <div class="fg">
+                        <div class="fl"><span id="txt-lKet">Keturunan</span><span class="req">*</span></div>
+                        <div class="iw sw">
+                            <span class="ico" id="ico-eth"></span>
+                            <select id="keturunan">
+                                <option value="">-- Pilih --</option>
+                                <option value="Melayu">Melayu</option>
+                                <option value="Cina">Cina</option>
+                                <option value="India">India</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select><span class="arr" id="ico-arr1"></span>
+                        </div>
+                        <div class="ferr" id="err-keturunan" data-ms="Sila pilih keturunan."></div>
+                    </div>
+                </div>
+                <div class="two">
+                    <div class="fg">
+                        <div class="fl"><span id="txt-lStatus">Status Perkahwinan</span><span class="req">*</span></div>
+                        <div class="iw sw">
+                            <span class="ico" id="ico-heart"></span>
+                            <select id="status">
+                                <option value="">-- Pilih --</option>
+                                <option value="BUJANG">BUJANG</option>
+                                <option value="BERKAHWIN">BERKAHWIN</option>
+                                <option value="JANDA / DUDA">JANDA / DUDA</option>
+                                <option value="ISTERI KEDUA">ISTERI KEDUA</option>
+                                <option value="ISTERI KETIGA">ISTERI KETIGA</option>
+                            </select><span class="arr" id="ico-arr2"></span>
+                        </div>
+                        <div class="ferr" id="err-status" data-ms="Sila pilih status perkahwinan."></div>
+                    </div>
+                    <div class="fg">
+                        <div class="fl"><span id="txt-lTel">Nombor Telefon</span><span class="req">*</span></div>
+                        <div class="iw"><span class="ico" id="ico-phone"></span><input type="tel" id="telefon" maxlength="15" placeholder="cth: 0123456789" inputmode="numeric" /></div>
+                        <div class="ferr" id="err-telefon" data-ms="Nombor telefon tidak sah."></div>
+                    </div>
+                </div>
+                <div class="fg">
+                    <div class="fl"><span id="txt-lEmail">Emel</span><span class="req">*</span></div>
+                    <div class="iw"><span class="ico" id="ico-mail"></span><input type="email" id="email" placeholder="nama@emel.com" /></div>
+                    <div class="ferr" id="err-email" data-ms="Format emel tidak sah."></div>
+                </div>
+                <div class="cond" id="sec-bank">
+                    <div class="sdiv"><div class="sdiv-line"></div><div class="sdiv-text" id="txt-s2">Maklumat Bank</div><div class="sdiv-line"></div></div>
+                    <div class="two">
+                        <div class="fg">
+                            <div class="fl"><span id="txt-lBank">Nama Bank</span><span class="req">*</span></div>
+                            <div class="iw"><span class="ico" id="ico-bank"></span><input type="text" id="bank" placeholder="cth: Maybank, CIMB, BSN" /></div>
+                            <div class="ferr" id="err-bank" data-ms="Sila masukkan nama bank."></div>
+                        </div>
+                        <div class="fg">
+                            <div class="fl"><span id="txt-lAkaun">No. Akaun Bank</span><span class="req">*</span></div>
+                            <div class="iw"><span class="ico" id="ico-card"></span><input type="text" id="akaun" placeholder="Nombor akaun simpanan" inputmode="numeric" /></div>
+                            <div class="ferr" id="err-akaun" data-ms="Sila masukkan nombor akaun."></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cond" id="sec-pasangan">
+                    <div class="sdiv"><div class="sdiv-line"></div><div class="sdiv-text" id="txt-s3">Maklumat Pasangan (Jika Ada)</div><div class="sdiv-line"></div></div>
+                    <div class="two">
+                        <div class="fg">
+                            <div class="fl"><span id="txt-lNamaPsng">Nama Pasangan</span><span class="opt" id="txt-optTag">(Pilihan)</span></div>
+                            <div class="iw"><span class="ico" id="ico-user2"></span><input type="text" id="namaPasangan" placeholder="Nama penuh pasangan" /></div>
+                        </div>
+                        <div class="fg">
+                            <div class="fl"><span id="txt-lICPsng">No. IC Pasangan</span><span class="opt" id="txt-optTag2">(Pilihan)</span></div>
+                            <div class="iw"><span class="ico" id="ico-ic2"></span><input type="text" id="icPasangan" maxlength="14" placeholder="cth: 900101-01-1234" /></div>
+                            <div class="fhint" id="txt-hintICPsng">Sila sertakan tanda "-" sebagaimana no. kad pengenalan asal.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sdiv"><div class="sdiv-line"></div><div class="sdiv-text" id="secHartaLbl">Maklumat Hartanah</div><div class="sdiv-line"></div></div>
+                <div class="fg">
+                    <div class="fl"><span id="lAlamat">Alamat Harta</span><span class="req">*</span></div>
+                    <div class="iw taw"><span class="ico" id="ico-pin"></span><textarea id="alamat" rows="3" placeholder="No., Jalan, Bandar, Poskod, Negeri"></textarea></div>
+                    <div class="ferr" id="err-alamat" data-ms="Sila masukkan alamat harta."></div>
+                </div>
+                <div class="cond" id="sec-daerah">
+                    <div class="fg">
+                        <div class="fl"><span id="txt-lDaerah">Daerah Harta</span><span class="req">*</span></div>
+                        <div class="iw sw">
+                            <span class="ico" id="ico-map"></span>
+                            <select id="daerah">
+                                <option value="">-- Pilih Daerah --</option>
+                                <option value="JOHOR BAHRU">JOHOR BAHRU</option>
+                                <option value="MUAR">MUAR</option>
+                                <option value="BATU PAHAT">BATU PAHAT</option>
+                                <option value="SEGAMAT">SEGAMAT</option>
+                                <option value="KLUANG">KLUANG</option>
+                                <option value="PONTIAN">PONTIAN</option>
+                                <option value="KOTA TINGGI">KOTA TINGGI</option>
+                                <option value="MERSING">MERSING</option>
+                                <option value="TANGKAK">TANGKAK</option>
+                                <option value="KULAI">KULAI</option>
+                            </select><span class="arr" id="ico-arr3"></span>
+                        </div>
+                        <div class="ferr" id="err-daerah" data-ms="Sila pilih daerah."></div>
+                    </div>
+                </div>
+                <button class="sub-btn" id="submitBtn" onclick="submitForm()">
+                    <span class="blabel" id="txt-btnLabel">&#128228; Hantar Permohonan</span>
+                    <div class="spin"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script>
+// ================================================================
+//  STEP 1: GANTI HANYA NILAI c= DENGAN SCRIPT ID ANDA
+//  Contoh: c='AKfycbxYz123456789abcdef',
+//
+//  Cara dapatkan ID:
+//  Apps Script → Deploy → Manage Deployments
+//  Salin bahagian antara /macros/s/ dan /exec dalam URL
+// ================================================================
+(function(){
+  var a='https://script.google.com',
+      b='/macros/s/',
+      c ='AKfycbzqln5B1IG7sRPrEBJkg7vT5cmOY9vNXyMqppAiXWZQbmuD24zxqVsl7Bze5eep8lb8YQ',
+      d='/exec';
+  window.__ep=function(){ return a+b+c+d; };
+  window.__scriptReady=(c!=='MASUKKAN_SCRIPT_ID_ANDA_DI_SINI');
+})();
+
+// ================================================================
+//  STEP 2: GANTI TOKEN INI — MESTI SAMA DENGAN APPS SCRIPT
+//  var SECRET_TOKEN dalam Apps Script mesti SAMA PERSIS dengan ini
+// ================================================================
+        var SECRET_TOKEN ='uAB828JTRrZKa9yCtBC9bYZUL4SSuRAjvfpgm43XhBKDk';
+
+// ── Show setup warning if not configured ──
+window.addEventListener('DOMContentLoaded',function(){
+  if(!window.__scriptReady) document.getElementById('setupWarn').style.display='block';
+});
+
+var SVG={
+  user:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path stroke-linecap="round" d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg>',
+  ic:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="12" r="2"/><path stroke-linecap="round" d="M13 10h4M13 14h3"/></svg>',
+  eth:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M17 20h5v-2a4 4 0 00-5.477-3.717M9 20H4v-2a4 4 0 015.477-3.717M15 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>',
+  heart:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"/></svg>',
+  phone:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M3 5a2 2 0 012-2h2.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21L7.5 10.5s1 2.5 2.5 4 4 2.5 4 2.5l1.113-1.724a1 1 0 011.21-.502l4.493 1.498A1 1 0 0121 17.72V20a2 2 0 01-2 2h-1C9.716 22 2 14.284 2 5V4z"/></svg>',
+  mail:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>',
+  bank:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 10v11M16 10v11M12 10v11"/></svg>',
+  card:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" d="M2 10h20"/></svg>',
+  pin:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0L6.343 16.657a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>',
+  map:'<svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>',
+  arr:'<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>'
+};
+['user','ic','eth','heart','phone','mail','bank','card','pin','map'].forEach(function(k){var el=document.getElementById('ico-'+k);if(el)el.innerHTML=SVG[k];});
+document.getElementById('ico-user2').innerHTML=SVG.user;
+document.getElementById('ico-ic2').innerHTML=SVG.ic;
+['arr1','arr2','arr3'].forEach(function(k){var el=document.getElementById('ico-'+k);if(el)el.innerHTML=SVG.arr;});
+
+var PROG={
+  rm5000:{formType:'Bantuan Beli Rumah Pertama 2026 (RM5000)',refPfx:'PKJ-BR5',theme:'rm5000',hasBPD:true,
+    banner:{ms:'Bantuan <em>Beli Rumah Pertama</em> Tahun 2026',en:'First Home <em>Purchase Assistance</em> 2026',zh:'2026\u5e74\u9996\u6b21<em>\u8d2d\u5c4b\u63f4\u52a9</em>',ta:'2026 \u0bae\u0bc1\u0ba4\u0bb2\u0bcd \u0bb5\u0bc0\u0b9f\u0bc1 <em>\u0b95\u0bca\u0bb3\u0bcd\u0bae\u0bc1\u0ba4\u0bb2\u0bcd \u0b89\u0ba4\u0bb5\u0bbf</em>'},
+    badges:{ms:['&#128176; RM 5,000.00','Bayaran Sekali','20,000 Penerima'],en:['&#128176; RM 5,000.00','One-Off Payment','20,000 Recipients'],zh:['&#128176; RM 5,000.00','\u4e00\u6b21\u6027\u4ed8\u6b3e','20,000\u540d'],ta:['&#128176; RM 5,000.00','\u0b92\u0bb0\u0bc1 \u0bae\u0bc1\u0bb1\u0bc8','20,000']},
+    alamat:{ms:'Alamat Harta Yang Dibeli',en:'Address of Property Purchased',zh:'\u6240\u8d2d\u623f\u4ea7\u5730\u5740',ta:'\u0bb5\u0bbe\u0b99\u0bcd\u0b95\u0bbf\u0baf \u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bbf\u0ba9\u0bcd \u0bae\u0bc1\u0b95\u0bb5\u0bb0\u0bbf'},
+    secHarta:{ms:'Maklumat Hartanah Dibeli',en:'Property Information',zh:'\u623f\u4ea7\u8d44\u6599',ta:'\u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bc1 \u0ba4\u0b95\u0bb5\u0bb2\u0bcd'},
+    succSub:{ms:'Permohonan Bantuan Beli Rumah Pertama anda telah berjaya dihantar. Pihak PKPJ akan menghubungi anda tidak lama lagi.',en:'Your application has been submitted. PKPJ will contact you shortly.',zh:'\u7533\u8bf7\u5df2\u63d0\u4ea4\u3002PKPJ\u5c06\u5c3d\u5feb\u4e0e\u60a8\u8054\u7cfb\u3002',ta:'\u0bb5\u0bbf\u0ba3\u0bcd\u0ba3\u0baa\u0bcd\u0baa\u0bae\u0bcd \u0b9a\u0bae\u0bb0\u0bcd\u0baa\u0bcd\u0baa\u0bbf\u0b95\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f\u0ba4\u0bc1.'}},
+  rm2000:{formType:'Bantuan Masuk Rumah Pertama 2026 (RM2000)',refPfx:'PKJ-MR2',theme:'rm2000',hasBPD:true,
+    banner:{ms:'Bantuan <em>Masuk Rumah Pertama</em> Tahun 2026',en:'First Home <em>Moving-In Assistance</em> 2026',zh:'2026\u5e74\u9996\u6b21<em>\u8fc1\u5165\u63f4\u52a9</em>',ta:'2026 \u0bae\u0bc1\u0ba4\u0bb2\u0bcd \u0bb5\u0bc0\u0b9f\u0bc1 <em>\u0b95\u0bc1\u0b9f\u0bbf\u0baa\u0bc1\u0b95\u0bc1\u0bae\u0bcd \u0b89\u0ba4\u0bb5\u0bbf</em>'},
+    badges:{ms:['&#128176; RM 2,000.00','Bayaran Sekali','8,915 Penerima'],en:['&#128176; RM 2,000.00','One-Off Payment','8,915 Recipients'],zh:['&#128176; RM 2,000.00','\u4e00\u6b21\u6027\u4ed8\u6b3e','8,915\u540d'],ta:['&#128176; RM 2,000.00','\u0b92\u0bb0\u0bc1 \u0bae\u0bc1\u0bb1\u0bc8','8,915']},
+    alamat:{ms:'Alamat Harta Yang Dimasuki',en:'Address of Property Moved Into',zh:'\u6240\u8fc1\u5165\u623f\u4ea7\u5730\u5740',ta:'\u0b95\u0bc1\u0b9f\u0bbf\u0baa\u0bc1\u0b95\u0bc1\u0bae\u0bcd \u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bbf\u0ba9\u0bcd \u0bae\u0bc1\u0b95\u0bb5\u0bb0\u0bbf'},
+    secHarta:{ms:'Maklumat Hartanah Dimasuki',en:'Property Information',zh:'\u623f\u4ea7\u8d44\u6599',ta:'\u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bc1 \u0ba4\u0b95\u0bb5\u0bb2\u0bcd'},
+    succSub:{ms:'Permohonan Bantuan Masuk Rumah Pertama anda telah berjaya dihantar. Pihak PKPJ akan menghubungi anda tidak lama lagi.',en:'Your application has been submitted. PKPJ will contact you shortly.',zh:'\u7533\u8bf7\u5df2\u63d0\u4ea4\u3002PKPJ\u5c06\u5c3d\u5feb\u4e0e\u60a8\u8054\u7cfb\u3002',ta:'\u0bb5\u0bbf\u0ba3\u0bcd\u0ba3\u0baa\u0bcd\u0baa\u0bae\u0bcd \u0b9a\u0bae\u0bb0\u0bcd\u0baa\u0bcd\u0baa\u0bbf\u0b95\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f\u0ba4\u0bc1.'}},
+  sewa:{formType:'Bantuan Sewa Rumah 2026',refPfx:'PKJ-SR',theme:'sewa',hasBPD:false,
+    banner:{ms:'Bantuan <em>Sewa Rumah</em> Tahun 2026',en:'House <em>Rental Assistance</em> 2026',zh:'2026\u5e74<em>\u79df\u5c4b\u63f4\u52a9</em>',ta:'2026 <em>\u0bb5\u0bc0\u0b9f\u0bcd\u0b9f\u0bc1 \u0bb5\u0bbe\u0b9f\u0b95\u0bc8 \u0b89\u0ba4\u0bb5\u0bbf</em>'},
+    badges:{ms:['&#127968; RM200 / bulan','Tempoh 10 Bulan','20,000 Penerima'],en:['&#127968; RM200 / month','10-Month Duration','20,000 Recipients'],zh:['&#127968; RM200 / \u6708','10\u4e2a\u6708','20,000\u540d'],ta:['&#127968; RM200 / \u0bae\u0bbe\u0ba4\u0bae\u0bcd','10 \u0bae\u0bbe\u0ba4\u0bae\u0bcd','20,000']},
+    alamat:{ms:'Alamat Harta Yang Disewa',en:'Address of Rented Property',zh:'\u6240\u79df\u623f\u4ea7\u5730\u5740',ta:'\u0bb5\u0bbe\u0b9f\u0b95\u0bc8 \u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bbf\u0ba9\u0bcd \u0bae\u0bc1\u0b95\u0bb5\u0bb0\u0bbf'},
+    secHarta:{ms:'Maklumat Hartanah Sewa',en:'Rental Property Information',zh:'\u79df\u8d41\u623f\u4ea7\u8d44\u6599',ta:'\u0bb5\u0bbe\u0b9f\u0b95\u0bc8 \u0b9a\u0bca\u0ba4\u0bcd\u0ba4\u0bc1 \u0ba4\u0b95\u0bb5\u0bb2\u0bcd'},
+    succSub:{ms:'Permohonan Bantuan Sewa Rumah anda telah berjaya dihantar. Pihak PKPJ akan menghubungi anda tidak lama lagi.',en:'Your Rental Assistance application has been submitted. PKPJ will contact you shortly.',zh:'\u7533\u8bf7\u5df2\u63d0\u4ea4\u3002PKPJ\u5c06\u5c3d\u5feb\u4e0e\u60a8\u8054\u7cfb\u3002',ta:'\u0bb5\u0bbf\u0ba3\u0bcd\u0ba3\u0baa\u0bcd\u0bae\u0bcd \u0b9a\u0bae\u0bb0\u0bcd\u0baa\u0bcd\u0baa\u0bbf\u0b95\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f\u0ba4\u0bc1.'}}
+};
+
+
+var I18N={
+  ms:{
+    hbTop:'Permohonan Rasmi • Perumahan Kasih Johor',
+    hbMainDef:'Pilih <em>Program PKJ</em> Untuk Memohon',
+    hbHint:'↓ Sila pilih program di bawah',
+    progTitle:'Pilih Program PKJ',
+    pn1:'Bantuan Beli Rumah Pertama',
+    pd1:'Untuk pembeli rumah pertama kategori RMMJ / lot Bumiputera',
+    pn2:'Bantuan Masuk Rumah Pertama',
+    pd2:'Untuk pembeli yang menerima kunci rumah (VP) 2025–2026',
+    pn3:'Bantuan Sewa Rumah',
+    pd3:'Untuk penyewa berumur 25–40 tahun yang bekerja di Johor',
+    reqNote:'Medan bertanda wajib diisi',
+    s1:'Maklumat Peribadi',s2:'Maklumat Bank',s3:'Maklumat Pasangan (Jika Ada)',
+    lNama:'Nama Pemohon',lIC:'No. Kad Pengenalan',lKet:'Keturunan',
+    lStatus:'Status Perkahwinan',lTel:'Nombor Telefon',lEmail:'Emel',
+    lBank:'Nama Bank',lAkaun:'No. Akaun Bank',
+    lNamaPsng:'Nama Pasangan',lICPsng:'No. IC Pasangan',
+    optTag:'(Pilihan)',optTag2:'(Pilihan)',
+    hintICPsng:'Sila sertakan tanda "-" sebagaimana no. kad pengenalan asal.',
+    lDaerah:'Daerah Harta',
+    btnLabel:'&#128228; Hantar Permohonan',
+    succTitle:'Permohonan Berjaya!',resetBtn:'Hantar Permohonan Baharu',
+    phNama:'Nama penuh seperti dalam IC',phIC:'12 digit tanpa -',
+    phTel:'cth: 0123456789',phEmail:'nama@emel.com',
+    phBank:'cth: Maybank, CIMB, BSN',phAkaun:'Nombor akaun simpanan',
+    phNamaPsng:'Nama penuh pasangan',phICPsng:'cth: 900101-01-1234',
+    phAlamat:'No., Jalan, Bandar, Poskod, Negeri',
+    oPilih:'-- Pilih --',oMelayu:'Melayu',oCina:'Cina',oIndia:'India',oLain:'Lain-lain',
+    oPilihS:'-- Pilih --',oBujang:'BUJANG',oBerkahwin:'BERKAHWIN',
+    oJanda:'JANDA / DUDA',oIsteri2:'ISTERI KEDUA',oIsteri3:'ISTERI KETIGA',
+    oPilihD:'-- Pilih Daerah --',
+    eNama:'Sila masukkan nama pemohon.',eIC:'12 digit, tanpa tanda -.',
+    eKet:'Sila pilih keturunan.',eStatus:'Sila pilih status perkahwinan.',
+    eTel:'Nombor telefon tidak sah.',eEmail:'Format emel tidak sah.',
+    eBank:'Sila masukkan nama bank.',eAkaun:'Sila masukkan nombor akaun.',
+    eAlamat:'Sila masukkan alamat harta.',eDaerah:'Sila pilih daerah.',
+    errServer:'Ralat pelayan. Sila cuba semula.'
+  },
+  en:{
+    hbTop:'Official Application • Perumahan Kasih Johor',
+    hbMainDef:'Select <em>PKJ Program</em> to Apply',
+    hbHint:'↓ Please select a program below',
+    progTitle:'Select PKJ Program',
+    pn1:'First Home Purchase Assistance',
+    pd1:'For first-time buyers under RMMJ / Bumiputera lot',
+    pn2:'First Home Moving-In Assistance',
+    pd2:'For buyers who received VP keys in 2025–2026',
+    pn3:'House Rental Assistance',
+    pd3:'For renters aged 25–40 working in Johor',
+    reqNote:'Fields marked are required',
+    s1:'Personal Information',s2:'Bank Information',s3:'Spouse Information (If Any)',
+    lNama:'Applicant Name',lIC:'Identity Card No.',lKet:'Ethnicity',
+    lStatus:'Marital Status',lTel:'Phone Number',lEmail:'Email',
+    lBank:'Bank Name',lAkaun:'Bank Account No.',
+    lNamaPsng:'Spouse Name',lICPsng:'Spouse IC No.',
+    optTag:'(Optional)',optTag2:'(Optional)',
+    hintICPsng:'Please include "-" as in the original IC format.',
+    lDaerah:'Property District',
+    btnLabel:'&#128228; Submit Application',
+    succTitle:'Application Submitted!',resetBtn:'Submit New Application',
+    phNama:'Full name as in IC',phIC:'12 digits no dashes',
+    phTel:'e.g. 0123456789',phEmail:'name@email.com',
+    phBank:'e.g. Maybank, CIMB, BSN',phAkaun:'Savings account number',
+    phNamaPsng:"Spouse's full name",phICPsng:'e.g. 900101-01-1234',
+    phAlamat:'No., Street, City, Postcode, State',
+    oPilih:'-- Select --',oMelayu:'Malay',oCina:'Chinese',oIndia:'Indian',oLain:'Others',
+    oPilihS:'-- Select --',oBujang:'SINGLE',oBerkahwin:'MARRIED',
+    oJanda:'WIDOW / WIDOWER',oIsteri2:'SECOND WIFE',oIsteri3:'THIRD WIFE',
+    oPilihD:'-- Select District --',
+    eNama:'Please enter applicant name.',eIC:'12 digits, no dashes.',
+    eKet:'Please select ethnicity.',eStatus:'Please select marital status.',
+    eTel:'Invalid phone number.',eEmail:'Invalid email format.',
+    eBank:'Please enter bank name.',eAkaun:'Please enter account number.',
+    eAlamat:'Please enter property address.',eDaerah:'Please select a district.',
+    errServer:'Server error. Please try again.'
+  },
+  zh:{
+    hbTop:'正式申请 • Perumahan Kasih Johor',
+    hbMainDef:'选择 <em>PKJ 项目</em> 进行申请',
+    hbHint:'↓ 请在下方选择项目',
+    progTitle:'选择 PKJ 项目',
+    pn1:'首次购屋援助',
+    pd1:'适用于 RMMJ / 土里普特地筮首次购屋者',
+    pn2:'首次迁入援助',
+    pd2:'适用于 2025-2026 间收到 VP 通知的购屋者',
+    pn3:'租屋援助',
+    pd3:'适用于 25-40 岁在柔佛工作的租屋者',
+    reqNote:'标有 * 的字段为必填项',
+    s1:'个人资料',s2:'銀行资料',s3:'配偶资料（如有）',
+    lNama:'申请人姓名',lIC:'身份证号码',lKet:'种族',
+    lStatus:'婚姻状况',lTel:'电话号码',lEmail:'电子邮件',
+    lBank:'銀行名称',lAkaun:'銀行账号',
+    lNamaPsng:'配偶姓名',lICPsng:'配偶身份证号码',
+    optTag:'(选填)',optTag2:'(选填)',
+    hintICPsng:'请按照原身份证格式填写，包含"-"。',
+    lDaerah:'房产县区',
+    btnLabel:'&#128228; 提交申请',
+    succTitle:'申请成功！',resetBtn:'提交新申请',
+    phNama:'与身份证相同的全名',phIC:'12位数字，无横线',
+    phTel:'例：0123456789',phEmail:'name@email.com',
+    phBank:'例：Maybank、CIMB、BSN',phAkaun:'储蓄账号',
+    phNamaPsng:'配偶全名',phICPsng:'例：900101-01-1234',
+    phAlamat:'门牌号、街道、城市、邮编、州属',
+    oPilih:'-- 选择 --',oMelayu:'马来人',oCina:'华人',oIndia:'印度人',oLain:'其他',
+    oPilihS:'-- 选择 --',oBujang:'单身',oBerkahwin:'已婚',
+    oJanda:'丧偶/离婚',oIsteri2:'第二妻子',oIsteri3:'第三妻子',
+    oPilihD:'-- 选择县区 --',
+    eNama:'请输入申请人姓名。',eIC:'请输兤12位数字，无横线。',
+    eKet:'请选择种族。',eStatus:'请选择婚姻状况。',
+    eTel:'电话号码无效。',eEmail:'电子邮件格式不正确。',
+    eBank:'请输入銀行名称。',eAkaun:'请输入銀行账号。',
+    eAlamat:'请输入房产地址。',eDaerah:'请选择县区。',
+    errServer:'服务器错误，请重试。'
+  },
+  ta:{
+    hbTop:'அதிகாரப்பூர்வ விண்ணப்பம் • Perumahan Kasih Johor',
+    hbMainDef:'<em>PKJ திட்டத்தை</em> தேர்ந்தெடுக்கவும்',
+    hbHint:'↓ கீழே திட்டத்தை தேர்ந்தெடுக்கவும்',
+    progTitle:'PKJ திட்டத்தை தேர்வு',
+    pn1:'முதல் வீடு கொள்முதல் உதவி',
+    pd1:'RMMJ / பூமிபுத்திர தொகுதி முதற் விலையிடுபவர்களுக்கு',
+    pn2:'முதல் வீடு குடிபுகும் உதவி',
+    pd2:'2025-2026 இடையில் VP சாவி பெற்றவர்களுக்கு',
+    pn3:'வீட்டு வாடகை உதவி',
+    pd3:'ஜோஹோரில் பணிபுரியும் 25-40 வயது வாடகையாளர்களுக்கு',
+    reqNote:'* குறியிட்ட புலங்கள் கட்டாயம்',
+    s1:'தனிப்பட்ட தகவல்',
+    s2:'வங்கி தகவல்',
+    s3:'துணைவர் தகவல் (இருந்தால்)',
+    lNama:'விண்ணப்பதாரர் பெயர்',
+    lIC:'அடையாள அட்டை எண்',
+    lKet:'இனம்',lStatus:'திருமண நிலை',
+    lTel:'தொலைபேசி எண்',lEmail:'மின்னஞ்சல்',
+    lBank:'வங்கி பெயர்',lAkaun:'வங்கி கணக்கு எண்',
+    lNamaPsng:'துணைவர் பெயர்',lICPsng:'துணைவர் IC எண்',
+    optTag:'(விரும்பினால்)',optTag2:'(விரும்பினால்)',
+    hintICPsng:'அசல் IC-ல் உள்ளது போல் "-" சேர்க்கவும்.',
+    lDaerah:'மாவட்டம்',
+    btnLabel:'&#128228; விண்ணப்பம் சமர்ப்பிக்கவும்',
+    succTitle:'விண்ணப்ம் வெற்றி!',
+    resetBtn:'புதிய விண்ணப்ம் சமர்ப்பிக்கவும்',
+    phNama:'IC-ல் உள்ளது போல் முழு பெயர்',
+    phIC:'12 இலக்கம், - இல்லாமல்',
+    phTel:'எ.கா: 0123456789',phEmail:'name@email.com',
+    phBank:'எ.கா: Maybank, CIMB, BSN',phAkaun:'சேமிப்பு கணக்கு எண்',
+    phNamaPsng:'துணைவரின் முழு பெயர்',phICPsng:'எ.கா: 900101-01-1234',
+    phAlamat:'எண், தெரு, நகரம், அஞ்சல் குறியீடு, மாநிலம்',
+    oPilih:'-- தேர்வு --',oMelayu:'மலாய்',oCina:'சீனர்',oIndia:'இந்தியர்',oLain:'மற்றவர்கள்',
+    oPilihS:'-- தேர்வு --',oBujang:'திருமணமாகாதவர்',oBerkahwin:'திருமணமானவர்',
+    oJanda:'விதவை/விதலை',oIsteri2:'இரண்டாவது மனைவி',oIsteri3:'மூன்றாவது மனைவி',
+    oPilihD:'-- மாவட்டம் தேர்வு --',
+    eNama:'பெயரை உள்ளிடவும்.',eIC:'12 இலக்கம், - இல்லாமல்.',
+    eKet:'இனத்தை தேர்ந்தெடுக்கவும்.',eStatus:'திருமண நிலையை தேர்ந்தெடுக்கவும்.',
+    eTel:'தொலைபேசி எண் தவறானது.',eEmail:'மின்னஞ்சல் வடிவம் தவறானது.',
+    eBank:'வங்கி பெயரை உள்ளிடவும்.',eAkaun:'கணக்கு எண்ணை உள்ளிடவும்.',
+    eAlamat:'முகவரியை உள்ளிடவும்.',eDaerah:'மாவட்டத்தை தேர்ந்தெடுக்கவும்.',
+    errServer:'சேவையக பிழை. மீண்டும் முயற்சிக்கவும்.'
+  }
+};
+
+var currentProg=null,currentLang='ms',isDark=true;
+
+function selectProgram(k){
+  currentProg=k;var p=PROG[k];
+  ['rm5000','rm2000','sewa'].forEach(function(id){
+    document.getElementById('opt-'+id).classList.toggle('selected',id===k);
+    document.getElementById('chk-'+id).textContent=(id===k)?'\u2713':'';
+  });
+  document.documentElement.setAttribute('data-program',p.theme);
+  document.getElementById('hbMain').innerHTML=p.banner[currentLang];
+  var b=p.badges[currentLang];
+  document.getElementById('hbBadges').innerHTML='<div class="bdg">'+b[0]+'</div><div class="bdg sec">'+b[1]+'</div><div class="bdg sec">'+b[2]+'</div>';
+  ['sec-bank','sec-pasangan','sec-daerah'].forEach(function(id){document.getElementById(id).classList.toggle('show',p.hasBPD);});
+  document.getElementById('lAlamat').textContent=p.alamat[currentLang];
+  document.getElementById('secHartaLbl').textContent=p.secHarta[currentLang];
+  var card=document.getElementById('mainCard');
+  card.style.display='block';card.style.animation='none';
+  setTimeout(function(){card.style.animation='';card.classList.add('visible');},10);
+  resetErrors();
+  setTimeout(function(){card.scrollIntoView({behavior:'smooth',block:'nearest'});},120);
+}
+
+function setLang(lang,btn){
+  currentLang=lang;
+  document.documentElement.setAttribute('data-lang',lang);
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+
+  var t=I18N[lang];
+
+  // ── Static text elements ──────────────────────────────────
+  var idMap={
+    'txt-progTitle': 'progTitle',
+    'txt-pn1':       'pn1',  'txt-pd1': 'pd1',
+    'txt-pn2':       'pn2',  'txt-pd2': 'pd2',
+    'txt-pn3':       'pn3',  'txt-pd3': 'pd3',
+    'txt-hbTop':     'hbTop',
+    'txt-reqNote':   'reqNote',
+    'txt-s1':        's1',
+    'txt-s2':        's2',
+    'txt-s3':        's3',
+    'txt-lNama':     'lNama',
+    'txt-lIC':       'lIC',
+    'txt-lKet':      'lKet',
+    'txt-lStatus':   'lStatus',
+    'txt-lTel':      'lTel',
+    'txt-lEmail':    'lEmail',
+    'txt-lBank':     'lBank',
+    'txt-lAkaun':    'lAkaun',
+    'txt-lNamaPsng': 'lNamaPsng',
+    'txt-lICPsng':   'lICPsng',
+    'txt-optTag':    'optTag',
+    'txt-optTag2':   'optTag2',
+    'txt-hintICPsng':'hintICPsng',
+    'txt-lDaerah':   'lDaerah',
+    'txt-btnLabel':  'btnLabel',
+    'txt-succTitle': 'succTitle',
+    'txt-resetBtn':  'resetBtn'
+  };
+  Object.keys(idMap).forEach(function(elId){
+    var el=document.getElementById(elId);
+    var key=idMap[elId];
+    if(el && t[key]!==undefined) el.textContent=t[key];
+  });
+
+  // ── Button label keeps emoji ──────────────────────────────
+  var btnLbl=document.getElementById('txt-btnLabel');
+  if(btnLbl && t.btnLabel) btnLbl.innerHTML=t.btnLabel;
+
+  // ── Error messages ────────────────────────────────────────
+  var errMap={
+    'err-nama':     'eNama',
+    'err-ic':       'eIC',
+    'err-keturunan':'eKet',
+    'err-status':   'eStatus',
+    'err-telefon':  'eTel',
+    'err-email':    'eEmail',
+    'err-bank':     'eBank',
+    'err-akaun':    'eAkaun',
+    'err-alamat':   'eAlamat',
+    'err-daerah':   'eDaerah'
+  };
+  Object.keys(errMap).forEach(function(elId){
+    var el=document.getElementById(elId);
+    var key=errMap[elId];
+    if(el && t[key]!==undefined) el.textContent=t[key];
+  });
+
+  // ── Placeholders ──────────────────────────────────────────
+  var phMap={
+    'nama':        'phNama',
+    'ic':          'phIC',
+    'telefon':     'phTel',
+    'email':       'phEmail',
+    'bank':        'phBank',
+    'akaun':       'phAkaun',
+    'namaPasangan':'phNamaPsng',
+    'icPasangan':  'phICPsng',
+    'alamat':      'phAlamat'
+  };
+  Object.keys(phMap).forEach(function(elId){
+    var el=document.getElementById(elId);
+    var key=phMap[elId];
+    if(el && t[key]!==undefined) el.placeholder=t[key];
+  });
+
+  // ── Select options ────────────────────────────────────────
+  var optMap={
+    'keturunan':{
+      '': 'oPilih', 'Melayu':'oMelayu', 'Cina':'oCina',
+      'India':'oIndia', 'Lain-lain':'oLain'
+    },
+    'status':{
+      '':'oPilihS', 'BUJANG':'oBujang', 'BERKAHWIN':'oBerkahwin',
+      'JANDA / DUDA':'oJanda', 'ISTERI KEDUA':'oIsteri2', 'ISTERI KETIGA':'oIsteri3'
+    },
+    'daerah':{
+      '':'oPilihD'
+    }
+  };
+  Object.keys(optMap).forEach(function(selId){
+    var sel=document.getElementById(selId);
+    if(!sel) return;
+    for(var i=0;i<sel.options.length;i++){
+      var opt=sel.options[i];
+      var key=optMap[selId][opt.value];
+      if(key && t[key]!==undefined) opt.text=t[key];
+    }
+  });
+
+  // ── hbHint (before program selected) ─────────────────────
+  var hbHint=document.getElementById('hbHint');
+  if(hbHint && t.hbHint) hbHint.textContent=t.hbHint;
+
+  // ── Banner + badges if program already selected ───────────
+  if(currentProg){
+    var p=PROG[currentProg],b=p.badges[lang];
+    document.getElementById('hbMain').innerHTML=p.banner[lang];
+    document.getElementById('hbBadges').innerHTML='<div class="bdg">'+b[0]+'</div><div class="bdg sec">'+b[1]+'</div><div class="bdg sec">'+b[2]+'</div>';
+    document.getElementById('lAlamat').textContent=p.alamat[lang];
+    document.getElementById('secHartaLbl').textContent=p.secHarta[lang];
+  } else {
+    document.getElementById('hbMain').innerHTML=t.hbMainDef;
+  }
+}
+
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('themeBtn').textContent=isDark?'\u{1F319}':'\u{2600}\uFE0F';
+}
+
+document.getElementById('ic').addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'').slice(0,12);});
+document.getElementById('telefon').addEventListener('input',function(){this.value=this.value.replace(/[^0-9+]/g,'').slice(0,15);});
+document.getElementById('akaun').addEventListener('input',function(){this.value=this.value.replace(/[^0-9]/g,'');});
+document.getElementById('icPasangan').addEventListener('input',function(){
+  var v=this.value.replace(/[^0-9]/g,'');
+  if(v.length>6)v=v.slice(0,6)+'-'+v.slice(6);
+  if(v.length>9)v=v.slice(0,9)+'-'+v.slice(9);
+  if(v.length>14)v=v.slice(0,14);
+  this.value=v;
+});
+
+function showErr(id){var i=document.getElementById(id);if(i)i.classList.add('inv');var e=document.getElementById('err-'+id);if(e)e.classList.add('show');}
+function clearErr(id){var i=document.getElementById(id);if(i)i.classList.remove('inv');var e=document.getElementById('err-'+id);if(e)e.classList.remove('show');}
+function resetErrors(){['nama','ic','keturunan','status','telefon','email','bank','akaun','alamat','daerah'].forEach(clearErr);}
+
+['nama','ic','keturunan','status','telefon','email','bank','akaun','alamat','daerah'].forEach(function(f){
+  var el=document.getElementById(f);if(!el)return;
+  if(el.tagName==='SELECT'){el.addEventListener('change',function(){clearErr(f);});}
+  else{el.addEventListener('input',function(){clearErr(f);});}
+});
+
+function toast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast '+(type||'err')+' show';
+  setTimeout(function(){t.classList.remove('show');},5500);
+}
+
+function setLoading(on){var b=document.getElementById('submitBtn');b.disabled=on;b.classList.toggle('loading',on);}
+
+function validate(){
+  if(!currentProg){toast('Sila pilih program PKJ terlebih dahulu.','err');return false;}
+  var ok=true,hasBPD=PROG[currentProg].hasBPD;
+  if(!document.getElementById('nama').value.trim()){showErr('nama');ok=false;}else clearErr('nama');
+  if(!/^\d{12}$/.test(document.getElementById('ic').value.trim())){showErr('ic');ok=false;}else clearErr('ic');
+  if(!document.getElementById('keturunan').value){showErr('keturunan');ok=false;}else clearErr('keturunan');
+  if(!document.getElementById('status').value){showErr('status');ok=false;}else clearErr('status');
+  if(!/^[0-9+]{7,15}$/.test(document.getElementById('telefon').value.trim())){showErr('telefon');ok=false;}else clearErr('telefon');
+  var em=document.getElementById('email').value.trim();
+  if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){showErr('email');ok=false;}else clearErr('email');
+  if(hasBPD){
+    if(!document.getElementById('bank').value.trim()){showErr('bank');ok=false;}else clearErr('bank');
+    if(!document.getElementById('akaun').value.trim()){showErr('akaun');ok=false;}else clearErr('akaun');
+    if(!document.getElementById('daerah').value){showErr('daerah');ok=false;}else clearErr('daerah');
+  }
+  if(!document.getElementById('alamat').value.trim()){showErr('alamat');ok=false;}else clearErr('alamat');
+  return ok;
+}
+
+function submitForm(){
+  if(!window.__scriptReady){
+    toast('Script ID belum dikonfigurasi. Sila baca arahan dalam fail HTML.','err');
+    return;
+  }
+  if(!currentProg){toast('Sila pilih program PKJ terlebih dahulu.','err');return;}
+  if(!validate())return;
+
+  var p=PROG[currentProg];
+  setLoading(true);
+
+  // Generate reference number BEFORE sending so it gets saved to sheet
+  var ref=p.refPfx+'-'+document.getElementById('ic').value.trim().slice(-4)+'-'+Date.now().toString(36).toUpperCase().slice(-5);
+
+  var pl={
+    action:'insert',
+    token:SECRET_TOKEN,
+    formType:p.formType,
+    refNo:ref,
+    nama:document.getElementById('nama').value.trim(),
+    ic:document.getElementById('ic').value.trim(),
+    keturunan:document.getElementById('keturunan').value,
+    status:document.getElementById('status').value,
+    telefon:document.getElementById('telefon').value.trim(),
+    email:document.getElementById('email').value.trim(),
+    bank:p.hasBPD?document.getElementById('bank').value.trim():'',
+    akaun:p.hasBPD?document.getElementById('akaun').value.trim():'',
+    namaPasangan:p.hasBPD?document.getElementById('namaPasangan').value.trim():'',
+    icPasangan:p.hasBPD?document.getElementById('icPasangan').value.trim():'',
+    alamat:document.getElementById('alamat').value.trim(),
+    daerah:p.hasBPD?document.getElementById('daerah').value:'',
+    timestamp:new Date().toISOString()
+  };
+
+  console.log('[PKJ] Submitting to:', window.__ep());
+  console.log('[PKJ] Payload:', JSON.stringify(pl, null, 2));
+
+  fetch(window.__ep(),{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(pl),
+    mode:'no-cors',
+    redirect:'follow'
+  })
+  .then(function(){
+    console.log('[PKJ] Fetch resolved (no-cors — cannot read response, check Google Sheet)');
+    setLoading(false);
+    document.getElementById('formContent').style.display='none';
+    document.getElementById('succ').style.display='block';
+    document.getElementById('refCode').textContent='No. Rujukan: '+ref;
+    document.getElementById('succSub').textContent=p.succSub[currentLang];
+    document.getElementById('mainCard').scrollIntoView({behavior:'smooth',block:'start'});
+  })
+  .catch(function(err){
+    console.error('[PKJ] Fetch error:', err);
+    setLoading(false);
+    toast('Gagal menghantar. Pastikan anda menggunakan Live Server (bukan fail://). Ralat: '+err.message,'err');
+  });
+}
+
+function doReset(){
+  ['nama','ic','telefon','email','bank','akaun','namaPasangan','icPasangan','alamat'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['keturunan','status','daerah'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  resetErrors();
+  document.getElementById('formContent').style.display='block';
+  document.getElementById('succ').style.display='none';
+  currentProg=null;
+  ['rm5000','rm2000','sewa'].forEach(function(k){
+    document.getElementById('opt-'+k).classList.remove('selected');
+    document.getElementById('chk-'+k).textContent='';
+  });
+  document.documentElement.removeAttribute('data-program');
+  document.getElementById('hbMain').innerHTML='Pilih <em>Program PKJ</em> Untuk Memohon';
+  document.getElementById('hbBadges').innerHTML='<div class="bdg sec" id="hbHint">\u2193 Sila pilih program di bawah</div>';
+  document.getElementById('mainCard').classList.remove('visible');
+  document.getElementById('mainCard').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+    </script>
+</body>
+</html>

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ms" data-theme="dark" data-lang="ms">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Semak Nombor Kaunter</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --mono: 'DM Mono',monospace;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --ease: .28s cubic-bezier(.4,0,.2,1);
+            /* Sheet accent colors — vivid, work in both themes */
+            --bsr-h: #3b82f6;
+            --bsr-d: rgba(59,130,246,.18);
+            --bsr-b: rgba(59,130,246,.35);
+            --bmr-h: #a855f7;
+            --bmr-d: rgba(168,85,247,.18);
+            --bmr-b: rgba(168,85,247,.35);
+            --bbr-h: #10b981;
+            --bbr-d: rgba(16,185,129,.18);
+            --bbr-b: rgba(16,185,129,.35);
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --sheet-h: var(--bsr-h);
+            --sheet-d: var(--bsr-d);
+            --sheet-b: var(--bsr-b);
+        }
+
+        [data-theme="dark"] {
+            --bg: #07090e;
+            --bg2: #0b0f1a;
+            --card: #111827;
+            --surface: #0f172a;
+            --border: #1e293b;
+            --border2: #253247;
+            --text: #f1f5f9;
+            --text2: #94a3b8;
+            --text3: #475569;
+            --shadow: rgba(0,0,0,.7);
+            --glow: rgba(59,130,246,.12);
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f4ff;
+            --bg2: #e8eeff;
+            --card: #ffffff;
+            --surface: #f8faff;
+            --border: #dde4f5;
+            --border2: #c5d0e8;
+            --text: #0f172a;
+            --text2: #334155;
+            --text3: #64748b;
+            --shadow: rgba(15,23,42,.1);
+            --glow: rgba(59,130,246,.07);
+        }
+        /* Sheet active color switching */
+        [data-sheet="BSR"] {
+            --sheet-h: var(--bsr-h);
+            --sheet-d: var(--bsr-d);
+            --sheet-b: var(--bsr-b);
+        }
+
+        [data-sheet="BMR"] {
+            --sheet-h: var(--bmr-h);
+            --sheet-d: var(--bmr-d);
+            --sheet-b: var(--bmr-b);
+        }
+
+        [data-sheet="BBR"] {
+            --sheet-h: var(--bbr-h);
+            --sheet-d: var(--bbr-d);
+            --sheet-b: var(--bbr-b);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans',sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 28px 18px 52px;
+            transition: background var(--ease),color var(--ease);
+        }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 0;
+                background: radial-gradient(ellipse 80% 50% at 50% -10%,var(--glow),transparent 65%);
+            }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 10;
+            animation: fadeDown .4s ease both;
+        }
+
+        .lang-row {
+            display: flex;
+            gap: 3px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            padding: 3px;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .lb {
+            border: none;
+            background: transparent;
+            color: var(--text3);
+            font-family: 'DM Sans',sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all var(--ease);
+        }
+
+            .lb:hover {
+                color: var(--text2);
+            }
+
+            .lb.on {
+                background: #2563eb;
+                color: #fff;
+                box-shadow: 0 2px 8px rgba(37,99,235,.4);
+            }
+
+        .theme-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--card);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all var(--ease);
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+            .theme-btn:hover {
+                border-color: #2563eb;
+                transform: rotate(15deg);
+            }
+
+        /* ── WRAPPER ── */
+        .wrap {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeUp .5s .05s ease both;
+        }
+
+        /* ── LOGO ── */
+        .logo-box {
+            width: 82px;
+            height: 82px;
+            border-radius: 22px;
+            background: var(--card);
+            border: 2px dashed var(--border2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--ease);
+        }
+
+            .logo-box::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg,rgba(59,130,246,.07),transparent);
+            }
+
+            .logo-box span {
+                font-size: 28px;
+                line-height: 1;
+            }
+
+            .logo-box small {
+                font-size: 8px;
+                font-weight: 700;
+                letter-spacing: .1em;
+                text-transform: uppercase;
+                color: var(--text3);
+            }
+
+        /* ── HEADER ── */
+        .hdr {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(37,99,235,.1);
+            border: 1px solid rgba(37,99,235,.25);
+            color: #60a5fa;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+
+        .pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: clamp(23px,5vw,34px);
+            font-weight: 800;
+            letter-spacing: -.04em;
+            line-height: 1.15;
+            color: var(--text);
+            transition: color var(--ease);
+        }
+
+            h1 em {
+                font-style: normal;
+                color: #60a5fa;
+            }
+
+        .sub {
+            margin-top: 9px;
+            color: var(--text2);
+            font-size: 13px;
+            line-height: 1.6;
+            transition: color var(--ease);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 28px;
+            width: 100%;
+            box-shadow: 0 20px 60px var(--shadow),0 0 0 1px rgba(255,255,255,.02);
+            transition: background var(--ease),border-color var(--ease);
+        }
+
+        .flabel {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 8px;
+            transition: color var(--ease);
+        }
+
+        .inp-wrap {
+            position: relative;
+            margin-bottom: 13px;
+        }
+
+            .inp-wrap svg {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text3);
+                pointer-events: none;
+            }
+
+        input[type=text] {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 14px 14px 44px;
+            font-family: var(--mono);
+            font-size: 15px;
+            color: var(--text);
+            letter-spacing: .06em;
+            outline: none;
+            transition: border-color var(--ease),box-shadow var(--ease),background var(--ease);
+        }
+
+        input::placeholder {
+            color: var(--text3);
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+        }
+
+        /* ── SEARCH BUTTON ── */
+        .search-btn {
+            width: 100%;
+            background: linear-gradient(135deg,#2563eb,#1e40af);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity .2s,transform .15s;
+            box-shadow: 0 4px 18px rgba(37,99,235,.4);
+        }
+
+            .search-btn:hover {
+                opacity: .9;
+            }
+
+            .search-btn:active {
+                transform: scale(.98);
+            }
+
+            .search-btn:disabled {
+                opacity: .4;
+                cursor: not-allowed;
+            }
+
+        .spin {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spinning .7s linear infinite;
+            display: none;
+        }
+
+        .search-btn.loading .spin {
+            display: block;
+        }
+
+        .search-btn.loading .btn-txt {
+            display: none;
+        }
+
+        /* ── RESULT ── */
+        #result {
+            margin-top: 22px;
+            display: none;
+            animation: fadeUp .35s ease both;
+        }
+
+        /* Result header row */
+        .res-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sheet-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
+        }
+
+            .sheet-badge.BSR {
+                background: rgba(59,130,246,.18);
+                color: #93c5fd;
+                border: 1px solid rgba(59,130,246,.35);
+            }
+
+            .sheet-badge.BMR {
+                background: rgba(168,85,247,.18);
+                color: #d8b4fe;
+                border: 1px solid rgba(168,85,247,.35);
+            }
+
+            .sheet-badge.BBR {
+                background: rgba(16,185,129,.18);
+                color: #6ee7b7;
+                border: 1px solid rgba(16,185,129,.35);
+            }
+
+        [data-theme="light"] .sheet-badge.BSR {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        [data-theme="light"] .sheet-badge.BMR {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #7c3aed;
+        }
+
+        [data-theme="light"] .sheet-badge.BBR {
+            background: #059669;
+            color: #fff;
+            border-color: #059669;
+        }
+
+        .found-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+            .found-tag.ok {
+                color: var(--green);
+            }
+
+            .found-tag.err {
+                color: var(--red);
+            }
+
+        /* Nama block */
+        .res-nama {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -.03em;
+            margin-bottom: 4px;
+        }
+
+        .res-ic {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 600;
+            letter-spacing: .08em;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        /* ── SINGLE KAUNTER BOX ── */
+        .kaunter-solo {
+            background: linear-gradient(135deg,var(--sheet-d),transparent 70%);
+            border: 1px solid var(--sheet-b);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .kaunter-solo::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                right: -20px;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: var(--sheet-d);
+            }
+
+        .k-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--sheet-h);
+            margin-bottom: 4px;
+            opacity: .8;
+        }
+
+        .k-num {
+            font-family: var(--mono);
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--sheet-h);
+            line-height: 1;
+        }
+
+        [data-theme="light"] .k-num {
+            color: var(--sheet-h);
+        }
+
+        /* ── MULTI KAUNTER GRID ── */
+        .multi-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .kaunter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .kaunter-card {
+            background: var(--surface);
+            border: 2px solid var(--sheet-b);
+            border-radius: 14px;
+            padding: 16px 14px;
+            text-align: center;
+            transition: all var(--ease);
+        }
+
+            .kaunter-card:hover {
+                transform: translateY(-2px);
+                border-color: var(--sheet-h);
+            }
+
+        .kc-badge {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--sheet-h);
+            margin-bottom: 6px;
+        }
+
+        .kc-num {
+            font-family: var(--mono);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sheet-h);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .kc-row {
+            font-size: 11.5px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+
+            .kc-row strong {
+                color: var(--text);
+                font-weight: 600;
+            }
+
+        /* Info rows */
+        .info-grid {
+            display: grid;
+            gap: 7px;
+            margin-bottom: 14px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 12.5px;
+            transition: background var(--ease),border-color var(--ease);
+        }
+
+        .ik {
+            color: var(--text2);
+            font-weight: 500;
+        }
+
+        .iv {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+            max-width: 60%;
+        }
+
+        /* ── KEHADIRAN SECTION ── */
+        .keh-section {
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+            margin-top: 4px;
+        }
+
+        .keh-title {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--text3);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .keh-q {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .keh-btns {
+            display: flex;
+            gap: 9px;
+        }
+
+        .btn-ya {
+            flex: 1;
+            background: linear-gradient(135deg,#059669,#047857);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 13px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: opacity .2s,transform .15s;
+            box-shadow: 0 4px 14px rgba(5,150,105,.35);
+        }
+
+            .btn-ya:hover {
+                opacity: .9;
+            }
+
+            .btn-ya:active {
+                transform: scale(.97);
+            }
+
+            .btn-ya:disabled {
+                opacity: .4;
+                cursor: not-allowed;
+            }
+
+        .btn-tidak {
+            flex: 1;
+            background: var(--surface);
+            color: var(--text2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 13px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all .2s;
+        }
+
+            .btn-tidak:hover {
+                border-color: var(--red);
+                color: var(--red);
+            }
+
+        .sudah-hadir {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(16,185,129,.1);
+            border: 1px solid rgba(16,185,129,.28);
+            border-radius: 12px;
+            padding: 14px;
+            color: #34d399;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .keh-msg {
+            margin-top: 10px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+            .keh-msg.ok {
+                background: rgba(16,185,129,.1);
+                border: 1px solid rgba(16,185,129,.25);
+                color: #6ee7b7;
+            }
+
+            .keh-msg.err {
+                background: rgba(239,68,68,.08);
+                border: 1px solid rgba(239,68,68,.22);
+                color: #fca5a5;
+            }
+
+        /* Error box */
+        .err-box {
+            background: rgba(239,68,68,.07);
+            border: 1px solid rgba(239,68,68,.22);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 13.5px;
+            color: #fca5a5;
+            line-height: 1.5;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            margin-top: 24px;
+            font-size: 11px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: fadeUp .5s .2s ease both;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text3);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: .04em;
+            transition: color var(--ease);
+        }
+
+            .footer-link:hover {
+                color: #3b82f6;
+            }
+
+        .fdot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text3);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @keyframes spinning {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes pulse {
+            0%,100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .4;
+                transform: scale(.7)
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="lang-row">
+            <button class="lb on" onclick="setLang('ms',this)">BM</button>
+            <button class="lb" onclick="setLang('en',this)">EN</button>
+            <button class="lb" onclick="setLang('zh',this)">中文</button>
+            <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>
+        </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    </div>
+
+    <div class="wrap">
+        <!-- LOGO -->
+        <div class="logo-box"><span><img src="pkpj.png" style="width: 88px; height: 88px;"></span></div>
+
+        <!-- HEADER -->
+        <div class="hdr">
+            <div class="badge-pill"><span class="pulse"></span><span data-i18n="badge">Sistem Semakan Kaunter</span></div>
+            <h1 data-i18n-html="title">Semak <em>Nombor Kaunter</em> Anda</h1>
+            <p class="sub" data-i18n="sub">Masukkan nombor IC untuk mengetahui kaunter yang ditetapkan.</p>
+        </div>
+
+        <!-- CARD -->
+        <div class="card">
+            <div class="flabel" data-i18n="label">Nombor Kad Pengenalan (IC)</div>
+            <div class="inp-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                    <circle cx="8" cy="12" r="2" />
+                    <path stroke-linecap="round" d="M13 10h4M13 14h3" />
+                </svg>
+                <input type="text" id="icInput" maxlength="14" autocomplete="off" placeholder="cth: 900101-01-1234" />
+            </div>
+            <button class="search-btn" id="searchBtn" onclick="doSearch()">
+                <span class="btn-txt" data-i18n="btnSearch">🔍 Semak Kaunter</span>
+                <div class="spin"></div>
+            </button>
+            <div id="result"></div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <a href="https://www.facebook.com/perbadanankemajuanperumahannegerijohor" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg>
+                PKPJ
+            </a>
+            <div class="fdot"></div>
+            <a href="https://pkpj.johor.gov.my/" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
+                PKPJ
+            </a>
+            <div class="fdot"></div>
+            <a href="https://itpkpj.github.io/pkj/permohonan" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></svg>
+                Permohonan PKJ
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // ─────────────────────────────────
+        // ⚠️ GANTIKAN DENGAN URL ANDA
+        // ─────────────────────────────────
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTieay9Jhz77ZgxVF3AdG9zakGRTj1N6eTSLljxLoYZvGd74cJLBfgWYIK4qyxsx7S/exec";
+
+        const i18n = {
+            ms: {
+                logo: "Logo", badge: "Sistem Semakan Kaunter",
+                title: "Semak <em>Nombor Kaunter</em> Anda",
+                sub: "Masukkan nombor IC untuk mengetahui kaunter yang ditetapkan.",
+                label: "Nombor Kad Pengenalan (IC)", ph: "cth: 900101-01-1234",
+                btnSearch: "🔍 Semak Kaunter",
+                foundOk: "IC Dijumpai!", foundErr: "IC Tidak Dijumpai",
+                foundSub: "Sila pergi ke kaunter yang ditetapkan.",
+                notFoundSub: "Semak semula nombor IC anda.",
+                kaunterLbl: "NOMBOR KAUNTER ANDA",
+                multiLabel: "Anda mempunyai {n} kaunter ditetapkan",
+                kaunterItem: "Kaunter {n}",
+                keyIC: "Nombor IC", keyNama: "Nama", keySheet: "Kumpulan",
+                keyKaunter: "Nombor Kaunter", keyNoSiri: "No Siri", keyBantuan: "Nama Bantuan",
+                keyStatus: "Status Kehadiran", statusHadir: "✅ Sudah Hadir", statusTidak: "⏳ Belum Hadir",
+                kehTitle: "Rekod Kehadiran", kehQ: "Adakah anda ingin mengesahkan kehadiran?",
+                btnYa: "✅ Ya, Sahkan", btnTidak: "✕ Tidak",
+                sudahHadir: "✅ Kehadiran telah direkodkan",
+                recodOk: "Kehadiran berjaya direkodkan!", recodErr: "Gagal merekod kehadiran.",
+                errEmpty: "Sila masukkan nombor IC.", errServer: "Gagal menghubungi pelayan.",
+                errTimeout: "Masa tamat. Cuba semula.",
+                secure: "Data selamat & terenkripsi", powered: "Dikuasakan oleh Google Sheets",
+            },
+            en: {
+                logo: "Logo", badge: "Counter Lookup System",
+                title: "Check Your <em>Counter Number</em>",
+                sub: "Enter your IC number to find your assigned counter.",
+                label: "Identity Card Number (IC)", ph: "e.g. 900101-01-1234",
+                btnSearch: "🔍 Check Counter",
+                foundOk: "IC Found!", foundErr: "IC Not Found",
+                foundSub: "Please proceed to your assigned counter.",
+                notFoundSub: "Please check your IC number again.",
+                kaunterLbl: "YOUR COUNTER NUMBER",
+                multiLabel: "You have {n} assigned counters",
+                kaunterItem: "Counter {n}",
+                keyIC: "IC Number", keyNama: "Name", keySheet: "Group",
+                keyKaunter: "Counter No.", keyNoSiri: "Serial No.", keyBantuan: "Aid Name",
+                keyStatus: "Attendance Status", statusHadir: "✅ Attended", statusTidak: "⏳ Not Yet",
+                kehTitle: "Record Attendance", kehQ: "Would you like to confirm your attendance?",
+                btnYa: "✅ Yes, Confirm", btnTidak: "✕ No",
+                sudahHadir: "✅ Attendance already recorded",
+                recodOk: "Attendance recorded successfully!", recodErr: "Failed to record attendance.",
+                errEmpty: "Please enter your IC number.", errServer: "Failed to reach server.",
+                errTimeout: "Request timed out. Please try again.",
+                secure: "Data is secure & encrypted", powered: "Powered by Google Sheets",
+            },
+            zh: {
+                logo: "标志", badge: "柜台查询系统",
+                title: "查询您的<em>柜台号码</em>",
+                sub: "请输入您的身份证号码以查询所指定的柜台。",
+                label: "身份证号码（IC）", ph: "例：900101-01-1234",
+                btnSearch: "🔍 查询柜台",
+                foundOk: "已找到！", foundErr: "未找到",
+                foundSub: "请前往您指定的柜台。",
+                notFoundSub: "请再次确认您的身份证号码。",
+                kaunterLbl: "您的柜台号码",
+                multiLabel: "您有 {n} 个指定柜台",
+                kaunterItem: "柜台 {n}",
+                keyIC: "身份证号码", keyNama: "姓名", keySheet: "组别",
+                keyKaunter: "柜台号码", keyNoSiri: "系列号", keyBantuan: "援助名称",
+                keyStatus: "出席状态", statusHadir: "✅ 已出席", statusTidak: "⏳ 未出席",
+                kehTitle: "记录出席", kehQ: "您是否要确认出席？",
+                btnYa: "✅ 是，确认", btnTidak: "✕ 否",
+                sudahHadir: "✅ 出席已记录",
+                recodOk: "出席记录成功！", recodErr: "出席记录失败。",
+                errEmpty: "请输入您的身份证号码。", errServer: "无法连接服务器。",
+                errTimeout: "请求超时，请再试一次。",
+                secure: "数据安全 & 已加密", powered: "由 Google Sheets 驱动",
+            },
+            ta: {
+                logo: "சின்னம்", badge: "கவுண்டர் சரிபார்ப்பு அமைப்பு",
+                title: "உங்கள் <em>கவுண்டர் எண்ணை</em> சரிபார்க்கவும்",
+                sub: "உங்கள் IC எண்ணை உள்ளிட்டு நியமிக்கப்பட்ட கவுண்டரை அறியவும்.",
+                label: "அடையாள அட்டை எண் (IC)", ph: "எ.கா: 900101-01-1234",
+                btnSearch: "🔍 கவுண்டர் சரிபார்",
+                foundOk: "கண்டுபிடிக்கப்பட்டது!", foundErr: "கண்டுபிடிக்கப்படவில்லை",
+                foundSub: "தயவுசெய்து நியமிக்கப்பட்ட கவுண்டருக்குச் செல்லவும்.",
+                notFoundSub: "உங்கள் IC எண்ணை மீண்டும் சரிபார்க்கவும்.",
+                kaunterLbl: "உங்கள் கவுண்டர் எண்",
+                multiLabel: "உங்களுக்கு {n} கவுண்டர்கள் நியமிக்கப்பட்டுள்ளன",
+                kaunterItem: "கவுண்டர் {n}",
+                keyIC: "IC எண்", keyNama: "பெயர்", keySheet: "குழு",
+                keyKaunter: "கவுண்டர் எண்", keyNoSiri: "தொடர் எண்", keyBantuan: "உதவி பெயர்",
+                keyStatus: "வருகை நிலை", statusHadir: "✅ வந்தார்", statusTidak: "⏳ வரவில்லை",
+                kehTitle: "வருகை பதிவு", kehQ: "உங்கள் வருகையை உறுதிப்படுத்த விரும்புகிறீர்களா?",
+                btnYa: "✅ ஆம், உறுதிப்படுத்து", btnTidak: "✕ இல்லை",
+                sudahHadir: "✅ வருகை ஏற்கனவே பதிவு செய்யப்பட்டது",
+                recodOk: "வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr: "வருகை பதிவு தோல்வியடைந்தது.",
+                errEmpty: "தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer: "சேவையகத்தை அடைய முடியவில்லை.",
+                errTimeout: "கோரிக்கை நேரம் முடிந்தது.",
+                secure: "தரவு பாதுகாப்பானது & மறைகுறியாக்கப்பட்டது", powered: "Google Sheets ஆல் இயக்கப்படுகிறது",
+            }
+        };
+
+        let lang = 'ms';
+        let isDark = true;
+        let _lastResult = null;
+
+        // ── LANG ──
+        function setLang(l, btn) {
+            lang = l;
+            document.documentElement.setAttribute('data-lang', l);
+            document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
+            if (btn) btn.classList.add('on');
+            applyI18n();
+            if (_lastResult) _lastResult.success ? showSuccess(_lastResult) : showError(_lastResult.message);
+        }
+        function applyI18n() {
+            const t = i18n[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (t[k] !== undefined) el.textContent = t[k]; });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if (t[k] !== undefined) el.innerHTML = t[k]; });
+            document.getElementById('icInput').placeholder = t.ph;
+        }
+
+        // ── THEME ──
+        function toggleTheme() {
+            isDark = !isDark;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+        }
+
+        // ── IC FORMAT ──
+        const ic = document.getElementById('icInput');
+        ic.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+        ic.addEventListener('input', () => {
+            let v = ic.value.replace(/[^0-9]/g, '');
+            if (v.length > 6) v = v.slice(0, 6) + '-' + v.slice(6);
+            if (v.length > 9) v = v.slice(0, 9) + '-' + v.slice(9);
+            if (v.length > 14) v = v.slice(0, 14);
+            ic.value = v;
+        });
+
+        // ── JSONP ──
+        function jsonp(url, cb) {
+            const name = 'cb_' + Date.now();
+            const s = document.createElement('script');
+            window[name] = d => { delete window[name]; document.body.removeChild(s); cb(null, d); };
+            s.onerror = () => { delete window[name]; document.body.removeChild(s); cb(new Error('err')); };
+            s.src = url + '&callback=' + name;
+            document.body.appendChild(s);
+            setTimeout(() => { if (window[name]) window[name]({ success: false, message: i18n[lang].errTimeout }); }, 10000);
+        }
+
+        // ── SEARCH ──
+        function doSearch() {
+            const val = ic.value.trim();
+            const t = i18n[lang];
+            if (!val) { showError(t.errEmpty); return; }
+            setLoading(true);
+            document.getElementById('result').style.display = 'none';
+            jsonp(`${APPS_SCRIPT_URL}?action=search&ic=${encodeURIComponent(val)}`, (err, data) => {
+                setLoading(false);
+                _lastResult = data;
+                if (err || !data) { showError(t.errServer); return; }
+                if (data.success) showSuccess(data);
+                else showError(data.message || t.foundErr);
+            });
+        }
+        function setLoading(on) {
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = on;
+            btn.classList.toggle('loading', on);
+        }
+
+        // ── SHOW SUCCESS ──
+        function showSuccess(d) {
+            const t = i18n[lang];
+            const el = document.getElementById('result');
+            el.setAttribute('data-sheet', d.sheet);
+
+            // Sheet badge color class
+            const badgeCls = d.sheet; // BSR | BMR | BBR
+
+            // Status badge
+            const allHadir = d.allHadir;
+            const statusHTML = allHadir
+                ? `<span style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;">${esc(t.statusHadir)}</span>`
+                : `<span style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#fbbf24;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;">${esc(t.statusTidak)}</span>`;
+
+            // Kaunter section: single or multiple
+            let kaunterHTML = '';
+            if (d.matches.length === 1) {
+                const m = d.matches[0];
+                kaunterHTML = `
+          <div class="kaunter-solo">
+            <div class="k-lbl">${esc(t.kaunterLbl)}</div>
+            <div class="k-num">${esc(m.kaunter)}</div>
+          </div>
+          <div class="info-grid">
+            <div class="info-row"><span class="ik">${esc(t.keyNoSiri)}</span><span class="iv">${esc(m.siri || '—')}</span></div>
+            <div class="info-row"><span class="ik">${esc(t.keyBantuan)}</span><span class="iv">${esc(m.bantuan || '—')}</span></div>
+          </div>`;
+            } else {
+                const multiLbl = t.multiLabel.replace('{n}', d.matches.length);
+                const cards = d.matches.map((m, i) => `
+          <div class="kaunter-card">
+            <div class="kc-badge">${esc(t.kaunterItem.replace('{n}', i + 1))}</div>
+            <div class="kc-num">${esc(m.kaunter)}</div>
+            <div class="kc-row"><strong>${esc(t.keyNoSiri)}:</strong> ${esc(m.siri || '—')}</div>
+            <div class="kc-row"><strong>${esc(t.keyBantuan)}:</strong> ${esc(m.bantuan || '—')}</div>
+          </div>`).join('');
+                kaunterHTML = `
+          <div class="multi-label">${esc(multiLbl)}</div>
+          <div class="kaunter-grid">${cards}</div>`;
+            }
+
+            // Kehadiran section
+            let kehHTML = '';
+            if (allHadir) {
+                kehHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
+            } else {
+                const rows = d.matches.map(m => m.row).join(',');
+                kehHTML = `
+          <div class="keh-q">${esc(t.kehQ)}</div>
+          <div class="keh-btns" id="kehBtns">
+            <button class="btn-ya" id="btnYa" onclick="rekod('${esc(d.sheet)}','${rows}')">${esc(t.btnYa)}</button>
+            <button class="btn-tidak" onclick="batalKeh()">${esc(t.btnTidak)}</button>
+          </div>
+          <div class="keh-msg" id="kehMsg" style="display:none;"></div>`;
+            }
+
+            el.innerHTML = `
+        <div class="res-header">
+          <span class="sheet-badge ${badgeCls}">📋 ${badgeCls}</span>
+          <span class="found-tag ok">✓ ${esc(t.foundOk)}</span>
+        </div>
+        <div class="res-nama">${esc(d.nama)}</div>
+        <div class="res-ic">${esc(d.ic)}</div>
+        ${kaunterHTML}
+
+        <div class="keh-section">
+          <div class="keh-title">${esc(t.kehTitle)}</div>
+          ${kehHTML}
+        </div>`;
+
+            el.style.display = 'block';
+            el.setAttribute('data-sheet', d.sheet); // apply sheet color vars
+        }
+
+        // ── SHOW ERROR ──
+        function showError(msg) {
+            const t = i18n[lang];
+            const el = document.getElementById('result');
+            el.innerHTML = `
+        <div class="res-header">
+          <span class="found-tag err">✕ ${esc(t.foundErr)}</span>
+        </div>
+        <div class="err-box">${esc(msg)}</div>`;
+            el.style.display = 'block';
+            el.removeAttribute('data-sheet');
+        }
+
+        // ── REKOD KEHADIRAN ──
+        function rekod(sheet, rows) {
+            const t = i18n[lang];
+            const ya = document.getElementById('btnYa');
+            const btns = document.getElementById('kehBtns');
+            if (ya) ya.disabled = true;
+            jsonp(`${APPS_SCRIPT_URL}?action=rekod&sheet=${encodeURIComponent(sheet)}&rows=${encodeURIComponent(rows)}`, (err, data) => {
+                const msg = document.getElementById('kehMsg');
+                if (err || !data) {
+                    if (msg) { msg.className = 'keh-msg err'; msg.textContent = t.recodErr; msg.style.display = 'block'; }
+                    return;
+                }
+                if (msg) {
+                    msg.className = data.success ? 'keh-msg ok' : 'keh-msg err';
+                    msg.textContent = data.success ? t.recodOk : (data.message || t.recodErr);
+                    msg.style.display = 'block';
+                }
+                if (data.success && btns) {
+                    btns.innerHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
+                }
+            });
+        }
+
+        function batalKeh() {
+            const s = document.querySelector('.keh-section');
+            if (s) s.style.display = 'none';
+        }
+
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        applyI18n();
+    </script>
+</body>
+</html>
