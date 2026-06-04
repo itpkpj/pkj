@@ -629,6 +629,327 @@
             margin-top: 4px;
         }
 
+        /* ── MULTI-SHEET GROUPS ── */
+        .sheet-group {
+            margin-bottom: 18px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: border-color var(--ease);
+        }
+
+        .sheet-group-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .sheet-group.BSR .sheet-group-header {
+            background: rgba(59,130,246,.12);
+            color: #93c5fd;
+            border-bottom: 1px solid rgba(59,130,246,.2);
+        }
+
+        .sheet-group.BMR .sheet-group-header {
+            background: rgba(168,85,247,.12);
+            color: #d8b4fe;
+            border-bottom: 1px solid rgba(168,85,247,.2);
+        }
+
+        .sheet-group.BBR .sheet-group-header {
+            background: rgba(16,185,129,.12);
+            color: #6ee7b7;
+            border-bottom: 1px solid rgba(16,185,129,.2);
+        }
+
+        [data-theme="light"] .sheet-group.BSR .sheet-group-header {
+            background: rgba(37,99,235,.1);
+            color: #1d4ed8;
+        }
+
+        [data-theme="light"] .sheet-group.BMR .sheet-group-header {
+            background: rgba(124,58,237,.1);
+            color: #6d28d9;
+        }
+
+        [data-theme="light"] .sheet-group.BBR .sheet-group-header {
+            background: rgba(5,150,105,.1);
+            color: #047857;
+        }
+
+        .sheet-group-body {
+            padding: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .match-card {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all var(--ease);
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mc-main {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 0;
+        }
+
+        .sheet-group.BSR .match-card::before {
+            background: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .match-card::before {
+            background: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .match-card::before {
+            background: var(--bbr-h);
+        }
+
+        .match-card:hover {
+            transform: translateX(2px);
+            border-color: var(--border2);
+        }
+
+        .mc-kaunter {
+            text-align: center;
+            flex-shrink: 0;
+            min-width: 64px;
+        }
+
+        .mc-k-lbl {
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .sheet-group.BSR .mc-k-lbl {
+            color: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .mc-k-lbl {
+            color: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .mc-k-lbl {
+            color: var(--bbr-h);
+        }
+
+        .mc-k-num {
+            font-family: var(--mono);
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .sheet-group.BSR .mc-k-num {
+            color: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .mc-k-num {
+            color: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .mc-k-num {
+            color: var(--bbr-h);
+        }
+
+        .mc-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .mc-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mc-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+
+            .mc-info-row .mk {
+                color: var(--text3);
+                font-size: 11px;
+                font-weight: 500;
+            }
+
+            .mc-info-row .mv {
+                color: var(--text);
+                font-weight: 600;
+                font-size: 11.5px;
+                text-align: right;
+                max-width: 65%;
+                word-break: break-word;
+            }
+
+        .mc-status {
+            flex-shrink: 0;
+        }
+
+        .mc-hadir {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(16,185,129,.15);
+            font-size: 13px;
+        }
+
+        .mc-tidak {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(245,158,11,.1);
+            font-size: 13px;
+        }
+        /* Terima bantuan status strip at bottom of match-card */
+        .mc-terima-strip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-top: 1px solid var(--border);
+            border-radius: 0 0 12px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+            .mc-terima-strip.received {
+                background: rgba(139,92,246,.08);
+                color: #c4b5fd;
+                border-top-color: rgba(139,92,246,.2);
+            }
+
+            .mc-terima-strip.pending {
+                background: rgba(100,116,139,.05);
+                color: var(--text3);
+                border-top-color: var(--border);
+            }
+
+        [data-theme="light"] .mc-terima-strip.received {
+            background: rgba(109,40,217,.07);
+            color: #6d28d9;
+            border-top-color: rgba(109,40,217,.2);
+        }
+
+        .mc-terima-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .mc-terima-strip.received .mc-terima-dot {
+            background: #a78bfa;
+        }
+
+        .mc-terima-strip.pending .mc-terima-dot {
+            background: var(--border2);
+        }
+
+        /* Summary bar */
+        .result-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 16px;
+            margin-bottom: 16px;
+            font-size: 12.5px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rs-count {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+            .rs-count span {
+                color: var(--sheet-h);
+            }
+
+        .rs-sheets {
+            display: flex;
+            gap: 6px;
+        }
+
+        .rs-sheet-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            padding: 2px 8px;
+            border-radius: 99px;
+        }
+
+            .rs-sheet-tag.BSR {
+                background: rgba(59,130,246,.15);
+                color: #93c5fd;
+            }
+
+            .rs-sheet-tag.BMR {
+                background: rgba(168,85,247,.15);
+                color: #d8b4fe;
+            }
+
+            .rs-sheet-tag.BBR {
+                background: rgba(16,185,129,.15);
+                color: #6ee7b7;
+            }
+
+        [data-theme="light"] .rs-sheet-tag.BSR {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        [data-theme="light"] .rs-sheet-tag.BMR {
+            background: #7c3aed;
+            color: #fff;
+        }
+
+        [data-theme="light"] .rs-sheet-tag.BBR {
+            background: #059669;
+            color: #fff;
+        }
+
         .keh-title {
             font-size: 10.5px;
             font-weight: 700;
@@ -846,7 +1167,7 @@
 
     <div class="wrap">
         <!-- LOGO -->
-        <div class="logo-box"><span><img src="pkpj.png" style="width: 88px; height: 88px;"></span></div>
+        <div class="logo-box"><span>🏛️</span><small data-i18n="logo">Logo</small></div>
 
         <!-- HEADER -->
         <div class="hdr">
@@ -896,7 +1217,7 @@
         // ─────────────────────────────────
         // ⚠️ GANTIKAN DENGAN URL ANDA
         // ─────────────────────────────────
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTieay9Jhz77ZgxVF3AdG9zakGRTj1N6eTSLljxLoYZvGd74cJLBfgWYIK4qyxsx7S/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNuhrYISo28YZ45vYhAt32Ij6PAWadmwt06AvporX3MK_ffdIVfYTRA3IJWNpXLdBJ/exec";
 
         const i18n = {
             ms: {
@@ -917,6 +1238,7 @@
                 kehTitle: "Rekod Kehadiran", kehQ: "Adakah anda ingin mengesahkan kehadiran?",
                 btnYa: "✅ Ya, Sahkan", btnTidak: "✕ Tidak",
                 sudahHadir: "✅ Kehadiran telah direkodkan",
+                statusTerima: "✓ Bantuan telah diterima", statusBelumTerima: "Bantuan belum diterima",
                 recodOk: "Kehadiran berjaya direkodkan!", recodErr: "Gagal merekod kehadiran.",
                 errEmpty: "Sila masukkan nombor IC.", errServer: "Gagal menghubungi pelayan.",
                 errTimeout: "Masa tamat. Cuba semula.",
@@ -940,6 +1262,7 @@
                 kehTitle: "Record Attendance", kehQ: "Would you like to confirm your attendance?",
                 btnYa: "✅ Yes, Confirm", btnTidak: "✕ No",
                 sudahHadir: "✅ Attendance already recorded",
+                statusTerima: "✓ Aid received", statusBelumTerima: "Aid not yet received",
                 recodOk: "Attendance recorded successfully!", recodErr: "Failed to record attendance.",
                 errEmpty: "Please enter your IC number.", errServer: "Failed to reach server.",
                 errTimeout: "Request timed out. Please try again.",
@@ -963,6 +1286,7 @@
                 kehTitle: "记录出席", kehQ: "您是否要确认出席？",
                 btnYa: "✅ 是，确认", btnTidak: "✕ 否",
                 sudahHadir: "✅ 出席已记录",
+                statusTerima: "✓ 援助已领取", statusBelumTerima: "援助未领取",
                 recodOk: "出席记录成功！", recodErr: "出席记录失败。",
                 errEmpty: "请输入您的身份证号码。", errServer: "无法连接服务器。",
                 errTimeout: "请求超时，请再试一次。",
@@ -986,6 +1310,7 @@
                 kehTitle: "வருகை பதிவு", kehQ: "உங்கள் வருகையை உறுதிப்படுத்த விரும்புகிறீர்களா?",
                 btnYa: "✅ ஆம், உறுதிப்படுத்து", btnTidak: "✕ இல்லை",
                 sudahHadir: "✅ வருகை ஏற்கனவே பதிவு செய்யப்பட்டது",
+                statusTerima: "✓ உதவி பெற்றார்", statusBelumTerima: "உதவி இன்னும் பெறவில்லை",
                 recodOk: "வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr: "வருகை பதிவு தோல்வியடைந்தது.",
                 errEmpty: "தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer: "சேவையகத்தை அடைய முடியவில்லை.",
                 errTimeout: "கோரிக்கை நேரம் முடிந்தது.",
@@ -1067,54 +1392,85 @@
         function showSuccess(d) {
             const t = i18n[lang];
             const el = document.getElementById('result');
-            el.setAttribute('data-sheet', d.sheet);
-
-            // Sheet badge color class
-            const badgeCls = d.sheet; // BSR | BMR | BBR
-
-            // Status badge
             const allHadir = d.allHadir;
-            const statusHTML = allHadir
-                ? `<span style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#34d399;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;">${esc(t.statusHadir)}</span>`
-                : `<span style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:#fbbf24;padding:4px 12px;border-radius:99px;font-size:11px;font-weight:700;">${esc(t.statusTidak)}</span>`;
+            const totalCount = d.matches.length;
+            const sheetList = d.sheets || [d.matches[0].sheet];
 
-            // Kaunter section: single or multiple
-            let kaunterHTML = '';
-            if (d.matches.length === 1) {
-                const m = d.matches[0];
-                kaunterHTML = `
-          <div class="kaunter-solo">
-            <div class="k-lbl">${esc(t.kaunterLbl)}</div>
-            <div class="k-num">${esc(m.kaunter)}</div>
-          </div>
-          <div class="info-grid">
-            <div class="info-row"><span class="ik">${esc(t.keyNoSiri)}</span><span class="iv">${esc(m.siri || '—')}</span></div>
-            <div class="info-row"><span class="ik">${esc(t.keyBantuan)}</span><span class="iv">${esc(m.bantuan || '—')}</span></div>
-          </div>`;
-            } else {
-                const multiLbl = t.multiLabel.replace('{n}', d.matches.length);
-                const cards = d.matches.map((m, i) => `
-          <div class="kaunter-card">
-            <div class="kc-badge">${esc(t.kaunterItem.replace('{n}', i + 1))}</div>
-            <div class="kc-num">${esc(m.kaunter)}</div>
-            <div class="kc-row"><strong>${esc(t.keyNoSiri)}:</strong> ${esc(m.siri || '—')}</div>
-            <div class="kc-row"><strong>${esc(t.keyBantuan)}:</strong> ${esc(m.bantuan || '—')}</div>
+            // Use first sheet found as the base colour (or remove data-sheet if multi-sheet)
+            if (sheetList.length === 1) el.setAttribute('data-sheet', sheetList[0]);
+            else el.removeAttribute('data-sheet');
+
+            // ── Sheet badges row ──
+            const sheetBadgesHTML = sheetList.map(s =>
+                `<span class="sheet-badge ${s}">📋 ${s}</span>`
+            ).join('');
+
+            // ── Summary bar ──
+            const sheetTagsHTML = sheetList.map(s =>
+                `<span class="rs-sheet-tag ${s}">${s}</span>`
+            ).join('');
+            const summaryHTML = `
+        <div class="result-summary">
+          <span class="rs-count">${esc(t.multiLabel.replace('{n}', String(totalCount)))}</span>
+          <span class="rs-sheets">${sheetTagsHTML}</span>
+        </div>`;
+
+            // ── Sheet groups ──
+            const groups = d.sheetGroups || (() => {
+                const g = {};
+                for (const m of d.matches) { if (!g[m.sheet]) g[m.sheet] = []; g[m.sheet].push(m); }
+                return g;
+            })();
+
+            const groupsHTML = Object.entries(groups).map(([sheetName, matches]) => {
+                const matchCards = matches.map(m => `
+          <div class="match-card">
+            <div class="mc-main">
+              <div class="mc-kaunter">
+                <div class="mc-k-lbl">${esc(t.keyKaunter)}</div>
+                <div class="mc-k-num">${esc(m.kaunter || '—')}</div>
+              </div>
+              <div class="mc-divider"></div>
+              <div class="mc-info">
+                <div class="mc-info-row"><span class="mk">${esc(t.keyNoSiri)}</span><span class="mv">${esc(m.siri || '—')}</span></div>
+                <div class="mc-info-row"><span class="mk">${esc(t.keyBantuan)}</span><span class="mv">${esc(m.bantuan || '—')}</span></div>
+              </div>
+              <div class="mc-status">
+                ${m.sudahHadir
+                        ? `<div class="mc-hadir" title="${esc(t.statusHadir)}">✅</div>`
+                        : `<div class="mc-tidak" title="${esc(t.statusTidak)}">⏳</div>`}
+              </div>
+            </div>
+            <div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
+              <span class="mc-terima-dot"></span>
+              ${m.sudahTerima
+                        ? `<span>${esc(t.statusTerima)}</span>`
+                        : `<span>${esc(t.statusBelumTerima)}</span>`}
+            </div>
           </div>`).join('');
-                kaunterHTML = `
-          <div class="multi-label">${esc(multiLbl)}</div>
-          <div class="kaunter-grid">${cards}</div>`;
-            }
 
-            // Kehadiran section
+                return `
+          <div class="sheet-group ${sheetName}">
+            <div class="sheet-group-header">
+              <span>📋 ${sheetName}</span>
+              <span style="opacity:.7;font-weight:500">${matches.length} ${matches.length === 1 ? esc(t.keyKaunter) : esc(t.keyKaunter)}</span>
+            </div>
+            <div class="sheet-group-body">${matchCards}</div>
+          </div>`;
+            }).join('');
+
+            // ── Kehadiran section ──
             let kehHTML = '';
             if (allHadir) {
                 kehHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
             } else {
-                const rows = d.matches.map(m => m.row).join(',');
+                // Build entries JSON for multi-sheet rekod
+                const entries = JSON.stringify(d.matches.map(m => ({ sheet: m.sheet, row: m.row })));
                 kehHTML = `
           <div class="keh-q">${esc(t.kehQ)}</div>
           <div class="keh-btns" id="kehBtns">
-            <button class="btn-ya" id="btnYa" onclick="rekod('${esc(d.sheet)}','${rows}')">${esc(t.btnYa)}</button>
+            <button class="btn-ya" id="btnYa" onclick="rekodMulti(this)"
+              data-entries='${entries.replace(/'/g, "&#39;")}'>${esc(t.btnYa)}</button>
             <button class="btn-tidak" onclick="batalKeh()">${esc(t.btnTidak)}</button>
           </div>
           <div class="keh-msg" id="kehMsg" style="display:none;"></div>`;
@@ -1122,20 +1478,19 @@
 
             el.innerHTML = `
         <div class="res-header">
-          <span class="sheet-badge ${badgeCls}">📋 ${badgeCls}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">${sheetBadgesHTML}</div>
           <span class="found-tag ok">✓ ${esc(t.foundOk)}</span>
         </div>
         <div class="res-nama">${esc(d.nama)}</div>
         <div class="res-ic">${esc(d.ic)}</div>
-        ${kaunterHTML}
-
+        ${totalCount > 1 ? summaryHTML : ''}
+        ${groupsHTML}
         <div class="keh-section">
           <div class="keh-title">${esc(t.kehTitle)}</div>
           ${kehHTML}
         </div>`;
 
             el.style.display = 'block';
-            el.setAttribute('data-sheet', d.sheet); // apply sheet color vars
         }
 
         // ── SHOW ERROR ──
@@ -1151,27 +1506,30 @@
             el.removeAttribute('data-sheet');
         }
 
-        // ── REKOD KEHADIRAN ──
-        function rekod(sheet, rows) {
+        // ── REKOD KEHADIRAN (multi-sheet aware) ──
+        function rekodMulti(btn) {
             const t = i18n[lang];
-            const ya = document.getElementById('btnYa');
+            const entries = btn ? btn.getAttribute('data-entries') : '[]';
             const btns = document.getElementById('kehBtns');
-            if (ya) ya.disabled = true;
-            jsonp(`${APPS_SCRIPT_URL}?action=rekod&sheet=${encodeURIComponent(sheet)}&rows=${encodeURIComponent(rows)}`, (err, data) => {
-                const msg = document.getElementById('kehMsg');
-                if (err || !data) {
-                    if (msg) { msg.className = 'keh-msg err'; msg.textContent = t.recodErr; msg.style.display = 'block'; }
-                    return;
+            if (btn) btn.disabled = true;
+            jsonp(
+                `${APPS_SCRIPT_URL}?action=rekodmulti&entries=${encodeURIComponent(entries)}`,
+                (err, data) => {
+                    const msg = document.getElementById('kehMsg');
+                    if (err || !data) {
+                        if (msg) { msg.className = 'keh-msg err'; msg.textContent = t.recodErr; msg.style.display = 'block'; }
+                        return;
+                    }
+                    if (msg) {
+                        msg.className = data.success ? 'keh-msg ok' : 'keh-msg err';
+                        msg.textContent = data.success ? t.recodOk : (data.message || t.recodErr);
+                        msg.style.display = 'block';
+                    }
+                    if (data.success && btns) {
+                        btns.innerHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
+                    }
                 }
-                if (msg) {
-                    msg.className = data.success ? 'keh-msg ok' : 'keh-msg err';
-                    msg.textContent = data.success ? t.recodOk : (data.message || t.recodErr);
-                    msg.style.display = 'block';
-                }
-                if (data.success && btns) {
-                    btns.innerHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
-                }
-            });
+            );
         }
 
         function batalKeh() {
