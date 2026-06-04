@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Admin — Statistik Kehadiran</title>
+    <title>Semak Nombor Kaunter</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
         *, *::before, *::after {
@@ -14,43 +14,71 @@
 
         :root {
             --mono: 'DM Mono',monospace;
-            --radius: 16px;
-            --ease: .25s cubic-bezier(.4,0,.2,1);
-            --bsr: #3b82f6;
-            --bsr-d: rgba(59,130,246,.15);
-            --bmr: #a855f7;
-            --bmr-d: rgba(168,85,247,.15);
-            --bbr: #10b981;
-            --bbr-d: rgba(16,185,129,.15);
+            --radius: 18px;
+            --radius-sm: 12px;
+            --ease: .28s cubic-bezier(.4,0,.2,1);
+            /* Sheet accent colors — vivid, work in both themes */
+            --bsr-h: #3b82f6;
+            --bsr-d: rgba(59,130,246,.18);
+            --bsr-b: rgba(59,130,246,.35);
+            --bmr-h: #a855f7;
+            --bmr-d: rgba(168,85,247,.18);
+            --bmr-b: rgba(168,85,247,.35);
+            --bbr-h: #10b981;
+            --bbr-d: rgba(16,185,129,.18);
+            --bbr-b: rgba(16,185,129,.35);
             --green: #10b981;
             --red: #ef4444;
             --yellow: #f59e0b;
+            --sheet-h: var(--bsr-h);
+            --sheet-d: var(--bsr-d);
+            --sheet-b: var(--bsr-b);
         }
 
         [data-theme="dark"] {
             --bg: #07090e;
-            --surface: #0f172a;
+            --bg2: #0b0f1a;
             --card: #111827;
+            --surface: #0f172a;
             --border: #1e293b;
-            --border2: #243447;
+            --border2: #253247;
             --text: #f1f5f9;
             --text2: #94a3b8;
             --text3: #475569;
-            --shadow: rgba(0,0,0,.65);
-            --glow: rgba(59,130,246,.1);
+            --shadow: rgba(0,0,0,.7);
+            --glow: rgba(59,130,246,.12);
         }
 
         [data-theme="light"] {
             --bg: #f0f4ff;
-            --surface: #ffffff;
+            --bg2: #e8eeff;
             --card: #ffffff;
+            --surface: #f8faff;
             --border: #dde4f5;
             --border2: #c5d0e8;
             --text: #0f172a;
             --text2: #334155;
             --text3: #64748b;
             --shadow: rgba(15,23,42,.1);
-            --glow: rgba(59,130,246,.06);
+            --glow: rgba(59,130,246,.07);
+        }
+        /* Sheet active color switching */
+        [data-sheet="BSR"] {
+            --sheet-h: var(--bsr-h);
+            --sheet-d: var(--bsr-d);
+            --sheet-b: var(--bsr-b);
+        }
+
+        [data-sheet="BMR"] {
+            --sheet-h: var(--bmr-h);
+            --sheet-d: var(--bmr-d);
+            --sheet-b: var(--bmr-b);
+        }
+
+        [data-sheet="BBR"] {
+            --sheet-h: var(--bbr-h);
+            --sheet-d: var(--bbr-d);
+            --sheet-b: var(--bbr-b);
         }
 
         body {
@@ -71,201 +99,13 @@
                 inset: 0;
                 pointer-events: none;
                 z-index: 0;
-                background: radial-gradient(ellipse 80% 40% at 50% -5%,var(--glow),transparent 60%);
+                background: radial-gradient(ellipse 80% 50% at 50% -10%,var(--glow),transparent 65%);
             }
-
-        /* ── LOGIN ── */
-        .login-wrap {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg);
-            padding: 20px;
-            transition: background var(--ease);
-        }
-
-        .login-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 22px;
-            padding: 36px 32px;
-            width: 100%;
-            max-width: 390px;
-            box-shadow: 0 24px 60px var(--shadow);
-            animation: fadeUp .5s ease both;
-        }
-
-        .login-logo {
-            width: 68px;
-            height: 68px;
-            border-radius: 18px;
-            background: var(--surface);
-            border: 2px dashed var(--border2);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            margin: 0 auto 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-            .login-logo::after {
-                content: '';
-                position: absolute;
-                inset: 0;
-                background: linear-gradient(135deg,rgba(59,130,246,.07),transparent);
-            }
-
-            .login-logo span {
-                font-size: 24px;
-            }
-
-            .login-logo small {
-                font-size: 8px;
-                font-weight: 700;
-                letter-spacing: .08em;
-                text-transform: uppercase;
-                color: var(--text3);
-            }
-
-        .login-ttl {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-            .login-ttl h2 {
-                font-size: 21px;
-                font-weight: 800;
-                letter-spacing: -.03em;
-                color: var(--text);
-            }
-
-                .login-ttl h2 em {
-                    font-style: normal;
-                    color: #60a5fa;
-                }
-
-            .login-ttl p {
-                font-size: 13px;
-                color: var(--text2);
-                margin-top: 5px;
-            }
-
-        .lbl {
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: var(--text3);
-            margin-bottom: 7px;
-            display: block;
-        }
-
-        .inp-w {
-            position: relative;
-            margin-bottom: 12px;
-        }
-
-            .inp-w svg {
-                position: absolute;
-                left: 13px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--text3);
-                pointer-events: none;
-            }
-
-        .linput {
-            width: 100%;
-            background: var(--surface);
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            padding: 12px 42px 12px 42px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 14px;
-            color: var(--text);
-            outline: none;
-            transition: border-color var(--ease),box-shadow var(--ease);
-        }
-
-            .linput::placeholder {
-                color: var(--text3);
-            }
-
-            .linput:focus {
-                border-color: #2563eb;
-                box-shadow: 0 0 0 3px rgba(37,99,235,.15);
-            }
-
-        .show-pw {
-            position: absolute;
-            right: 13px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text3);
-            font-size: 15px;
-            padding: 0;
-            line-height: 1;
-        }
-
-            .show-pw:hover {
-                color: var(--text2);
-            }
-
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(135deg,#2563eb,#1e40af);
-            color: #fff;
-            border: none;
-            border-radius: var(--radius);
-            padding: 13px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 14.5px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 18px rgba(37,99,235,.38);
-            transition: opacity .2s,transform .15s;
-        }
-
-            .login-btn:hover {
-                opacity: .9;
-            }
-
-            .login-btn:active {
-                transform: scale(.98);
-            }
-
-        .login-err {
-            margin-top: 11px;
-            background: rgba(239,68,68,.08);
-            border: 1px solid rgba(239,68,68,.22);
-            border-radius: 10px;
-            padding: 10px 13px;
-            font-size: 13px;
-            color: #fca5a5;
-            text-align: center;
-            display: none;
-        }
-
-        .login-att {
-            font-size: 11px;
-            color: var(--text3);
-            text-align: center;
-            margin-top: 9px;
-        }
 
         /* ── TOPBAR ── */
         .topbar {
             width: 100%;
-            max-width: 980px;
+            max-width: 500px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -308,58 +148,6 @@
                 box-shadow: 0 2px 8px rgba(37,99,235,.4);
             }
 
-        .tb-right {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
-
-        .icon-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 99px;
-            padding: 7px 14px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text2);
-            cursor: pointer;
-            transition: all var(--ease);
-            box-shadow: 0 2px 8px var(--shadow);
-        }
-
-            .icon-btn:hover {
-                border-color: #2563eb;
-                color: #3b82f6;
-            }
-
-            .icon-btn.spinning svg {
-                animation: spinning .7s linear infinite;
-            }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(239,68,68,.07);
-            border: 1px solid rgba(239,68,68,.2);
-            border-radius: 99px;
-            padding: 7px 13px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 12px;
-            font-weight: 600;
-            color: #fca5a5;
-            cursor: pointer;
-            transition: all var(--ease);
-        }
-
-            .logout-btn:hover {
-                background: rgba(239,68,68,.14);
-            }
-
         .theme-btn {
             width: 38px;
             height: 38px;
@@ -372,7 +160,7 @@
             justify-content: center;
             font-size: 16px;
             transition: all var(--ease);
-            box-shadow: 0 2px 8px var(--shadow);
+            box-shadow: 0 2px 10px var(--shadow);
         }
 
             .theme-btn:hover {
@@ -383,33 +171,28 @@
         /* ── WRAPPER ── */
         .wrap {
             width: 100%;
-            max-width: 980px;
+            max-width: 500px;
             position: relative;
             z-index: 1;
-            display: none;
-            animation: fadeUp .5s ease both;
-        }
-
-        /* ── PAGE HEADER ── */
-        .pg-hdr {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
+            animation: fadeUp .5s .05s ease both;
         }
 
+        /* ── LOGO ── */
         .logo-box {
-            width: 68px;
-            height: 68px;
-            border-radius: 18px;
+            width: 82px;
+            height: 82px;
+            border-radius: 22px;
             background: var(--card);
             border: 2px dashed var(--border2);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 3px;
-            flex-shrink: 0;
+            gap: 4px;
+            margin-bottom: 22px;
             position: relative;
             overflow: hidden;
             transition: all var(--ease);
@@ -423,620 +206,899 @@
             }
 
             .logo-box span {
-                font-size: 22px;
+                font-size: 28px;
+                line-height: 1;
             }
 
             .logo-box small {
                 font-size: 8px;
                 font-weight: 700;
-                letter-spacing: .08em;
+                letter-spacing: .1em;
                 text-transform: uppercase;
                 color: var(--text3);
             }
 
-        .pg-title h1 {
-            font-size: clamp(19px,3.5vw,26px);
-            font-weight: 800;
-            letter-spacing: -.04em;
-            color: var(--text);
+        /* ── HEADER ── */
+        .hdr {
+            text-align: center;
+            margin-bottom: 24px;
         }
 
-            .pg-title h1 em {
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(37,99,235,.1);
+            border: 1px solid rgba(37,99,235,.25);
+            color: #60a5fa;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+
+        .pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-size: clamp(23px,5vw,34px);
+            font-weight: 800;
+            letter-spacing: -.04em;
+            line-height: 1.15;
+            color: var(--text);
+            transition: color var(--ease);
+        }
+
+            h1 em {
                 font-style: normal;
                 color: #60a5fa;
             }
 
-        .pg-title p {
-            font-size: 12.5px;
+        .sub {
+            margin-top: 9px;
             color: var(--text2);
-            margin-top: 3px;
-        }
-
-        /* ── LIVE DOT ── */
-        .live-row {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            font-size: 11px;
-            color: var(--text3);
-            margin-bottom: 18px;
-        }
-
-        .live-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: pulse 2s infinite;
-        }
-
-        /* ── MAIN STATS ── */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(165px,1fr));
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 20px;
-            transition: all var(--ease);
-            box-shadow: 0 4px 18px var(--shadow);
-        }
-
-            .stat-card:hover {
-                transform: translateY(-2px);
-                border-color: var(--border2);
-            }
-
-        .s-icon {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .s-num {
-            font-family: var(--mono);
-            font-size: 34px;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 3px;
-        }
-
-        .s-lbl {
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: .07em;
-            text-transform: uppercase;
-            color: var(--text3);
-        }
-
-        .stat-card.total .s-num {
-            color: var(--text);
-        }
-
-        .stat-card.hadir .s-num {
-            color: var(--green);
-        }
-
-        .stat-card.tidak .s-num {
-            color: var(--red);
-        }
-
-        .stat-card.pct .s-num {
-            color: var(--yellow);
-        }
-
-        .stat-card.terima .s-num {
-            color: #a78bfa;
-        }
-
-        .stat-card.bterima .s-num {
-            color: #f87171;
-        }
-
-        /* ── PER-SHEET STATS ── */
-        .sheet-stats {
-            display: grid;
-            grid-template-columns: repeat(3,1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .ss-card {
-            border-radius: 14px;
-            padding: 14px 16px;
-            border: 1px solid;
-        }
-
-            .ss-card.bsr {
-                background: var(--bsr-d);
-                border-color: rgba(59,130,246,.3);
-            }
-
-            .ss-card.bmr {
-                background: var(--bmr-d);
-                border-color: rgba(168,85,247,.3);
-            }
-
-            .ss-card.bbr {
-                background: var(--bbr-d);
-                border-color: rgba(16,185,129,.3);
-            }
-
-        .ss-name {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: .1em;
-            margin-bottom: 6px;
-        }
-
-        .ss-card.bsr .ss-name {
-            color: var(--bsr);
-        }
-
-        .ss-card.bmr .ss-name {
-            color: var(--bmr);
-        }
-
-        .ss-card.bbr .ss-name {
-            color: var(--bbr);
-        }
-
-        .ss-nums {
-            font-family: var(--mono);
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1;
-        }
-
-        .ss-sub {
-            font-size: 10.5px;
-            color: var(--text2);
-            margin-top: 3px;
-        }
-
-        .ss-bar {
-            height: 4px;
-            border-radius: 99px;
-            background: var(--surface);
-            margin-top: 8px;
-            overflow: hidden;
-        }
-
-        .ss-bar-fill {
-            height: 100%;
-            border-radius: 99px;
-            transition: width 1s cubic-bezier(.4,0,.2,1);
-        }
-
-        .ss-card.bsr .ss-bar-fill {
-            background: var(--bsr);
-        }
-
-        .ss-card.bmr .ss-bar-fill {
-            background: var(--bmr);
-        }
-
-        .ss-card.bbr .ss-bar-fill {
-            background: var(--bbr);
-        }
-
-        /* ── PROGRESS ── */
-        .prog-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 18px 22px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 18px var(--shadow);
-        }
-
-        .prog-hdr {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 11px;
-        }
-
-        .prog-ttl {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            color: var(--text3);
-        }
-
-        .prog-pct {
-            font-family: var(--mono);
             font-size: 13px;
-            font-weight: 700;
-            color: var(--yellow);
+            line-height: 1.6;
+            transition: color var(--ease);
         }
 
-        .prog-bg {
-            background: var(--surface);
-            border-radius: 99px;
-            height: 9px;
-            overflow: hidden;
-        }
-
-        .prog-fill {
-            height: 100%;
-            border-radius: 99px;
-            background: linear-gradient(90deg,var(--green),#34d399);
-            transition: width 1s cubic-bezier(.4,0,.2,1);
-        }
-
-        /* ── TABLE CARD ── */
-        .tbl-card {
+        /* ── CARD ── */
+        .card {
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 18px var(--shadow);
-        }
-
-        .tbl-hdr {
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tbl-ttl {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .tbl-ctrl {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            flex-wrap: wrap;
-        }
-
-        /* Filter tabs row */
-        .filter-wrap {
-            padding: 10px 18px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 3px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 99px;
-            padding: 3px;
-        }
-
-        .ftab {
-            border: none;
-            background: transparent;
-            color: var(--text3);
-            font-family: 'DM Sans',sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 11px;
-            border-radius: 99px;
-            cursor: pointer;
-            transition: all var(--ease);
-        }
-
-            .ftab:hover {
-                color: var(--text2);
-            }
-
-            .ftab.on {
-                background: var(--card);
-                color: var(--text);
-                box-shadow: 0 1px 4px var(--shadow);
-            }
-
-            .ftab.bsr.on {
-                background: var(--bsr);
-                color: #fff;
-            }
-
-            .ftab.bmr.on {
-                background: var(--bmr);
-                color: #fff;
-            }
-
-            .ftab.bbr.on {
-                background: var(--bbr);
-                color: #fff;
-            }
-
-        .search-inp {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 99px;
-            padding: 7px 14px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 12px;
-            color: var(--text);
-            outline: none;
-            width: 175px;
-            transition: border-color var(--ease),width var(--ease);
-        }
-
-            .search-inp::placeholder {
-                color: var(--text3);
-            }
-
-            .search-inp:focus {
-                border-color: #2563eb;
-                width: 210px;
-            }
-
-        .exp-btn {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(16,185,129,.1);
-            border: 1px solid rgba(16,185,129,.25);
-            border-radius: 99px;
-            padding: 6px 13px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            color: #6ee7b7;
-            cursor: pointer;
-            transition: all var(--ease);
-        }
-
-            .exp-btn:hover {
-                background: rgba(16,185,129,.18);
-            }
-
-        .tbl-wrap {
-            overflow-x: auto;
-        }
-
-        table {
+            border-radius: 22px;
+            padding: 28px;
             width: 100%;
-            border-collapse: collapse;
+            box-shadow: 0 20px 60px var(--shadow),0 0 0 1px rgba(255,255,255,.02);
+            transition: background var(--ease),border-color var(--ease);
         }
 
-        thead th {
-            padding: 10px 16px;
-            text-align: left;
-            font-size: 10px;
+        .flabel {
+            font-size: 10.5px;
             font-weight: 700;
             letter-spacing: .09em;
             text-transform: uppercase;
             color: var(--text3);
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
-            white-space: nowrap;
-            cursor: pointer;
-            user-select: none;
+            margin-bottom: 8px;
             transition: color var(--ease);
         }
 
-            thead th:hover {
-                color: var(--text2);
-            }
-
-            thead th.sorted .sa {
-                opacity: 1;
-                color: #60a5fa;
-            }
-
-        .sa {
-            margin-left: 3px;
-            opacity: .3;
-            font-size: 9px;
+        .inp-wrap {
+            position: relative;
+            margin-bottom: 13px;
         }
 
-        tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background .12s;
-        }
-
-            tbody tr:last-child {
-                border-bottom: none;
+            .inp-wrap svg {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text3);
+                pointer-events: none;
             }
 
-            tbody tr:hover {
-                background: rgba(59,130,246,.04);
-            }
-
-        tbody td {
-            padding: 11px 16px;
-            font-size: 12.5px;
-            color: var(--text2);
-        }
-
-        td.mono {
+        input[type=text] {
+            width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 14px 14px 44px;
             font-family: var(--mono);
-            font-size: 11.5px;
+            font-size: 15px;
+            color: var(--text);
+            letter-spacing: .06em;
+            outline: none;
+            transition: border-color var(--ease),box-shadow var(--ease),background var(--ease);
         }
 
-        td.nama-td {
-            color: var(--text) !important;
-            font-weight: 600;
+        input::placeholder {
+            color: var(--text3);
         }
 
-        .sheet-tag {
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+        }
+
+        /* ── SEARCH BUTTON ── */
+        .search-btn {
+            width: 100%;
+            background: linear-gradient(135deg,#2563eb,#1e40af);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity .2s,transform .15s;
+            box-shadow: 0 4px 18px rgba(37,99,235,.4);
+        }
+
+            .search-btn:hover {
+                opacity: .9;
+            }
+
+            .search-btn:active {
+                transform: scale(.98);
+            }
+
+            .search-btn:disabled {
+                opacity: .4;
+                cursor: not-allowed;
+            }
+
+        .spin {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255,255,255,.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spinning .7s linear infinite;
+            display: none;
+        }
+
+        .search-btn.loading .spin {
+            display: block;
+        }
+
+        .search-btn.loading .btn-txt {
+            display: none;
+        }
+
+        /* ── RESULT ── */
+        #result {
+            margin-top: 22px;
+            display: none;
+            animation: fadeUp .35s ease both;
+        }
+
+        /* Result header row */
+        .res-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sheet-badge {
             display: inline-flex;
             align-items: center;
-            padding: 2px 9px;
+            gap: 5px;
+            padding: 5px 14px;
             border-radius: 99px;
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: .06em;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .08em;
         }
 
-            .sheet-tag.BSR {
-                background: rgba(59,130,246,.15);
+            .sheet-badge.BSR {
+                background: rgba(59,130,246,.18);
                 color: #93c5fd;
-                border: 1px solid rgba(59,130,246,.3);
+                border: 1px solid rgba(59,130,246,.35);
             }
 
-            .sheet-tag.BMR {
-                background: rgba(168,85,247,.15);
+            .sheet-badge.BMR {
+                background: rgba(168,85,247,.18);
                 color: #d8b4fe;
-                border: 1px solid rgba(168,85,247,.3);
+                border: 1px solid rgba(168,85,247,.35);
             }
 
-            .sheet-tag.BBR {
-                background: rgba(16,185,129,.15);
+            .sheet-badge.BBR {
+                background: rgba(16,185,129,.18);
                 color: #6ee7b7;
-                border: 1px solid rgba(16,185,129,.3);
+                border: 1px solid rgba(16,185,129,.35);
             }
 
-        [data-theme="light"] .sheet-tag.BSR {
+        [data-theme="light"] .sheet-badge.BSR {
             background: #2563eb;
             color: #fff;
             border-color: #2563eb;
         }
 
-        [data-theme="light"] .sheet-tag.BMR {
+        [data-theme="light"] .sheet-badge.BMR {
             background: #7c3aed;
             color: #fff;
             border-color: #7c3aed;
         }
 
-        [data-theme="light"] .sheet-tag.BBR {
+        [data-theme="light"] .sheet-badge.BBR {
             background: #059669;
             color: #fff;
             border-color: #059669;
         }
 
-        .badge-h {
-            display: inline-flex;
+        .found-tag {
+            display: flex;
             align-items: center;
-            gap: 4px;
-            background: rgba(16,185,129,.12);
-            border: 1px solid rgba(16,185,129,.25);
-            color: #6ee7b7;
-            border-radius: 99px;
-            padding: 2px 9px;
-            font-size: 11px;
-            font-weight: 700;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .badge-t {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(239,68,68,.08);
-            border: 1px solid rgba(239,68,68,.2);
-            color: #fca5a5;
-            border-radius: 99px;
-            padding: 2px 9px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .badge-terima {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: rgba(139,92,246,.12);
-            border: 1px solid rgba(139,92,246,.28);
-            color: #c4b5fd;
-            border-radius: 99px;
-            padding: 2px 9px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .btn-terima {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.1));
-            border: 1px solid rgba(139,92,246,.4);
-            color: #c4b5fd;
-            border-radius: 99px;
-            padding: 4px 12px;
-            font-family: 'DM Sans',sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all .2s;
-        }
-
-            .btn-terima:hover {
-                background: rgba(139,92,246,.25);
-                border-color: rgba(139,92,246,.6);
-                color: #ddd6fe;
+            .found-tag.ok {
+                color: var(--green);
             }
 
-            .btn-terima:disabled {
+            .found-tag.err {
+                color: var(--red);
+            }
+
+        /* Nama block */
+        .res-nama {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -.03em;
+            margin-bottom: 4px;
+        }
+
+        .res-ic {
+            font-family: var(--mono);
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 600;
+            letter-spacing: .08em;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        /* ── SINGLE KAUNTER BOX ── */
+        .kaunter-solo {
+            background: linear-gradient(135deg,var(--sheet-d),transparent 70%);
+            border: 1px solid var(--sheet-b);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .kaunter-solo::before {
+                content: '';
+                position: absolute;
+                top: -20px;
+                right: -20px;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: var(--sheet-d);
+            }
+
+        .k-lbl {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--sheet-h);
+            margin-bottom: 4px;
+            opacity: .8;
+        }
+
+        .k-num {
+            font-family: var(--mono);
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--sheet-h);
+            line-height: 1;
+        }
+
+        [data-theme="light"] .k-num {
+            color: var(--sheet-h);
+        }
+
+        /* ── MULTI KAUNTER GRID ── */
+        .multi-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .kaunter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .kaunter-card {
+            background: var(--surface);
+            border: 2px solid var(--sheet-b);
+            border-radius: 14px;
+            padding: 16px 14px;
+            text-align: center;
+            transition: all var(--ease);
+        }
+
+            .kaunter-card:hover {
+                transform: translateY(-2px);
+                border-color: var(--sheet-h);
+            }
+
+        .kc-badge {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--sheet-h);
+            margin-bottom: 6px;
+        }
+
+        .kc-num {
+            font-family: var(--mono);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--sheet-h);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .kc-row {
+            font-size: 11.5px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+
+            .kc-row strong {
+                color: var(--text);
+                font-weight: 600;
+            }
+
+        /* Info rows */
+        .info-grid {
+            display: grid;
+            gap: 7px;
+            margin-bottom: 14px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 12.5px;
+            transition: background var(--ease),border-color var(--ease);
+        }
+
+        .ik {
+            color: var(--text2);
+            font-weight: 500;
+        }
+
+        .iv {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 600;
+            text-align: right;
+            word-break: break-word;
+            max-width: 60%;
+        }
+
+        /* ── KEHADIRAN SECTION ── */
+        .keh-section {
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+            margin-top: 4px;
+        }
+
+        /* ── MULTI-SHEET GROUPS ── */
+        .sheet-group {
+            margin-bottom: 18px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: border-color var(--ease);
+        }
+
+        .sheet-group-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .sheet-group.BSR .sheet-group-header {
+            background: rgba(59,130,246,.12);
+            color: #93c5fd;
+            border-bottom: 1px solid rgba(59,130,246,.2);
+        }
+
+        .sheet-group.BMR .sheet-group-header {
+            background: rgba(168,85,247,.12);
+            color: #d8b4fe;
+            border-bottom: 1px solid rgba(168,85,247,.2);
+        }
+
+        .sheet-group.BBR .sheet-group-header {
+            background: rgba(16,185,129,.12);
+            color: #6ee7b7;
+            border-bottom: 1px solid rgba(16,185,129,.2);
+        }
+
+        [data-theme="light"] .sheet-group.BSR .sheet-group-header {
+            background: rgba(37,99,235,.1);
+            color: #1d4ed8;
+        }
+
+        [data-theme="light"] .sheet-group.BMR .sheet-group-header {
+            background: rgba(124,58,237,.1);
+            color: #6d28d9;
+        }
+
+        [data-theme="light"] .sheet-group.BBR .sheet-group-header {
+            background: rgba(5,150,105,.1);
+            color: #047857;
+        }
+
+        .sheet-group-body {
+            padding: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .match-card {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all var(--ease);
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mc-main {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+        }
+
+        .match-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            border-radius: 0;
+        }
+
+        .sheet-group.BSR .match-card::before {
+            background: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .match-card::before {
+            background: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .match-card::before {
+            background: var(--bbr-h);
+        }
+
+        .match-card:hover {
+            transform: translateX(2px);
+            border-color: var(--border2);
+        }
+
+        .mc-kaunter {
+            text-align: center;
+            flex-shrink: 0;
+            min-width: 64px;
+        }
+
+        .mc-k-lbl {
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .sheet-group.BSR .mc-k-lbl {
+            color: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .mc-k-lbl {
+            color: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .mc-k-lbl {
+            color: var(--bbr-h);
+        }
+
+        .mc-k-num {
+            font-family: var(--mono);
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .sheet-group.BSR .mc-k-num {
+            color: var(--bsr-h);
+        }
+
+        .sheet-group.BMR .mc-k-num {
+            color: var(--bmr-h);
+        }
+
+        .sheet-group.BBR .mc-k-num {
+            color: var(--bbr-h);
+        }
+
+        .mc-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .mc-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mc-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            padding: 2px 0;
+        }
+
+            .mc-info-row .mk {
+                color: var(--text3);
+                font-size: 11px;
+                font-weight: 500;
+            }
+
+            .mc-info-row .mv {
+                color: var(--text);
+                font-weight: 600;
+                font-size: 11.5px;
+                text-align: right;
+                max-width: 65%;
+                word-break: break-word;
+            }
+
+        .mc-status {
+            flex-shrink: 0;
+        }
+
+        .mc-hadir {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(16,185,129,.15);
+            font-size: 13px;
+        }
+
+        .mc-tidak {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(245,158,11,.1);
+            font-size: 13px;
+        }
+        /* Terima bantuan status strip at bottom of match-card */
+        .mc-terima-strip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            border-top: 1px solid var(--border);
+            border-radius: 0 0 12px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+            .mc-terima-strip.received {
+                background: rgba(139,92,246,.08);
+                color: #c4b5fd;
+                border-top-color: rgba(139,92,246,.2);
+            }
+
+            .mc-terima-strip.pending {
+                background: rgba(100,116,139,.05);
+                color: var(--text3);
+                border-top-color: var(--border);
+            }
+
+        [data-theme="light"] .mc-terima-strip.received {
+            background: rgba(109,40,217,.07);
+            color: #6d28d9;
+            border-top-color: rgba(109,40,217,.2);
+        }
+
+        .mc-terima-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .mc-terima-strip.received .mc-terima-dot {
+            background: #a78bfa;
+        }
+
+        .mc-terima-strip.pending .mc-terima-dot {
+            background: var(--border2);
+        }
+
+        /* Summary bar */
+        .result-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 16px;
+            margin-bottom: 16px;
+            font-size: 12.5px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rs-count {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+            .rs-count span {
+                color: var(--sheet-h);
+            }
+
+        .rs-sheets {
+            display: flex;
+            gap: 6px;
+        }
+
+        .rs-sheet-tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            padding: 2px 8px;
+            border-radius: 99px;
+        }
+
+            .rs-sheet-tag.BSR {
+                background: rgba(59,130,246,.15);
+                color: #93c5fd;
+            }
+
+            .rs-sheet-tag.BMR {
+                background: rgba(168,85,247,.15);
+                color: #d8b4fe;
+            }
+
+            .rs-sheet-tag.BBR {
+                background: rgba(16,185,129,.15);
+                color: #6ee7b7;
+            }
+
+        [data-theme="light"] .rs-sheet-tag.BSR {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        [data-theme="light"] .rs-sheet-tag.BMR {
+            background: #7c3aed;
+            color: #fff;
+        }
+
+        [data-theme="light"] .rs-sheet-tag.BBR {
+            background: #059669;
+            color: #fff;
+        }
+
+        .keh-title {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--text3);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .keh-q {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: center;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .keh-btns {
+            display: flex;
+            gap: 9px;
+        }
+
+        .btn-ya {
+            flex: 1;
+            background: linear-gradient(135deg,#059669,#047857);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 13px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: opacity .2s,transform .15s;
+            box-shadow: 0 4px 14px rgba(5,150,105,.35);
+        }
+
+            .btn-ya:hover {
+                opacity: .9;
+            }
+
+            .btn-ya:active {
+                transform: scale(.97);
+            }
+
+            .btn-ya:disabled {
                 opacity: .4;
                 cursor: not-allowed;
             }
 
-        [data-theme="light"] .badge-terima {
-            background: rgba(109,40,217,.1);
-            border-color: rgba(109,40,217,.3);
-            color: #6d28d9;
-        }
-
-        [data-theme="light"] .btn-terima {
-            background: rgba(109,40,217,.08);
-            border-color: rgba(109,40,217,.35);
-            color: #6d28d9;
-        }
-
-            [data-theme="light"] .btn-terima:hover {
-                background: rgba(109,40,217,.15);
-            }
-
-        .empty-st {
-            padding: 44px;
-            text-align: center;
-            color: var(--text3);
-            font-size: 13.5px;
-        }
-
-            .empty-st .ei {
-                font-size: 34px;
-                margin-bottom: 10px;
-            }
-
-        .tbl-foot {
-            padding: 11px 18px;
-            border-top: 1px solid var(--border);
+        .btn-tidak {
+            flex: 1;
+            background: var(--surface);
+            color: var(--text2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 13px;
+            font-family: 'DM Sans',sans-serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            font-size: 11.5px;
-            color: var(--text3);
-            flex-wrap: wrap;
+            justify-content: center;
             gap: 7px;
+            transition: all .2s;
         }
 
+            .btn-tidak:hover {
+                border-color: var(--red);
+                color: var(--red);
+            }
+
+        .sudah-hadir {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(16,185,129,.1);
+            border: 1px solid rgba(16,185,129,.28);
+            border-radius: 12px;
+            padding: 14px;
+            color: #34d399;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .keh-msg {
+            margin-top: 10px;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+            .keh-msg.ok {
+                background: rgba(16,185,129,.1);
+                border: 1px solid rgba(16,185,129,.25);
+                color: #6ee7b7;
+            }
+
+            .keh-msg.err {
+                background: rgba(239,68,68,.08);
+                border: 1px solid rgba(239,68,68,.22);
+                color: #fca5a5;
+            }
+
+        /* Error box */
+        .err-box {
+            background: rgba(239,68,68,.07);
+            border: 1px solid rgba(239,68,68,.22);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 13.5px;
+            color: #fca5a5;
+            line-height: 1.5;
+        }
+
+        /* ── FOOTER ── */
         .footer {
-            margin-top: 26px;
+            margin-top: 24px;
             font-size: 11px;
             color: var(--text3);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            animation: fadeUp .5s .2s ease both;
         }
 
-            .footer span {
-                display: flex;
-                align-items: center;
-                gap: 5px;
+        .footer-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text3);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: .04em;
+            transition: color var(--ease);
+        }
+
+            .footer-link:hover {
+                color: #3b82f6;
             }
 
         .fdot {
@@ -1046,10 +1108,11 @@
             background: var(--text3);
         }
 
+        /* ── ANIMATIONS ── */
         @keyframes fadeDown {
             from {
                 opacity: 0;
-                transform: translateY(-11px)
+                transform: translateY(-12px)
             }
 
             to {
@@ -1091,483 +1154,393 @@
 </head>
 <body>
 
-    <!-- LOGIN -->
-    <div class="login-wrap" id="loginWrap">
-        <div class="login-card">
-            <div class="login-logo"><span>🏛️</span><small>Admin</small></div>
-            <div class="login-ttl">
-                <h2>Panel <em>Admin</em></h2>
-                <p data-i18n="loginSub">Masukkan kata laluan untuk meneruskan</p>
-            </div>
-            <div>
-                <label class="lbl" data-i18n="passLbl">Kata Laluan</label>
-                <div class="inp-w">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" /></svg>
-                    <input class="linput" type="password" id="passInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
-                    <button class="show-pw" onclick="togglePw()">👁</button>
-                </div>
-            </div>
-            <button class="login-btn" onclick="doLogin()" data-i18n="loginBtn">Masuk →</button>
-            <div class="login-err" id="loginErr"></div>
-            <div class="login-att" id="loginAtt"></div>
-        </div>
-    </div>
-
     <!-- TOPBAR -->
-    <div class="topbar" id="topbar" style="display:none;">
+    <div class="topbar">
         <div class="lang-row">
             <button class="lb on" onclick="setLang('ms',this)">BM</button>
             <button class="lb" onclick="setLang('en',this)">EN</button>
             <!--<button class="lb" onclick="setLang('zh',this)">中文</button>
             <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>-->
         </div>
-        <div class="tb-right">
-            <button class="icon-btn" id="refreshBtn" onclick="loadStats()">
-                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                <span data-i18n="refresh">Muat Semula</span>
-            </button>
-            <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-            <button class="logout-btn" onclick="doLogout()">🔒 <span data-i18n="logout">Log Keluar</span></button>
-        </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
     </div>
 
-    <!-- DASHBOARD -->
-    <div class="wrap" id="dashboard">
-        <div class="pg-hdr">
-            <div class="logo-box"><span>🏛️</span><small>Logo</small></div>
-            <div class="pg-title">
-                <h1 data-i18n-html="pageTitle">Statistik <em>Kehadiran</em></h1>
-                <p data-i18n="pageSub">Panel Admin — Data Dikemas Kini Secara Masa Nyata</p>
-            </div>
+    <div class="wrap">
+        <!-- LOGO -->
+        <div class="logo-box"><span>🏛️</span><small data-i18n="logo">Logo</small></div>
+
+        <!-- HEADER -->
+        <div class="hdr">
+            <div class="badge-pill"><span class="pulse"></span><span data-i18n="badge">Sistem Semakan Kaunter</span></div>
+            <h1 data-i18n-html="title">Semak <em>Nombor Kaunter</em> Anda</h1>
+            <p class="sub" data-i18n="sub">Masukkan nombor IC untuk mengetahui kaunter yang ditetapkan.</p>
         </div>
 
-        <div class="live-row"><span class="live-dot"></span><span data-i18n="lastUp">Kali terakhir dikemas kini:</span> <span id="lastTime">—</span></div>
-
-        <!-- Main stats -->
-        <div class="stats-grid">
-            <div class="stat-card total"><div class="s-icon">👥</div><div class="s-num" id="nTotal">—</div><div class="s-lbl" data-i18n="sTotal">Jumlah Peserta</div></div>
-            <div class="stat-card hadir"><div class="s-icon">✅</div><div class="s-num" id="nHadir">—</div><div class="s-lbl" data-i18n="sHadir">Telah Hadir</div></div>
-            <div class="stat-card tidak"><div class="s-icon">❌</div><div class="s-num" id="nTidak">—</div><div class="s-lbl" data-i18n="sTidak">Belum Hadir</div></div>
-            <div class="stat-card pct"><div class="s-icon">📊</div><div class="s-num" id="nPct">—</div><div class="s-lbl" data-i18n="sPct">Peratus Kehadiran</div></div>
-            <div class="stat-card terima"><div class="s-icon">🎁</div><div class="s-num" id="nTerima">—</div><div class="s-lbl" data-i18n="sTerima">Telah Terima Bantuan</div></div>
-            <div class="stat-card bterima"><div class="s-icon">⏳</div><div class="s-num" id="nBTerima">—</div><div class="s-lbl" data-i18n="sBTerima">Belum Terima Bantuan</div></div>
+        <!-- CARD -->
+        <div class="card">
+            <div class="flabel" data-i18n="label">Nombor Kad Pengenalan (IC)</div>
+            <div class="inp-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2" y="5" width="20" height="14" rx="2" />
+                    <circle cx="8" cy="12" r="2" />
+                    <path stroke-linecap="round" d="M13 10h4M13 14h3" />
+                </svg>
+                <input type="text" id="icInput" maxlength="14" autocomplete="off" placeholder="cth: 900101-01-1234" />
+            </div>
+            <button class="search-btn" id="searchBtn" onclick="doSearch()">
+                <span class="btn-txt" data-i18n="btnSearch">🔍 Semak Kaunter</span>
+                <div class="spin"></div>
+            </button>
+            <div id="result"></div>
         </div>
 
-        <!-- Per-sheet stats -->
-        <div class="sheet-stats">
-            <div class="ss-card bsr">
-                <div class="ss-name">BSR</div>
-                <div class="ss-nums"><span id="ssHBSR">—</span>/<span id="ssPBSR">—</span></div>
-                <div class="ss-sub" data-i18n="ssHadir">Hadir</div>
-                <div class="ss-bar"><div class="ss-bar-fill" id="ssBarBSR" style="width:0%"></div></div>
-            </div>
-            <div class="ss-card bmr">
-                <div class="ss-name">BMR</div>
-                <div class="ss-nums"><span id="ssHBMR">—</span>/<span id="ssPBMR">—</span></div>
-                <div class="ss-sub" data-i18n="ssHadir">Hadir</div>
-                <div class="ss-bar"><div class="ss-bar-fill" id="ssBarBMR" style="width:0%"></div></div>
-            </div>
-            <div class="ss-card bbr">
-                <div class="ss-name">BBR</div>
-                <div class="ss-nums"><span id="ssHBBR">—</span>/<span id="ssPBBR">—</span></div>
-                <div class="ss-sub" data-i18n="ssHadir">Hadir</div>
-                <div class="ss-bar"><div class="ss-bar-fill" id="ssBarBBR" style="width:0%"></div></div>
-            </div>
-        </div>
-
-        <!-- Progress -->
-        <div class="prog-card">
-            <div class="prog-hdr">
-                <span class="prog-ttl" data-i18n="progLbl">Kadar Kehadiran Keseluruhan</span>
-                <span class="prog-pct" id="progPct">0%</span>
-            </div>
-            <div class="prog-bg"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-        </div>
-
-        <!-- Table -->
-        <div class="tbl-card">
-            <div class="tbl-hdr">
-                <span class="tbl-ttl" data-i18n="tblTitle">Senarai Peserta</span>
-                <div class="tbl-ctrl">
-                    <input type="text" class="search-inp" id="searchInp" placeholder="Cari nama / IC..." />
-                    <button class="exp-btn" onclick="exportCSV()">⬇ <span data-i18n="expBtn">Export CSV</span></button>
-                </div>
-            </div>
-            <!-- Filters -->
-            <div class="filter-wrap">
-                <div class="filter-group" id="sheetFilter">
-                    <button class="ftab on" onclick="setSheetFilter('all',this)" data-i18n="fAll">Semua</button>
-                    <button class="ftab bsr" onclick="setSheetFilter('BSR',this)">BSR</button>
-                    <button class="ftab bmr" onclick="setSheetFilter('BMR',this)">BMR</button>
-                    <button class="ftab bbr" onclick="setSheetFilter('BBR',this)">BBR</button>
-                </div>
-                <div class="filter-group" id="statusFilter">
-                    <button class="ftab on" onclick="setStatusFilter('all',this)" data-i18n="fAll2">Semua</button>
-                    <button class="ftab" onclick="setStatusFilter('hadir',this)" data-i18n="fHadir">Hadir</button>
-                    <button class="ftab" onclick="setStatusFilter('tidak',this)" data-i18n="fTidak">Belum Hadir</button>
-                </div>
-                <div class="filter-group" id="terimaFilter">
-                    <button class="ftab on" onclick="setTerimaFilter('all',this)" data-i18n="fAllT">Semua</button>
-                    <button class="ftab" style="color:#c4b5fd;" onclick="setTerimaFilter('terima',this)" data-i18n="fTerima">Telah Terima</button>
-                    <button class="ftab" onclick="setTerimaFilter('bterima',this)" data-i18n="fBTerima">Belum Terima</button>
-                </div>
-            </div>
-            <div class="tbl-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th onclick="sortBy('no')"># <span class="sa">↕</span></th>
-                            <th onclick="sortBy('nama')" data-i18n="cNama">Nama <span class="sa">↕</span></th>
-                            <th onclick="sortBy('ic')" data-i18n="cIC">Nombor IC <span class="sa">↕</span></th>
-                            <th onclick="sortBy('kaunter')" data-i18n="cKaunter">Kaunter <span class="sa">↕</span></th>
-                            <th onclick="sortBy('bantuan')" data-i18n="cBantuan">Nama Bantuan <span class="sa">↕</span></th>
-                            <th onclick="sortBy('sheet')" data-i18n="cSheet">Kumpulan <span class="sa">↕</span></th>
-                            <th onclick="sortBy('kehadiran')" data-i18n="cKehadiran">Kehadiran <span class="sa">↕</span></th>
-                            <th data-i18n="cTerima">Telah Terima Bantuan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tblBody">
-                        <tr><td colspan="8"><div class="empty-st"><div class="ei">⏳</div>Memuatkan...</div></td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="tbl-foot"><span id="showTxt"></span></div>
-        </div>
-
-        <div class="footer" style="margin-top:22px;">
-            <span><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg><span data-i18n="secure">Data selamat &amp; terenkripsi</span></span>
+        <!-- FOOTER -->
+        <div class="footer">
+            <a href="https://www.facebook.com/perbadanankemajuanperumahannegerijohor" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg>
+                PKPJ
+            </a>
             <div class="fdot"></div>
-            <span data-i18n="powered">Dikuasakan oleh Google Sheets</span>
+            <a href="https://pkpj.johor.gov.my/" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
+                PKPJ
+            </a>
+            <div class="fdot"></div>
+            <a href="https://itpkpj.github.io/pkj/permohonan" target="_blank" rel="noopener" class="footer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" /></svg>
+                Permohonan PKJ
+            </a>
         </div>
     </div>
 
     <script>
         // ─────────────────────────────────
-        // ⚠️ TETAPKAN 3 NILAI INI SAHAJA
+        // ⚠️ GANTIKAN DENGAN URL ANDA
         // ─────────────────────────────────
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNuhrYISo28YZ45vYhAt32Ij6PAWadmwt06AvporX3MK_ffdIVfYTRA3IJWNpXLdBJ/exec";
-        const ADMIN_PASSWORD = "pkpj123456";
-        const SECRET_TOKEN = "MweH8wFl2WWiFdOj1stoHxVJgCQfMeHti3wxHl";  // sama dengan Code.gs
-        // ─────────────────────────────────
-
-        const MAX_TRIES = 5, LOCK_MIN = 5;
-        let tries = 0, locked = false, allRows = [], lang = 'ms', isDark = true;
-        let sheetF = 'all', statusF = 'all', terimaF = 'all', sortK = 'no', sortAsc = true;
 
         const i18n = {
             ms: {
-                loginSub: "Masukkan kata laluan untuk meneruskan", passLbl: "Kata Laluan", loginBtn: "Masuk →",
-                logout: "Log Keluar", refresh: "Muat Semula",
-                pageTitle: "Statistik <em>Kehadiran</em>", pageSub: "Panel Admin — Data Dikemas Kini Secara Masa Nyata",
-                lastUp: "Kali terakhir dikemas kini:", sTotal: "Jumlah Peserta", sHadir: "Telah Hadir",
-                sTidak: "Belum Hadir", sPct: "Peratus Kehadiran", ssHadir: "Hadir",
-                progLbl: "Kadar Kehadiran Keseluruhan", tblTitle: "Senarai Peserta",
-                fAll: "Semua", fAll2: "Semua", fHadir: "Hadir", fTidak: "Belum Hadir", fAllT: "Semua", fTerima: "Telah Terima", fBTerima: "Belum Terima", sTerima: "Telah Terima Bantuan", sBTerima: "Belum Terima Bantuan",
-                cNama: "Nama", cIC: "Nombor IC", cKaunter: "Kaunter", cBantuan: "Nama Bantuan", cSheet: "Kumpulan", cKehadiran: "Kehadiran",
-                bHadir: "Hadir", bTidak: "Belum Hadir", bTerima: "Telah Diterima", btnTerima: "Bantuan telah diterima", cTerima: "Telah Terima Bantuan", expBtn: "Export CSV",
-                searchPh: "Cari nama / IC / bantuan...",
-                showing: "Menunjukkan {f} daripada {t} rekod",
-                empty: "Tiada rekod dijumpai.", loading: "Memuatkan data...",
-                errLoad: "Gagal memuatkan data. Cuba muat semula.",
-                errPass: "Kata laluan salah.", errLock: "Terlalu banyak cubaan. Cuba lagi dalam {m} minit.",
-                attLeft: "Baki cubaan: {n}",
+                logo: "Logo", badge: "Sistem Semakan Kaunter",
+                title: "Semak <em>Nombor Kaunter</em> Anda",
+                sub: "Masukkan nombor IC untuk mengetahui kaunter yang ditetapkan.",
+                label: "Nombor Kad Pengenalan (IC)", ph: "cth: 900101-01-1234",
+                btnSearch: "🔍 Semak Kaunter",
+                foundOk: "IC Dijumpai!", foundErr: "IC Tidak Dijumpai",
+                foundSub: "Sila pergi ke kaunter yang ditetapkan.",
+                notFoundSub: "Semak semula nombor IC anda.",
+                kaunterLbl: "NOMBOR KAUNTER ANDA",
+                multiLabel: "Anda mempunyai {n} kaunter ditetapkan",
+                kaunterItem: "Kaunter {n}",
+                keyIC: "Nombor IC", keyNama: "Nama", keySheet: "Kumpulan",
+                keyKaunter: "Nombor Kaunter", keyNoSiri: "No Siri", keyBantuan: "Nama Bantuan",
+                keyStatus: "Status Kehadiran", statusHadir: "✅ Sudah Hadir", statusTidak: "⏳ Belum Hadir",
+                kehTitle: "Rekod Kehadiran", kehQ: "Adakah anda ingin mengesahkan kehadiran?",
+                btnYa: "✅ Ya, Sahkan", btnTidak: "✕ Tidak",
+                sudahHadir: "✅ Kehadiran telah direkodkan",
+                statusTerima: "✓ Bantuan telah diterima", statusBelumTerima: "Bantuan belum diterima",
+                recodOk: "Kehadiran berjaya direkodkan!", recodErr: "Gagal merekod kehadiran.",
+                errEmpty: "Sila masukkan nombor IC.", errServer: "Gagal menghubungi pelayan.",
+                errTimeout: "Masa tamat. Cuba semula.",
                 secure: "Data selamat & terenkripsi", powered: "Dikuasakan oleh Google Sheets",
             },
             en: {
-                loginSub: "Enter password to continue", passLbl: "Password", loginBtn: "Login →",
-                logout: "Logout", refresh: "Refresh",
-                pageTitle: "Attendance <em>Statistics</em>", pageSub: "Admin Panel — Data Updated in Real Time",
-                lastUp: "Last updated:", sTotal: "Total Participants", sHadir: "Attended",
-                sTidak: "Not Attended", sPct: "Attendance Rate", ssHadir: "Present",
-                progLbl: "Overall Attendance Rate", tblTitle: "Participant List",
-                fAll: "All", fAll2: "All", fHadir: "Present", fTidak: "Absent", fAllT: "All", fTerima: "Received", fBTerima: "Not Received", sTerima: "Aid Received", sBTerima: "Aid Not Received",
-                cNama: "Name", cIC: "IC Number", cKaunter: "Counter", cBantuan: "Aid Name", cSheet: "Group", cKehadiran: "Attendance",
-                bHadir: "Present", bTidak: "Absent", bTerima: "Received", btnTerima: "Aid Received", cTerima: "Aid Received", expBtn: "Export CSV",
-                searchPh: "Search name / IC / aid...",
-                showing: "Showing {f} of {t} records",
-                empty: "No records found.", loading: "Loading data...",
-                errLoad: "Failed to load data. Please refresh.",
-                errPass: "Incorrect password.", errLock: "Too many attempts. Try again in {m} minutes.",
-                attLeft: "Attempts left: {n}",
+                logo: "Logo", badge: "Counter Lookup System",
+                title: "Check Your <em>Counter Number</em>",
+                sub: "Enter your IC number to find your assigned counter.",
+                label: "Identity Card Number (IC)", ph: "e.g. 900101-01-1234",
+                btnSearch: "🔍 Check Counter",
+                foundOk: "IC Found!", foundErr: "IC Not Found",
+                foundSub: "Please proceed to your assigned counter.",
+                notFoundSub: "Please check your IC number again.",
+                kaunterLbl: "YOUR COUNTER NUMBER",
+                multiLabel: "You have {n} assigned counters",
+                kaunterItem: "Counter {n}",
+                keyIC: "IC Number", keyNama: "Name", keySheet: "Group",
+                keyKaunter: "Counter No.", keyNoSiri: "Serial No.", keyBantuan: "Aid Name",
+                keyStatus: "Attendance Status", statusHadir: "✅ Attended", statusTidak: "⏳ Not Yet",
+                kehTitle: "Record Attendance", kehQ: "Would you like to confirm your attendance?",
+                btnYa: "✅ Yes, Confirm", btnTidak: "✕ No",
+                sudahHadir: "✅ Attendance already recorded",
+                statusTerima: "✓ Aid received", statusBelumTerima: "Aid not yet received",
+                recodOk: "Attendance recorded successfully!", recodErr: "Failed to record attendance.",
+                errEmpty: "Please enter your IC number.", errServer: "Failed to reach server.",
+                errTimeout: "Request timed out. Please try again.",
                 secure: "Data is secure & encrypted", powered: "Powered by Google Sheets",
             },
             zh: {
-                loginSub: "请输入密码以继续", passLbl: "密码", loginBtn: "登入 →",
-                logout: "登出", refresh: "刷新",
-                pageTitle: "出席<em>统计</em>", pageSub: "管理员面板 — 数据实时更新",
-                lastUp: "最后更新：", sTotal: "参与者总数", sHadir: "已出席",
-                sTidak: "未出席", sPct: "出席率", ssHadir: "出席",
-                progLbl: "整体出席率", tblTitle: "参与者名单",
-                fAll: "全部", fAll2: "全部", fHadir: "已出席", fTidak: "未出席", fAllT: "全部", fTerima: "已领取", fBTerima: "未领取", sTerima: "已领取援助", sBTerima: "未领取援助",
-                cNama: "姓名", cIC: "身份证号码", cKaunter: "柜台", cBantuan: "援助名称", cSheet: "组别", cKehadiran: "出席",
-                bHadir: "出席", bTidak: "未出席", bTerima: "已领取", btnTerima: "已领取援助", cTerima: "已领取援助", expBtn: "导出 CSV",
-                searchPh: "搜索姓名/身份证/援助...",
-                showing: "显示 {f} / {t} 条记录",
-                empty: "未找到记录。", loading: "加载中...",
-                errLoad: "加载失败，请刷新。",
-                errPass: "密码错误。", errLock: "尝试次数过多，请 {m} 分钟后再试。",
-                attLeft: "剩余尝试次数：{n}",
+                logo: "标志", badge: "柜台查询系统",
+                title: "查询您的<em>柜台号码</em>",
+                sub: "请输入您的身份证号码以查询所指定的柜台。",
+                label: "身份证号码（IC）", ph: "例：900101-01-1234",
+                btnSearch: "🔍 查询柜台",
+                foundOk: "已找到！", foundErr: "未找到",
+                foundSub: "请前往您指定的柜台。",
+                notFoundSub: "请再次确认您的身份证号码。",
+                kaunterLbl: "您的柜台号码",
+                multiLabel: "您有 {n} 个指定柜台",
+                kaunterItem: "柜台 {n}",
+                keyIC: "身份证号码", keyNama: "姓名", keySheet: "组别",
+                keyKaunter: "柜台号码", keyNoSiri: "系列号", keyBantuan: "援助名称",
+                keyStatus: "出席状态", statusHadir: "✅ 已出席", statusTidak: "⏳ 未出席",
+                kehTitle: "记录出席", kehQ: "您是否要确认出席？",
+                btnYa: "✅ 是，确认", btnTidak: "✕ 否",
+                sudahHadir: "✅ 出席已记录",
+                statusTerima: "✓ 援助已领取", statusBelumTerima: "援助未领取",
+                recodOk: "出席记录成功！", recodErr: "出席记录失败。",
+                errEmpty: "请输入您的身份证号码。", errServer: "无法连接服务器。",
+                errTimeout: "请求超时，请再试一次。",
                 secure: "数据安全 & 已加密", powered: "由 Google Sheets 驱动",
             },
             ta: {
-                loginSub: "தொடர கடவுச்சொல்லை உள்ளிடவும்", passLbl: "கடவுச்சொல்", loginBtn: "உள்நுழை →",
-                logout: "வெளியேறு", refresh: "புதுப்பி",
-                pageTitle: "வருகை <em>புள்ளிவிவரம்</em>", pageSub: "நிர்வாகி பலகை — தரவு நேரடியாக புதுப்பிக்கப்படுகிறது",
-                lastUp: "கடைசியாக புதுப்பிக்கப்பட்டது:", sTotal: "மொத்த பங்கேற்பாளர்கள்", sHadir: "வந்தவர்கள்",
-                sTidak: "வராதவர்கள்", sPct: "வருகை விகிதம்", ssHadir: "வந்தார்",
-                progLbl: "ஒட்டுமொத்த வருகை விகிதம்", tblTitle: "பங்கேற்பாளர் பட்டியல்",
-                fAll: "அனைத்தும்", fAll2: "அனைத்தும்", fHadir: "வந்தார்", fTidak: "வரவில்லை", fAllT: "அனைத்தும்", fTerima: "பெற்றார்", fBTerima: "பெறவில்லை", sTerima: "உதவி பெற்றார்", sBTerima: "உதவி பெறவில்லை",
-                cNama: "பெயர்", cIC: "IC எண்", cKaunter: "கவுண்டர்", cBantuan: "உதவி பெயர்", cSheet: "குழு", cKehadiran: "வருகை",
-                bHadir: "வந்தார்", bTidak: "வரவில்லை", bTerima: "பெற்றார்", btnTerima: "உதவி பெற்றார்", cTerima: "உதவி பெற்றார்", expBtn: "CSV ஏற்றுமதி",
-                searchPh: "பெயர் / IC / உதவி தேடு...",
-                showing: "{t} இல் {f} பதிவுகள்",
-                empty: "பதிவுகள் இல்லை.", loading: "தரவு ஏற்றுகிறது...",
-                errLoad: "தரவை ஏற்ற முடியவில்லை.",
-                errPass: "கடவுச்சொல் தவறானது.", errLock: "{m} நிமிடங்களில் மீண்டும் முயற்சிக்கவும்.",
-                attLeft: "மீதமுள்ள முயற்சிகள்: {n}",
-                secure: "தரவு பாதுகாப்பானது", powered: "Google Sheets ஆல் இயக்கப்படுகிறது",
+                logo: "சின்னம்", badge: "கவுண்டர் சரிபார்ப்பு அமைப்பு",
+                title: "உங்கள் <em>கவுண்டர் எண்ணை</em> சரிபார்க்கவும்",
+                sub: "உங்கள் IC எண்ணை உள்ளிட்டு நியமிக்கப்பட்ட கவுண்டரை அறியவும்.",
+                label: "அடையாள அட்டை எண் (IC)", ph: "எ.கா: 900101-01-1234",
+                btnSearch: "🔍 கவுண்டர் சரிபார்",
+                foundOk: "கண்டுபிடிக்கப்பட்டது!", foundErr: "கண்டுபிடிக்கப்படவில்லை",
+                foundSub: "தயவுசெய்து நியமிக்கப்பட்ட கவுண்டருக்குச் செல்லவும்.",
+                notFoundSub: "உங்கள் IC எண்ணை மீண்டும் சரிபார்க்கவும்.",
+                kaunterLbl: "உங்கள் கவுண்டர் எண்",
+                multiLabel: "உங்களுக்கு {n} கவுண்டர்கள் நியமிக்கப்பட்டுள்ளன",
+                kaunterItem: "கவுண்டர் {n}",
+                keyIC: "IC எண்", keyNama: "பெயர்", keySheet: "குழு",
+                keyKaunter: "கவுண்டர் எண்", keyNoSiri: "தொடர் எண்", keyBantuan: "உதவி பெயர்",
+                keyStatus: "வருகை நிலை", statusHadir: "✅ வந்தார்", statusTidak: "⏳ வரவில்லை",
+                kehTitle: "வருகை பதிவு", kehQ: "உங்கள் வருகையை உறுதிப்படுத்த விரும்புகிறீர்களா?",
+                btnYa: "✅ ஆம், உறுதிப்படுத்து", btnTidak: "✕ இல்லை",
+                sudahHadir: "✅ வருகை ஏற்கனவே பதிவு செய்யப்பட்டது",
+                statusTerima: "✓ உதவி பெற்றார்", statusBelumTerima: "உதவி இன்னும் பெறவில்லை",
+                recodOk: "வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr: "வருகை பதிவு தோல்வியடைந்தது.",
+                errEmpty: "தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer: "சேவையகத்தை அடைய முடியவில்லை.",
+                errTimeout: "கோரிக்கை நேரம் முடிந்தது.",
+                secure: "தரவு பாதுகாப்பானது & மறைகுறியாக்கப்பட்டது", powered: "Google Sheets ஆல் இயக்கப்படுகிறது",
             }
         };
 
+        let lang = 'ms';
+        let isDark = true;
+        let _lastResult = null;
+
+        // ── LANG ──
         function setLang(l, btn) {
-            lang = l; document.documentElement.setAttribute('data-lang', l);
+            lang = l;
+            document.documentElement.setAttribute('data-lang', l);
             document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
             if (btn) btn.classList.add('on');
-            applyI18n(); renderTable(allRows);
+            applyI18n();
+            if (_lastResult) _lastResult.success ? showSuccess(_lastResult) : showError(_lastResult.message);
         }
         function applyI18n() {
             const t = i18n[lang];
             document.querySelectorAll('[data-i18n]').forEach(el => { const k = el.getAttribute('data-i18n'); if (t[k] !== undefined) el.textContent = t[k]; });
             document.querySelectorAll('[data-i18n-html]').forEach(el => { const k = el.getAttribute('data-i18n-html'); if (t[k] !== undefined) el.innerHTML = t[k]; });
-            const si = document.getElementById('searchInp'); if (si) si.placeholder = t.searchPh;
+            document.getElementById('icInput').placeholder = t.ph;
         }
 
-        function toggleTheme() { isDark = !isDark; document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light'); document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️'; }
+        // ── THEME ──
+        function toggleTheme() {
+            isDark = !isDark;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+        }
 
-        // ── LOGIN ──
-        function doLogin() {
-            const t = i18n[lang]; if (locked) return;
-            const pw = document.getElementById('passInput').value;
-            const errEl = document.getElementById('loginErr'), attEl = document.getElementById('loginAtt');
-            if (pw === ADMIN_PASSWORD) {
-                tries = 0;
-                document.getElementById('loginWrap').style.display = 'none';
-                document.getElementById('topbar').style.display = 'flex';
-                document.getElementById('dashboard').style.display = 'block';
-                const si = document.getElementById('searchInp');
-                si.value = '';
-                si.addEventListener('input', () => renderTable(allRows));
-                si.addEventListener('keyup', () => renderTable(allRows));
-                loadStats();
-            } else {
-                tries++;
-                const left = MAX_TRIES - tries;
-                if (tries >= MAX_TRIES) {
-                    locked = true;
-                    errEl.textContent = t.errLock.replace('{m}', LOCK_MIN);
-                    errEl.style.display = 'block'; attEl.textContent = '';
-                    document.getElementById('passInput').disabled = true;
-                    setTimeout(() => { locked = false; tries = 0; document.getElementById('passInput').disabled = false; errEl.style.display = 'none'; attEl.textContent = ''; }, LOCK_MIN * 60000);
-                } else {
-                    errEl.textContent = t.errPass; errEl.style.display = 'block';
-                    attEl.textContent = t.attLeft.replace('{n}', left);
-                }
-                document.getElementById('passInput').value = '';
-            }
-        }
-        function doLogout() {
-            document.getElementById('loginWrap').style.display = 'flex';
-            document.getElementById('topbar').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('passInput').value = '';
-            document.getElementById('loginErr').style.display = 'none';
-            document.getElementById('loginAtt').textContent = '';
-        }
-        function togglePw() { const i = document.getElementById('passInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
+        // ── IC FORMAT ──
+        const ic = document.getElementById('icInput');
+        ic.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+        ic.addEventListener('input', () => {
+            let v = ic.value.replace(/[^0-9]/g, '');
+            if (v.length > 6) v = v.slice(0, 6) + '-' + v.slice(6);
+            if (v.length > 9) v = v.slice(0, 9) + '-' + v.slice(9);
+            if (v.length > 14) v = v.slice(0, 14);
+            ic.value = v;
+        });
 
         // ── JSONP ──
         function jsonp(url, cb) {
-            const name = 'cb_' + Date.now(); const s = document.createElement('script');
+            const name = 'cb_' + Date.now();
+            const s = document.createElement('script');
             window[name] = d => { delete window[name]; document.body.removeChild(s); cb(null, d); };
             s.onerror = () => { delete window[name]; document.body.removeChild(s); cb(new Error('err')); };
-            s.src = url + '&callback=' + name; document.body.appendChild(s);
-            setTimeout(() => { if (window[name]) window[name]({ success: false }); }, 12000);
+            s.src = url + '&callback=' + name;
+            document.body.appendChild(s);
+            setTimeout(() => { if (window[name]) window[name]({ success: false, message: i18n[lang].errTimeout }); }, 10000);
         }
 
-        // ── LOAD STATS ──
-        function loadStats() {
+        // ── SEARCH ──
+        function doSearch() {
+            const val = ic.value.trim();
             const t = i18n[lang];
-            document.getElementById('refreshBtn').classList.add('spinning');
-            document.getElementById('tblBody').innerHTML = `<tr><td colspan="8"><div class="empty-st"><div class="ei">⏳</div>${t.loading}</div></td></tr>`;
-            jsonp(`${APPS_SCRIPT_URL}?action=stats&token=${encodeURIComponent(SECRET_TOKEN)}`, (err, data) => {
-                document.getElementById('refreshBtn').classList.remove('spinning');
-                if (err || !data || !data.success) {
-                    document.getElementById('tblBody').innerHTML = `<tr><td colspan="7"><div class="empty-st"><div class="ei">⚠️</div>${t.errLoad}</div></td></tr>`;
-                    return;
-                }
-                animNum('nTotal', 0, data.totalPeserta);
-                animNum('nHadir', 0, data.totalHadir);
-                animNum('nTidak', 0, data.totalTidak);
-                animNum('nTerima', 0, data.totalTerima || 0);
-                animNum('nBTerima', 0, data.totalBTerima || 0);
-                document.getElementById('nPct').textContent = data.peratus + '%';
-                document.getElementById('progFill').style.width = data.peratus + '%';
-                document.getElementById('progPct').textContent = data.peratus + '%';
-                // Per-sheet stats
-                ['BSR', 'BMR', 'BBR'].forEach(s => {
-                    const ss = data.sheetStats[s] || { peserta: 0, hadir: 0 };
-                    const pct = ss.peserta > 0 ? Math.round(ss.hadir / ss.peserta * 100) : 0;
-                    document.getElementById('ssH' + s).textContent = ss.hadir;
-                    document.getElementById('ssP' + s).textContent = ss.peserta;
-                    document.getElementById('ssBar' + s).style.width = pct + '%';
-                });
-                // Timestamp
-                document.getElementById('lastTime').textContent = new Date().toLocaleTimeString();
-                allRows = data.rows || [];
-                renderTable(allRows);
+            if (!val) { showError(t.errEmpty); return; }
+            setLoading(true);
+            document.getElementById('result').style.display = 'none';
+            jsonp(`${APPS_SCRIPT_URL}?action=search&ic=${encodeURIComponent(val)}`, (err, data) => {
+                setLoading(false);
+                _lastResult = data;
+                if (err || !data) { showError(t.errServer); return; }
+                if (data.success) showSuccess(data);
+                else showError(data.message || t.foundErr);
             });
         }
-
-        // ── FILTERS ──
-        function setSheetFilter(f, btn) {
-            sheetF = f;
-            document.querySelectorAll('#sheetFilter .ftab').forEach(b => b.classList.remove('on'));
-            if (btn) btn.classList.add('on');
-            renderTable(allRows);
-        }
-        function setStatusFilter(f, btn) {
-            statusF = f;
-            document.querySelectorAll('#statusFilter .ftab').forEach(b => b.classList.remove('on'));
-            if (btn) btn.classList.add('on');
-            renderTable(allRows);
-        }
-        function setTerimaFilter(f, btn) {
-            terimaF = f;
-            document.querySelectorAll('#terimaFilter .ftab').forEach(b => b.classList.remove('on'));
-            if (btn) btn.classList.add('on');
-            renderTable(allRows);
+        function setLoading(on) {
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = on;
+            btn.classList.toggle('loading', on);
         }
 
-        // ── SORT ──
-        function sortBy(k) {
-            if (sortK === k) sortAsc = !sortAsc; else { sortK = k; sortAsc = true; }
-            document.querySelectorAll('thead th').forEach(th => th.classList.remove('sorted'));
-            const keys = ['no', 'nama', 'ic', 'kaunter', 'bantuan', 'sheet', 'kehadiran'];
-            const idx = keys.indexOf(k); if (idx >= 0) document.querySelectorAll('thead th')[idx].classList.add('sorted');
-            renderTable(allRows);
-        }
-
-        // ── RENDER TABLE ──
-        function renderTable(rows) {
+        // ── SHOW SUCCESS ──
+        function showSuccess(d) {
             const t = i18n[lang];
-            const q = String(document.getElementById('searchInp')?.value || '').toLowerCase();
-            let filtered = rows.filter(r => {
-                if (sheetF !== 'all' && r.sheet !== sheetF) return false;
-                if (statusF === 'hadir' && r.kehadiran !== 'Ya') return false;
-                if (statusF === 'tidak' && r.kehadiran === 'Ya') return false;
-                if (terimaF === 'terima' && r.terima !== 'Ya') return false;
-                if (terimaF === 'bterima' && r.terima === 'Ya') return false;
-                return String(r.nama || '').toLowerCase().includes(q) ||
-                    String(r.ic || '').toLowerCase().includes(q) ||
-                    String(r.kaunter || '').toLowerCase().includes(q) ||
-                    String(r.bantuan || '').toLowerCase().includes(q) ||
-                    String(r.sheet || '').toLowerCase().includes(q);
-            });
-            filtered.sort((a, b) => {
-                let va, vb;
-                const keys = { no: (_, i) => rows.indexOf(_), nama: 'nama', ic: 'ic', kaunter: 'kaunter', bantuan: 'bantuan', sheet: 'sheet', kehadiran: 'kehadiran', terima: 'terima' };
-                if (sortK === 'no') { va = rows.indexOf(a); vb = rows.indexOf(b); }
-                else { va = String(a[sortK] || ''); vb = String(b[sortK] || ''); }
-                if (va < vb) return sortAsc ? -1 : 1; if (va > vb) return sortAsc ? 1 : -1; return 0;
-            });
-            document.getElementById('showTxt').textContent = t.showing.replace('{f}', filtered.length).replace('{t}', rows.length);
-            if (!filtered.length) {
-                document.getElementById('tblBody').innerHTML = `<tr><td colspan="7"><div class="empty-st"><div class="ei">🔍</div>${t.empty}</div></td></tr>`;
-                return;
-            }
-            document.getElementById('tblBody').innerHTML = filtered.map((r, i) => {
-                const h = r.kehadiran === 'Ya';
-                const tr = r.terima === 'Ya';
-                const rowId = ('r_' + r.sheet + '_' + String(r.ic) + '_' + String(r.kaunter)).replace(/[^a-zA-Z0-9_]/g, '_') + '_' + i;
-                // Terima cell content
-                let terimaCell = '';
-                if (tr) {
-                    terimaCell = `<span class="badge-terima">✓ ${esc(t.bTerima)}</span>`;
-                } else if (h) {
-                    terimaCell = `<button class="btn-terima" onclick="konfirmTerima(this,'${esc(r.sheet)}',${Number(r.row) || 0},'${rowId}')">✓ ${esc(t.btnTerima)}</button>`;
-                } else {
-                    terimaCell = `<span style="font-size:11px;color:var(--text3)">—</span>`;
-                }
-                return `<tr id="${rowId}">
-          <td class="mono" style="color:var(--text3)">${i + 1}</td>
-          <td class="nama-td">${esc(r.nama || '—')}</td>
-          <td class="mono">${esc(r.ic || '—')}</td>
-          <td class="mono">${esc(r.kaunter || '—')}</td>
-          <td style="font-size:12px;color:var(--text2)">${esc(r.bantuan || '—')}</td>
-          <td><span class="sheet-tag ${r.sheet}">${r.sheet}</span></td>
-          <td><span class="${h ? 'badge-h' : 'badge-t'}">${h ? '✅ ' + t.bHadir : '❌ ' + t.bTidak}</span></td>
-          <td id="terima-${rowId}">${terimaCell}</td>
-        </tr>`;
+            const el = document.getElementById('result');
+            const allHadir = d.allHadir;
+            const totalCount = d.matches.length;
+            const sheetList = d.sheets || [d.matches[0].sheet];
+
+            // Use first sheet found as the base colour (or remove data-sheet if multi-sheet)
+            if (sheetList.length === 1) el.setAttribute('data-sheet', sheetList[0]);
+            else el.removeAttribute('data-sheet');
+
+            // ── Sheet badges row ──
+            const sheetBadgesHTML = sheetList.map(s =>
+                `<span class="sheet-badge ${s}">📋 ${s}</span>`
+            ).join('');
+
+            // ── Summary bar ──
+            const sheetTagsHTML = sheetList.map(s =>
+                `<span class="rs-sheet-tag ${s}">${s}</span>`
+            ).join('');
+            const summaryHTML = `
+        <div class="result-summary">
+          <span class="rs-count">${esc(t.multiLabel.replace('{n}', String(totalCount)))}</span>
+          <span class="rs-sheets">${sheetTagsHTML}</span>
+        </div>`;
+
+            // ── Sheet groups ──
+            const groups = d.sheetGroups || (() => {
+                const g = {};
+                for (const m of d.matches) { if (!g[m.sheet]) g[m.sheet] = []; g[m.sheet].push(m); }
+                return g;
+            })();
+
+            const groupsHTML = Object.entries(groups).map(([sheetName, matches]) => {
+                const matchCards = matches.map(m => `
+          <div class="match-card">
+            <div class="mc-main">
+              <div class="mc-kaunter">
+                <div class="mc-k-lbl">${esc(t.keyKaunter)}</div>
+                <div class="mc-k-num">${esc(m.kaunter || '—')}</div>
+              </div>
+              <div class="mc-divider"></div>
+              <div class="mc-info">
+                <div class="mc-info-row"><span class="mk">${esc(t.keyNoSiri)}</span><span class="mv">${esc(m.siri || '—')}</span></div>
+                <div class="mc-info-row"><span class="mk">${esc(t.keyBantuan)}</span><span class="mv">${esc(m.bantuan || '—')}</span></div>
+              </div>
+              <div class="mc-status">
+                ${m.sudahHadir
+                        ? `<div class="mc-hadir" title="${esc(t.statusHadir)}">✅</div>`
+                        : `<div class="mc-tidak" title="${esc(t.statusTidak)}">⏳</div>`}
+              </div>
+            </div>
+            <div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
+              <span class="mc-terima-dot"></span>
+              ${m.sudahTerima
+                        ? `<span>${esc(t.statusTerima)}</span>`
+                        : `<span>${esc(t.statusBelumTerima)}</span>`}
+            </div>
+          </div>`).join('');
+
+                return `
+          <div class="sheet-group ${sheetName}">
+            <div class="sheet-group-header">
+              <span>📋 ${sheetName}</span>
+              <span style="opacity:.7;font-weight:500">${matches.length} ${matches.length === 1 ? esc(t.keyKaunter) : esc(t.keyKaunter)}</span>
+            </div>
+            <div class="sheet-group-body">${matchCards}</div>
+          </div>`;
             }).join('');
-        }
 
-        // ── KONFIRM TERIMA BANTUAN ──
-        function konfirmTerima(btn, sheet, row, rowId) {
-            const t = i18n[lang];
-
-            // Guard: row must be a valid number
-            const rowNum = parseInt(row, 10);
-            if (!sheet || !rowNum || rowNum <= 0) {
-                alert('Ralat: Maklumat baris tidak sah. Sila muat semula halaman.');
-                return;
+            // ── Kehadiran section ──
+            let kehHTML = '';
+            if (allHadir) {
+                kehHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
+            } else {
+                // Build entries JSON for multi-sheet rekod
+                const entries = JSON.stringify(d.matches.map(m => ({ sheet: m.sheet, row: m.row })));
+                kehHTML = `
+          <div class="keh-q">${esc(t.kehQ)}</div>
+          <div class="keh-btns" id="kehBtns">
+            <button class="btn-ya" id="btnYa" onclick="rekodMulti(this)"
+              data-entries='${entries.replace(/'/g, "&#39;")}'>${esc(t.btnYa)}</button>
+            <button class="btn-tidak" onclick="batalKeh()">${esc(t.btnTidak)}</button>
+          </div>
+          <div class="keh-msg" id="kehMsg" style="display:none;"></div>`;
             }
 
-            // Disable button immediately, show loading
-            btn.disabled = true;
-            const origText = btn.textContent;
-            btn.innerHTML = '<span style="opacity:.6">⏳ Merekod...</span>';
+            el.innerHTML = `
+        <div class="res-header">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">${sheetBadgesHTML}</div>
+          <span class="found-tag ok">✓ ${esc(t.foundOk)}</span>
+        </div>
+        <div class="res-nama">${esc(d.nama)}</div>
+        <div class="res-ic">${esc(d.ic)}</div>
+        ${totalCount > 1 ? summaryHTML : ''}
+        ${groupsHTML}
+        <div class="keh-section">
+          <div class="keh-title">${esc(t.kehTitle)}</div>
+          ${kehHTML}
+        </div>`;
 
+            el.style.display = 'block';
+        }
+
+        // ── SHOW ERROR ──
+        function showError(msg) {
+            const t = i18n[lang];
+            const el = document.getElementById('result');
+            el.innerHTML = `
+        <div class="res-header">
+          <span class="found-tag err">✕ ${esc(t.foundErr)}</span>
+        </div>
+        <div class="err-box">${esc(msg)}</div>`;
+            el.style.display = 'block';
+            el.removeAttribute('data-sheet');
+        }
+
+        // ── REKOD KEHADIRAN (multi-sheet aware) ──
+        function rekodMulti(btn) {
+            const t = i18n[lang];
+            const entries = btn ? btn.getAttribute('data-entries') : '[]';
+            const btns = document.getElementById('kehBtns');
+            if (btn) btn.disabled = true;
             jsonp(
-                `${APPS_SCRIPT_URL}?action=rekodterima&sheet=${encodeURIComponent(sheet)}&row=${rowNum}&token=${encodeURIComponent(SECRET_TOKEN)}`,
+                `${APPS_SCRIPT_URL}?action=rekodmulti&entries=${encodeURIComponent(entries)}`,
                 (err, data) => {
-                    const cell = document.getElementById(`terima-${rowId}`);
+                    const msg = document.getElementById('kehMsg');
                     if (err || !data) {
-                        // Network error — restore button
-                        btn.disabled = false;
-                        btn.innerHTML = origText;
-                        alert('Gagal menghubungi pelayan. Sila cuba semula.');
+                        if (msg) { msg.className = 'keh-msg err'; msg.textContent = t.recodErr; msg.style.display = 'block'; }
                         return;
                     }
-                    // Both success and "already recorded" → show badge
-                    if (cell) {
-                        cell.innerHTML = `<span class="badge-terima">✓ ${esc(t.bTerima)}</span>`;
+                    if (msg) {
+                        msg.className = data.success ? 'keh-msg ok' : 'keh-msg err';
+                        msg.textContent = data.success ? t.recodOk : (data.message || t.recodErr);
+                        msg.style.display = 'block';
                     }
-                    // Update in-memory allRows so re-render keeps badge
-                    const rec = allRows.find(x =>
-                        x.sheet === sheet && parseInt(x.row, 10) === rowNum
-                    );
-                    if (rec) rec.terima = 'Ya';
+                    if (data.success && btns) {
+                        btns.innerHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
+                    }
                 }
             );
         }
 
-        // ── EXPORT CSV ──
-        function exportCSV() {
-            const t = i18n[lang];
-            const hdr = ['#', t.cNama, t.cIC, t.cKaunter, t.cBantuan, t.cSheet, t.cKehadiran, t.cTerima];
-            const data = allRows.map((r, i) => [i + 1, `"${(r.nama || '').replace(/"/g, '""')}"`, `"${(r.ic || '').replace(/"/g, '""')}"`, `"${(r.kaunter || '').replace(/"/g, '""')}"`, `"${(r.bantuan || '').replace(/"/g, '""')}"`, r.sheet, r.kehadiran === 'Ya' ? t.bHadir : t.bTidak, r.terima === 'Ya' ? t.bTerima : '—']);
-            const csv = [hdr.join(','), ...data.map(r => r.join(','))].join('\n');
-            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `kehadiran_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+        function batalKeh() {
+            const s = document.querySelector('.keh-section');
+            if (s) s.style.display = 'none';
         }
 
-        function animNum(id, from, to) {
-            const el = document.getElementById(id), dur = 800, start = performance.now();
-            const s = ts => { const p = Math.min((ts - start) / dur, 1); el.textContent = Math.round(from + (to - from) * p); if (p < 1) requestAnimationFrame(s); };
-            requestAnimationFrame(s);
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
-        function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
         applyI18n();
     </script>
 </body>
