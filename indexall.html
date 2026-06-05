@@ -1,3 +1,7 @@
+<!--- Bismillahirrahmanirrahim بسم الله الرحمن الرحيم, Sahaja aku berhizb selawat Fatih, untuk kemudahan urusan perjalanan sistem ini kerana Allah Taala
+
+وَإِلَٰهُكُمۡ إِلَٰهٞ وَٰحِدٞۖ لَّآ إِلَٰهَ إِلَّا هُوَ ٱلرَّحْمَٰنُ ٱلرَّحِيمُ. اللَّهُمَّ صَلَّ عَلَى سَيْدِنَا مُحَمَّدِ ﷽ الْفَاتِحِ لِمَا أَعْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَق َّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ  --->
+
 <!DOCTYPE html>
 <html lang="ms" data-theme="dark" data-lang="ms">
 <head>
@@ -597,29 +601,30 @@
 
         .info-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 3px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 11px 14px;
-            font-size: 12.5px;
+            padding: 10px 14px;
             transition: background var(--ease),border-color var(--ease);
         }
 
         .ik {
-            color: var(--text2);
-            font-weight: 500;
+            color: var(--text3);
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
         }
 
         .iv {
             font-family: var(--mono);
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text);
-            font-weight: 600;
-            text-align: right;
+            font-weight: 700;
             word-break: break-word;
-            max-width: 60%;
+            line-height: 1.35;
         }
 
         /* ── KEHADIRAN SECTION ── */
@@ -641,12 +646,14 @@
         .sheet-group-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 14px;
             font-size: 11px;
             font-weight: 800;
             letter-spacing: .1em;
             text-transform: uppercase;
+            flex-wrap: wrap;
         }
 
         .sheet-group.BSR .sheet-group-header {
@@ -694,16 +701,16 @@
             border: 1px solid var(--border);
             transition: all var(--ease);
             position: relative;
-            overflow: visible;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
         .mc-main {
             display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 14px 14px 18px;
         }
 
         .match-card::before {
@@ -712,8 +719,8 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 3px;
-            border-radius: 0;
+            width: 4px;
+            border-radius: 2px 0 0 0;
         }
 
         .sheet-group.BSR .match-card::before {
@@ -729,22 +736,21 @@
         }
 
         .match-card:hover {
-            transform: translateX(2px);
             border-color: var(--border2);
         }
 
         .mc-kaunter {
             text-align: center;
             flex-shrink: 0;
-            min-width: 64px;
+            width: 58px;
         }
 
         .mc-k-lbl {
-            font-size: 8.5px;
+            font-size: 8px;
             font-weight: 700;
             letter-spacing: .1em;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
         .sheet-group.BSR .mc-k-lbl {
@@ -761,7 +767,7 @@
 
         .mc-k-num {
             font-family: var(--mono);
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             line-height: 1;
         }
@@ -780,7 +786,8 @@
 
         .mc-divider {
             width: 1px;
-            height: 40px;
+            align-self: stretch;
+            min-height: 32px;
             background: var(--border);
             flex-shrink: 0;
         }
@@ -788,33 +795,40 @@
         .mc-info {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-
+        /* Each info row: label on top, value below — stacks cleanly on any width */
         .mc-info-row {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            padding: 2px 0;
+            flex-direction: column;
+            gap: 2px;
         }
 
             .mc-info-row .mk {
                 color: var(--text3);
-                font-size: 11px;
-                font-weight: 500;
+                font-size: 10px;
+                font-weight: 600;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+                line-height: 1;
             }
 
             .mc-info-row .mv {
                 color: var(--text);
-                font-weight: 600;
-                font-size: 11.5px;
-                text-align: right;
-                max-width: 65%;
+                font-weight: 700;
+                font-size: 13px;
+                line-height: 1.35;
                 word-break: break-word;
+                white-space: normal;
             }
 
         .mc-status {
             flex-shrink: 0;
+            display: flex;
+            align-items: flex-start;
+            padding-top: 2px;
         }
 
         .mc-hadir {
@@ -838,14 +852,13 @@
             background: rgba(245,158,11,.1);
             font-size: 13px;
         }
-        /* Terima bantuan status strip at bottom of match-card */
+        /* Terima bantuan status strip */
         .mc-terima-strip {
             display: flex;
             align-items: center;
             gap: 7px;
             padding: 8px 16px;
             border-top: 1px solid var(--border);
-            border-radius: 0 0 12px 12px;
             font-size: 11.5px;
             font-weight: 600;
         }
@@ -1109,6 +1122,99 @@
         }
 
         /* ── ANIMATIONS ── */
+        /* ── MOBILE RESPONSIVE ── */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 14px 40px;
+            }
+
+            .topbar {
+                margin-bottom: 20px;
+            }
+
+            .logo-box {
+                width: 70px;
+                height: 70px;
+                border-radius: 18px;
+            }
+
+                .logo-box span {
+                    font-size: 24px;
+                }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .card {
+                padding: 20px 16px;
+            }
+
+            .res-nama {
+                font-size: 18px;
+            }
+
+            .res-ic {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+            /* match-card: tighter on small screens */
+            .mc-main {
+                padding: 12px 12px 12px 16px;
+                gap: 10px;
+            }
+
+            .mc-kaunter {
+                width: 48px;
+            }
+
+            .mc-k-num {
+                font-size: 20px;
+            }
+
+            .mc-k-lbl {
+                font-size: 7px;
+            }
+
+            .mc-info-row .mv {
+                font-size: 12px;
+            }
+
+            .mc-terima-strip {
+                padding: 7px 12px;
+                font-size: 11px;
+            }
+            /* Buttons stack on very small screens */
+            .keh-btns {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn-ya, .btn-tidak {
+                width: 100%;
+            }
+            /* Sheet group */
+            .sheet-group-body {
+                padding: 10px;
+            }
+
+            .sheet-group-header {
+                padding: 9px 12px;
+                font-size: 10px;
+            }
+            /* Footer */
+            .footer {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+            /* Lang switcher */
+            .lb {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+        }
+
         @keyframes fadeDown {
             from {
                 opacity: 0;
@@ -1545,3 +1651,6 @@
     </script>
 </body>
 </html>
+
+<!--------------------------------------------------------Allah Peliharakan Sultan ---------------------------------------------------------------->
+<!-------------------------------------------------------- Created by SyafiqPalal ----------------------------------------------------------------->
