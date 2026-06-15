@@ -506,10 +506,6 @@ input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
 // ─────────────────────────────────
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgZyrP63rLnG1r8pAC9Vlqk6m_gHLbEdYmye_wuvRQlBYPePGlaiP9ORXXKKl8XcEa/exec";
 
-// ── QR / URL PARAM: detect ?terima=1 on page load ──
-const _urlParams   = new URLSearchParams(window.location.search);
-const _terimaMode  = _urlParams.get('terima') === '1';
-
 const i18n = {
   ms:{
     logo:"Logo", badge:"Sistem Semakan Kaunter",
@@ -624,11 +620,6 @@ function setLang(l, btn) {
   document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
   if (btn) btn.classList.add('on');
   applyI18n();
-
-// ── Auto-trigger terima mode if ?terima=1 in URL ──
-if (_terimaMode) {
-  setTimeout(() => activateTerimaMode(), 300);
-}
   if (_lastResult) _lastResult.success ? showSuccess(_lastResult) : showError(_lastResult.message);
 }
 function applyI18n() {
@@ -849,12 +840,22 @@ function esc(s) {
 
 applyI18n();
 
-// ══════════════════════════════════════════════════
-// TERIMA MODE (triggered when URL has ?terima=1)
-// Admin prints QR with URL: [page-url]?terima=1
-// Pemohon scans → page loads → enters IC → auto confirm terima bantuan
-// ══════════════════════════════════════════════════
+// ── Detect ?terima=1 in URL (after all functions defined) ──
+const _urlParams  = new URLSearchParams(window.location.search);
+const _terimaMode = _urlParams.get('terima') === '1';
 let _terimaActive = false;
+
+// ── Trigger terima mode if URL has ?terima=1 ──
+if (_terimaMode) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => activateTerimaMode());
+  } else {
+    setTimeout(() => activateTerimaMode(), 200);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// TERIMA MODE
 
 function activateTerimaMode() {
   _terimaActive = true;
