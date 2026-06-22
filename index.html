@@ -521,7 +521,7 @@ input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
   <div class="lang-row">
     <button class="lb on" onclick="setLang('ms',this)">BM</button>
     <button class="lb" onclick="setLang('en',this)">EN</button>
-    <!--<button class="lb" onclick="setLang('zh',this)">中文</button>
+<!--<button class="lb" onclick="setLang('zh',this)">中文</button>
             <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>-->
 
   </div>
@@ -530,7 +530,7 @@ input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
 
 <div class="wrap">
   <!-- LOGO -->
-  <div class="logo-box"><span><img src="pkpj.png" style="width: 88px; height: 88px;"></span></div>
+  <div class="logo-box"><img src="pkpj.png" style="width: 88px; height: 88px;"></div>
 
   <!-- HEADER -->
   <div class="hdr">
@@ -601,7 +601,7 @@ const i18n = {
     btnYa:"✅ Ya, Sahkan", btnTidak:"✕ Tidak",
     sudahHadir:"✅ Kehadiran telah direkodkan",
     statusTerima:"✓ Bantuan telah diterima", statusBelumTerima:"Bantuan belum diterima",
-    terimaModeTitle:"Mod Sahkan Terima Bantuan",terimaModeSub:"Cari IC, kemudian tekan butang pada kaunter yang telah menerima bantuan.",btnTerimaCard:"🎁 Telah Terima Bantuan",terimaLocked:"Sahkan kehadiran dahulu",terimaQTitle:"Adakah anda telah terima bantuan?",terimaQSub:"Sahkan penerimaan bantuan untuk Kaunter <b>{k}</b>.",terimaYa:"✓ Ya, Telah Terima",terimaTidak:"Tidak",terimaDone:"Bantuan direkodkan sebagai telah diterima!",terimaErr:"Gagal merekod. Cuba lagi.",sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",jumlahTitle:"Berapa orang hadir kesemuanya?",jumlahSub:"(Termasuk diri sendiri)",jumlahHantar:"✓ Hantar",jumlahLangkau:"Langkau",jumlahOk:"Jumlah berjaya direkodkan!",jumlahErr:"Gagal merekod. Cuba lagi.",
+    terimaModeTitle:"Mod Sahkan Terima Bantuan",terimaModeSub:"Cari IC, kemudian tekan butang pada kaunter yang telah menerima bantuan.",btnTerimaCard:"🎁 Telah Terima Bantuan",terimaLocked:"Sahkan kehadiran dahulu",terimaQTitle:"Adakah anda telah terima bantuan?",terimaQSub:"Sahkan penerimaan bantuan untuk Kaunter <b>{k}</b>.",terimaYa:"✓ Ya, Telah Terima",terimaTidak:"Tidak",terimaDone:"Bantuan direkodkan sebagai telah diterima!",terimaErr:"Gagal merekod. Cuba lagi.",sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",jumlahTitle:"Berapa orang hadir bersama?",jumlahSub:"(Termasuk diri sendiri)",jumlahHantar:"✓ Hantar",jumlahLangkau:"Langkau",jumlahOk:"Jumlah berjaya direkodkan!",jumlahErr:"Gagal merekod. Cuba lagi.",
     recodOk:"Kehadiran berjaya direkodkan!", recodErr:"Gagal merekod kehadiran.",
     errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan.",
     errTimeout:"Masa tamat. Cuba semula.",
@@ -626,7 +626,7 @@ const i18n = {
     btnYa:"✅ Yes, Confirm", btnTidak:"✕ No",
     sudahHadir:"✅ Attendance already recorded",
     statusTerima:"✓ Aid received", statusBelumTerima:"Aid not yet received",
-    terimaModeTitle:"Aid Receipt Confirmation Mode",terimaModeSub:"Search an IC, then tap the button on each counter that has received aid.",btnTerimaCard:"🎁 Aid Received",terimaLocked:"Confirm attendance first",terimaQTitle:"Have you received your aid?",terimaQSub:"Confirm aid receipt for Counter <b>{k}</b>.",terimaYa:"✓ Yes, Received",terimaTidak:"No",terimaDone:"Aid recorded as received!",terimaErr:"Failed to record. Try again.",sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",jumlahTitle:"How many attended in total?",jumlahSub:"(Including yourself)",jumlahHantar:"✓ Submit",jumlahLangkau:"Skip",jumlahOk:"Number recorded successfully!",jumlahErr:"Failed to record. Try again.",
+    terimaModeTitle:"Aid Receipt Confirmation Mode",terimaModeSub:"Search an IC, then tap the button on each counter that has received aid.",btnTerimaCard:"🎁 Aid Received",terimaLocked:"Confirm attendance first",terimaQTitle:"Have you received your aid?",terimaQSub:"Confirm aid receipt for Counter <b>{k}</b>.",terimaYa:"✓ Yes, Received",terimaTidak:"No",terimaDone:"Aid recorded as received!",terimaErr:"Failed to record. Try again.",sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",jumlahTitle:"How many attended together?",jumlahSub:"(Including yourself)",jumlahHantar:"✓ Submit",jumlahLangkau:"Skip",jumlahOk:"Number recorded successfully!",jumlahErr:"Failed to record. Try again.",
     recodOk:"Attendance recorded successfully!", recodErr:"Failed to record attendance.",
     errEmpty:"Please enter your IC number.", errServer:"Failed to reach server.",
     errTimeout:"Request timed out. Please try again.",
@@ -651,7 +651,7 @@ const i18n = {
     btnYa:"✅ 是，确认", btnTidak:"✕ 否",
     sudahHadir:"✅ 出席已记录",
     statusTerima:"✓ 援助已领取", statusBelumTerima:"援助未领取",
-    terimaModeTitle:"领取援助确认模式",terimaModeSub:"搜索身份证号码，然后在已领取援助的柜台点击按钮。",btnTerimaCard:"🎁 已领取援助",terimaLocked:"请先确认出席",terimaQTitle:"您是否已领取援助？",terimaQSub:"确认柜台 <b>{k}</b> 的援助领取。",terimaYa:"✓ 是，已领取",terimaTidak:"否",terimaDone:"援助已记录为已领取！",terimaErr:"记录失败，请重试。",sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",jumlahTitle:"总共有多少人出席？",jumlahSub:"（包括您自己）",jumlahHantar:"✓ 提交",jumlahLangkau:"跳过",jumlahOk:"人数已成功记录！",jumlahErr:"记录失败，请重试。",
+    terimaModeTitle:"领取援助确认模式",terimaModeSub:"搜索身份证号码，然后在已领取援助的柜台点击按钮。",btnTerimaCard:"🎁 已领取援助",terimaLocked:"请先确认出席",terimaQTitle:"您是否已领取援助？",terimaQSub:"确认柜台 <b>{k}</b> 的援助领取。",terimaYa:"✓ 是，已领取",terimaTidak:"否",terimaDone:"援助已记录为已领取！",terimaErr:"记录失败，请重试。",sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",jumlahTitle:"共有多少人一同出席？",jumlahSub:"（包括您自己）",jumlahHantar:"✓ 提交",jumlahLangkau:"跳过",jumlahOk:"人数已成功记录！",jumlahErr:"记录失败，请重试。",
     recodOk:"出席记录成功！", recodErr:"出席记录失败。",
     errEmpty:"请输入您的身份证号码。", errServer:"无法连接服务器。",
     errTimeout:"请求超时，请再试一次。",
@@ -676,7 +676,7 @@ const i18n = {
     btnYa:"✅ ஆம், உறுதிப்படுத்து", btnTidak:"✕ இல்லை",
     sudahHadir:"✅ வருகை ஏற்கனவே பதிவு செய்யப்பட்டது",
     statusTerima:"✓ உதவி பெற்றார்", statusBelumTerima:"உதவி இன்னும் பெறவில்லை",
-    terimaModeTitle:"உதவி பெற்றதை உறுதிப்படுத்தும் முறை",terimaModeSub:"IC ஐ தேடி, உதவி பெற்ற ஒவ்வொரு கவுண்டரிலும் பொத்தானை அழுத்தவும்.",btnTerimaCard:"🎁 உதவி பெற்றேன்",terimaLocked:"முதலில் வருகையை உறுதிப்படுத்தவும்",terimaQTitle:"நீங்கள் உதவி பெற்றீர்களா?",terimaQSub:"கவுண்டர் <b>{k}</b> க்கான உதவி பெற்றதை உறுதிப்படுத்தவும்.",terimaYa:"✓ ஆம், பெற்றேன்",terimaTidak:"இல்லை",terimaDone:"உதவி பெறப்பட்டதாக பதிவு செய்யப்பட்டது!",terimaErr:"பதிவு தோல்வி. மீண்டும் முயற்சி.",sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",jumlahTitle:"மொத்தம் எத்தனை பேர் வந்தனர்?",jumlahSub:"(நீங்கள் உட்பட)",jumlahHantar:"✓ சமர்ப்பி",jumlahLangkau:"தவிர்",jumlahOk:"எண்ணிக்கை பதிவு செய்யப்பட்டது!",jumlahErr:"பதிவு தோல்வி. மீண்டும் முயற்சி.",
+    terimaModeTitle:"உதவி பெற்றதை உறுதிப்படுத்தும் முறை",terimaModeSub:"IC ஐ தேடி, உதவி பெற்ற ஒவ்வொரு கவுண்டரிலும் பொத்தானை அழுத்தவும்.",btnTerimaCard:"🎁 உதவி பெற்றேன்",terimaLocked:"முதலில் வருகையை உறுதிப்படுத்தவும்",terimaQTitle:"நீங்கள் உதவி பெற்றீர்களா?",terimaQSub:"கவுண்டர் <b>{k}</b> க்கான உதவி பெற்றதை உறுதிப்படுத்தவும்.",terimaYa:"✓ ஆம், பெற்றேன்",terimaTidak:"இல்லை",terimaDone:"உதவி பெறப்பட்டதாக பதிவு செய்யப்பட்டது!",terimaErr:"பதிவு தோல்வி. மீண்டும் முயற்சி.",sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",jumlahTitle:"எத்தனை பேர் ஒன்றாக வந்தனர்?",jumlahSub:"(நீங்கள் உட்பட)",jumlahHantar:"✓ சமர்ப்பி",jumlahLangkau:"தவிர்",jumlahOk:"எண்ணிக்கை பதிவு செய்யப்பட்டது!",jumlahErr:"பதிவு தோல்வி. மீண்டும் முயற்சி.",
     recodOk:"வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr:"வருகை பதிவு தோல்வியடைந்தது.",
     errEmpty:"தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer:"சேவையகத்தை அடைய முடியவில்லை.",
     errTimeout:"கோரிக்கை நேரம் முடிந்தது.",
@@ -792,13 +792,15 @@ function showSuccess(d) {
     const matchCards = matches.map(m => {
       const cardId = ('mc_' + m.sheet + '_' + m.row).replace(/[^a-zA-Z0-9_]/g, '_');
 
-      // Sesi badge (Pagi / Petang)
+      // Sesi badge (1=Pagi, 2=Petang)
       let sesiHTML = '';
-      if (m.sesi) {
-        const sLow = String(m.sesi).toLowerCase();
-        const sCls = sLow.indexOf('petang') > -1 ? 'petang' : (sLow.indexOf('pagi') > -1 ? 'pagi' : '');
+      if (m.sesi !== undefined && m.sesi !== null && String(m.sesi).trim() !== '') {
+        const sv = String(m.sesi).trim().toLowerCase();
+        const sCls = (sv === '2' || sv.indexOf('petang') > -1) ? 'petang'
+                   : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
         const sTxt = sCls === 'petang' ? t.sesiPetang : (sCls === 'pagi' ? t.sesiPagi : esc(m.sesi));
-        if (sCls) sesiHTML = `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)}</span>`;
+        const sTime = sCls === 'pagi' ? '9.00-11.00 pagi' : (sCls === 'petang' ? '2.00 petang' : '');
+        if (sCls) sesiHTML = `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)}${sTime ? ' · ' + esc(sTime) : ''}</span>`;
       }
 
       // Card footer — depends on mode
@@ -958,6 +960,28 @@ if (_terimaMode) {
   } else {
     setTimeout(showTerimaBanner, 100);
   }
+}
+
+// ── DEMO MODE (?demo=1) — preview UI with mock data, no backend needed ──
+if (_urlParams.get('demo') === '1') {
+  const _demoData = {
+    success:true, nama:"AHMAD BIN ALI", ic:"900101-01-1234",
+    sheets:["BSR","BMR","BBR"], allHadir:false, anyHadir:true, multiSheet:true,
+    matches:[
+      {row:5, sheet:"BSR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"12",
+       siri:"BSR-001", bantuan:"Bantuan Sara Hidup", kehadiran:"Ya", sudahHadir:true,
+       terima:"", sudahTerima:false, sesi:"1"},
+      {row:8, sheet:"BMR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"3",
+       siri:"BMR-014", bantuan:"Bantuan Makanan", kehadiran:"Tidak", sudahHadir:false,
+       terima:"", sudahTerima:false, sesi:"2"},
+      {row:11, sheet:"BBR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"7",
+       siri:"BBR-022", bantuan:"Bantuan Bencana", kehadiran:"Ya", sudahHadir:true,
+       terima:"Ya", sudahTerima:true, sesi:"1"}
+    ]
+  };
+  const _runDemo = () => { _lastResult = _demoData; showSuccess(_demoData); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _runDemo);
+  else setTimeout(_runDemo, 150);
 }
 
 // ══════════════════════════════════════════════════
@@ -1142,8 +1166,8 @@ function submitJumlah() {
 <div class="modal-overlay" id="jumlahModal" style="display:none;">
   <div class="jumlah-modal-box">
     <div class="jumlah-icon-big">👨‍👩‍👧‍👦</div>
-    <div class="jumlah-title" id="jumlahTitle">Anda hadir bersama berapa orang?</div>
-    <div class="jumlah-sub" id="jumlahSub">(Tidak termasuk diri sendiri)</div>
+    <div class="jumlah-title" id="jumlahTitle">Berapa orang hadir bersama?</div>
+    <div class="jumlah-sub" id="jumlahSub">(Termasuk diri sendiri)</div>
     <div class="jumlah-counter">
       <button class="jcnt-btn" id="jMinus" onclick="jumlahAdj(-1)" disabled>−</button>
       <div class="jcnt-num" id="jumlahNum">0</div>
@@ -1172,7 +1196,6 @@ function submitJumlah() {
 
 </body>
 </html>
-
 
 <!--------------------------------------------------------Allah Peliharakan Sultan ---------------------------------------------------------------->
 <!-------------------------------------------------------- Created by SyafiqPalal ----------------------------------------------------------------->
