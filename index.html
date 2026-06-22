@@ -521,9 +521,8 @@ input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
   <div class="lang-row">
     <button class="lb on" onclick="setLang('ms',this)">BM</button>
     <button class="lb" onclick="setLang('en',this)">EN</button>
-<!--<button class="lb" onclick="setLang('zh',this)">中文</button>
+   <!--<button class="lb" onclick="setLang('zh',this)">中文</button>
             <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>-->
-
   </div>
   <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
 </div>
@@ -579,7 +578,7 @@ input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
 // ─────────────────────────────────
 // ⚠️ GANTIKAN DENGAN URL ANDA
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynhp8mcMQVksSQtApWq5-MlQcjxiG7IWWNyF3K1iEOkK7K182oulkwSVXQ_vabqyEA/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEXlxDQuLmWkltntF5YKDUB2gLht0dhG_HvwAS_2X8OeHK5iqFMAMq9iTbCj9p41KE/exec";
 
 const i18n = {
   ms:{
@@ -722,15 +721,25 @@ ic.addEventListener('input', () => {
   ic.value = v;
 });
 
-// ── JSONP ──
-function jsonp(url, cb) {
-  const name = 'cb_'+Date.now();
+// ── JSONP (robust: unique name, timer cleanup, single-fire) ──
+let _jsonpSeq = 0;
+function jsonp(url, cb, timeoutMs) {
+  const name = 'cb_' + Date.now() + '_' + (++_jsonpSeq);
   const s = document.createElement('script');
-  window[name] = d => { delete window[name]; document.body.removeChild(s); cb(null,d); };
-  s.onerror = () => { delete window[name]; document.body.removeChild(s); cb(new Error('err')); };
-  s.src = url + '&callback=' + name;
+  let done = false, timer = null;
+  const finish = (err, d) => {
+    if (done) return;
+    done = true;
+    if (timer) clearTimeout(timer);
+    try { delete window[name]; } catch(e) { window[name] = undefined; }
+    if (s.parentNode) s.parentNode.removeChild(s);
+    cb(err, d);
+  };
+  window[name] = d => finish(null, d);
+  s.onerror   = () => finish(new Error('network'));
+  timer = setTimeout(() => finish(new Error('timeout')), timeoutMs || 7000);
+  s.src = url + '&callback=' + name + '&_=' + Date.now(); // cache-bust avoids stale first hit
   document.body.appendChild(s);
-  setTimeout(()=>{ if(window[name]) window[name]({success:false,message:i18n[lang].errTimeout}); },10000);
 }
 
 // ── SEARCH ──
@@ -740,13 +749,25 @@ function doSearch() {
   if (!val) { showError(t.errEmpty); return; }
   setLoading(true);
   document.getElementById('result').style.display = 'none';
-  jsonp(`${APPS_SCRIPT_URL}?action=search&ic=${encodeURIComponent(val)}`, (err, data) => {
-    setLoading(false);
-    _lastResult = data;
-    if (err || !data) { showError(t.errServer); return; }
-    if (data.success) showSuccess(data);
-    else showError(data.message || t.foundErr);
-  });
+  const url = `${APPS_SCRIPT_URL}?action=search&ic=${encodeURIComponent(val)}`;
+  const maxTries = 2;
+  let attempt = 0;
+  const attemptSearch = () => {
+    attempt++;
+    jsonp(url, (err, data) => {
+      // Large sheets + cold start can take several seconds; retry once if it truly fails
+      if ((err || !data) && attempt < maxTries) {
+        setTimeout(attemptSearch, 400);
+        return;
+      }
+      setLoading(false);
+      _lastResult = data;
+      if (err || !data) { showError(t.errServer); return; }
+      if (data.success) showSuccess(data);
+      else showError(data.message || t.foundErr);
+    }, 15000);
+  };
+  attemptSearch();
 }
 function setLoading(on) {
   const btn = document.getElementById('searchBtn');
@@ -1196,6 +1217,7 @@ function submitJumlah() {
 
 </body>
 </html>
+
 
 <!--------------------------------------------------------Allah Peliharakan Sultan ---------------------------------------------------------------->
 <!-------------------------------------------------------- Created by SyafiqPalal ----------------------------------------------------------------->
