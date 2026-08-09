@@ -2,6 +2,7 @@
 
 وَإِلَٰهُكُمۡ إِلَٰهٞ وَٰحِدٞۖ لَّآ إِلَٰهَ إِلَّا هُوَ ٱلرَّحْمَٰنُ ٱلرَّحِيمُ. اللَّهُمَّ صَلَّ عَلَى سَيْدِنَا مُحَمَّدِ الْفَاتِحِ لِمَا أَعْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَق َّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ        
 --->
+
 <!DOCTYPE html>
 <html lang="ms" data-theme="dark" data-lang="ms">
 <head>
@@ -532,8 +533,7 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
     </div>
 
     <p class="note" id="motionNote" data-i18n-html="motionNote">
-      Laman ini menggunakan sensor gerakan supaya anda boleh goncang telefon untuk menghantar semakan.
-      Ini <b>pilihan sahaja</b> — butang di bawah berfungsi seperti biasa.
+      Laman ini menggunakan sensor gerakan untuk semakan sebagai <b>pilihan interaksi</b>.
     </p>
 
     <button class="btn" id="searchBtn" onclick="doSearch()" disabled data-i18n="btnSearch">Semak Sekarang</button>
@@ -592,7 +592,7 @@ const i18n = {
     btnSearch:"Semak Sekarang", btnMotion:"Aktifkan sensor goncangan",
     shakeMsg:"Goncang telefon anda", shakeSub:"untuk menghantar semakan",
     shakeDone:"Semakan selesai", btnNew:"Semakan Baru",
-    motionNote:"Laman ini menggunakan sensor gerakan supaya anda boleh goncang telefon untuk menghantar semakan. Ini <b>pilihan sahaja</b> — butang di bawah berfungsi seperti biasa.",
+    motionNote:"Laman ini menggunakan sensor gerakan untuk semakan sebagai <b>pilihan interaksi</b>.",
     tapMsg:"Tekan butang di bawah", tapSub:"untuk menghantar semakan",
     countTxt:"{n} / 12 digit",
     foundOk:"IC Dijumpai!", foundErr:"IC Tidak Dijumpai",
@@ -618,7 +618,7 @@ const i18n = {
     btnSearch:"Check Now", btnMotion:"Enable shake sensor",
     shakeMsg:"Shake your phone", shakeSub:"to submit the lookup",
     shakeDone:"Lookup complete", btnNew:"New Lookup",
-    motionNote:"This page uses motion sensors so you can shake your phone to submit. This is <b>optional</b> — the button below works as usual.",
+    motionNote:"This page uses motion sensors for lookups as an <b>optional interaction</b>.",
     tapMsg:"Tap the button below", tapSub:"to submit the lookup",
     countTxt:"{n} / 12 digits",
     foundOk:"IC Found!", foundErr:"IC Not Found",
@@ -644,7 +644,7 @@ const i18n = {
     btnSearch:"立即查询", btnMotion:"启用摇动感应器",
     shakeMsg:"摇动您的手机", shakeSub:"以提交查询",
     shakeDone:"查询完成", btnNew:"重新查询",
-    motionNote:"本页面使用动作感应器，让您可以摇动手机来提交查询。这是<b>可选功能</b> — 下方按钮照常运作。",
+    motionNote:"本页面使用动作感应器进行查询，作为一种<b>可选的互动方式</b>。",
     tapMsg:"请点击下方按钮", tapSub:"以提交查询",
     countTxt:"{n} / 12 位数字",
     foundOk:"已找到！", foundErr:"未找到",
@@ -670,7 +670,7 @@ const i18n = {
     btnSearch:"இப்போது சரிபார்", btnMotion:"அசைவு சென்சாரை இயக்கு",
     shakeMsg:"உங்கள் தொலைபேசியை அசைக்கவும்", shakeSub:"சரிபார்ப்பை அனுப்ப",
     shakeDone:"சரிபார்ப்பு முடிந்தது", btnNew:"புதிய சரிபார்ப்பு",
-    motionNote:"இந்தப் பக்கம் அசைவு சென்சாரைப் பயன்படுத்துகிறது. இது <b>விருப்பத்தேர்வு மட்டுமே</b> — கீழே உள்ள பொத்தான் வழக்கம் போல் செயல்படும்.",
+    motionNote:"இந்தப் பக்கம் சரிபார்ப்புக்கு அசைவு சென்சாரை ஒரு <b>விருப்பத் தொடர்பு முறையாக</b> பயன்படுத்துகிறது.",
     tapMsg:"கீழே உள்ள பொத்தானை அழுத்தவும்", tapSub:"சரிபார்ப்பை அனுப்ப",
     countTxt:"{n} / 12 இலக்கங்கள்",
     foundOk:"கண்டுபிடிக்கப்பட்டது!", foundErr:"கண்டுபிடிக்கப்படவில்லை",
@@ -1021,22 +1021,29 @@ function jsonp(url, cb, timeoutMs) {
 // ══════════════════════════════════════════════════
 // I2 · PEMANASAN + PRA-AMBIL (prefetch) + CACHE
 // ══════════════════════════════════════════════════
-// Apps Script "cold start" boleh makan 3-6 saat pada hit pertama.
-// Kita panggang bekas itu sebaik halaman dibuka, secara senyap.
-let _warmed = false;
+// PENTING: Apps Script menyiri pelaksanaan bagi pengguna yang sama —
+// dua permintaan serentak akan BERATUR, bukan berjalan seiring. Di telefon
+// (latensi tinggi) pemanasan boleh masih berjalan bila pengguna siap taip,
+// menyebabkan permintaan sebenar beratur di belakangnya dan tamat masa.
+// Sebab itu pra-ambil MESTI menunggu pemanasan selesai dahulu.
+let _warmed = false, _warmDone = false;
+const _warmQueue = [];
 function warmUp(){
   if (_warmed) return; _warmed = true;
-  jsonp(`${APPS_SCRIPT_URL}?action=search&ic=000000000000`, () => {}, 12000);
+  jsonp(`${APPS_SCRIPT_URL}?action=search&ic=000000000000`, () => {
+    _warmDone = true;
+    _warmQueue.splice(0).forEach(fn => fn());
+  }, 10000);
 }
+function afterWarm(fn){ _warmDone ? fn() : _warmQueue.push(fn); }
 if (document.readyState === 'loading')
   document.addEventListener('DOMContentLoaded', () => setTimeout(warmUp, 250));
 else setTimeout(warmUp, 250);
 
 // Cache keputusan mengikut IC — tekan Semak semula = 0 saat
 const _cache = new Map();
-// Pra-ambil: hantar permintaan sebaik digit ke-12 ditaip, sebelum pengguna
-// sempat goncang / tekan butang. Data selalunya sudah tiba dulu.
 let _pf = null;   // { key, status:'wait'|'done', data, err, cbs:[] }
+let _lastErrKind = '';
 
 function startPrefetch(icVal){
   const key = icVal.replace(/\D/g,'');
@@ -1046,16 +1053,20 @@ function startPrefetch(icVal){
   _pf = rec;
   const url = `${APPS_SCRIPT_URL}?action=search&ic=${encodeURIComponent(icVal)}`;
   let attempt = 0;
-  (function go(){
+  const go = () => {
     attempt++;
+    // Tempoh lebih panjang pada percubaan kemudian — rangkaian mudah alih lambat
+    const tmo = attempt === 1 ? 12000 : 20000;
     jsonp(url, (err, data) => {
-      if ((err || !data) && attempt < 2) { setTimeout(go, 300); return; }
       if (_pf !== rec) return;              // IC sudah berubah — buang
+      if ((err || !data) && attempt < 3) { setTimeout(go, 500 * attempt); return; }
       rec.status = 'done'; rec.data = data; rec.err = err;
+      if (err) _lastErrKind = err.message || 'network';
       if (data && data.success !== undefined) _cache.set(key, data);
       rec.cbs.splice(0).forEach(cb => cb(err, data));
-    }, 15000);
-  })();
+    }, tmo);
+  };
+  afterWarm(go);   // ⬅ jangan bertindih dengan pemanasan
 }
 function cancelPrefetch(){ _pf = null; }
 
@@ -1089,7 +1100,11 @@ function doSearch(via) {
   runLoader(() => {
     busy = false;
     _lastResult = payload;
-    if (payloadErr || !payload) showError(t.errServer);
+    if (payloadErr || !payload) {
+      // Bezakan tamat masa daripada masalah rangkaian — memudahkan diagnosis
+      const kind = (payloadErr && payloadErr.message) || _lastErrKind;
+      showError(kind === 'timeout' ? t.errTimeout : t.errServer);
+    }
     else if (payload.success) showSuccess(payload);
     else showError(payload.message || t.foundErr);
     finishUI();
@@ -1449,6 +1464,7 @@ if (_urlParams.get('demo') === '1') {
 </script>
 </body>
 </html>
+
 <!-------------------------------------------------------- Kepada Allah Berserah ---------------------------------------------------------------->
 <!-------------------------------------------------------- Allah Peliharakan Sultan ---------------------------------------------------------------->
 <!-------------------------------------------------------- Created by SyafiqPalal ----------------------------------------------------------------->
