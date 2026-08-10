@@ -1155,7 +1155,7 @@ function sesiBadge(sesi) {
              : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
   if (!sCls) return '';
   const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
-  const sTime = sCls === 'pagi' ? '9.00-11.00 pagi' : '2.00 petang';
+  const sTime = sCls === 'pagi' ? '8.30 pagi' : '2.30-6.00 petang';
   return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
 }
 
