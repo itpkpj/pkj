@@ -353,7 +353,8 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .mc-terima-strip.received .mc-terima-dot{background:var(--gold);}
 .mc-terima-strip.pending .mc-terima-dot{background:var(--border2);}
 /* Mod pendaftaran kehadiran — strip "belum diterima" tidak relevan */
-body.mode-pendaftaran .mc-terima-strip.pending{display:none;}
+body.mode-pendaftaran .mc-terima-strip.pending,
+body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 
 .mc-sesi{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;padding:3px 9px;border-radius:99px;
   font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:2px;}
@@ -509,8 +510,8 @@ body.mode-pendaftaran .mc-terima-strip.pending{display:none;}
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>PKPJ
     </a>
     <div class="fdot"></div>
-    <a href="https://itpkpj.github.io/pkj/permohonan" target="_blank" rel="noopener" class="footer-link">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>Permohonan PKJ
+    <a href="https://www.threads.com/@pkpjofficial" target="_blank" rel="noopener" class="footer-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c-4.6 0-8-3.2-8-9s3.4-9 8-9c3.6 0 6.2 1.9 7.1 4.8"/><path d="M8.6 14.3c.3 1.4 1.6 2.3 3.3 2.3 2.1 0 3.4-1.2 3.4-3.4 0-2.6-2.1-3.7-4.6-3.7-2.1 0-3.6.7-3.6.7"/><path d="M15.3 13.2c0-2.6-1.6-4.1-4.2-4.1"/></svg>Threads
     </a>
   </div>
 </div>
@@ -1105,7 +1106,7 @@ function sesiBadge(sesi) {
              : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
   if (!sCls) return '';
   const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
-  const sTime = sCls === 'pagi' ? '9.00-11.00 pagi' : '2.00 petang';
+  const sTime = sCls === 'pagi' ? '8.30 pagi' : '2.30-6.00 petang';
   return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
 }
 
