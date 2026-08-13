@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
-<title>Semak Nombor Kaunter — PKPJ</title>
+<title>Pendaftaran Kehadiran — PKPJ</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -83,9 +83,6 @@ body.busy  #aura{opacity:2.2}
 }
 #rig{
   position:relative;
-  /* Lebar DAN tinggi ditetapkan secara eksplisit. aspect-ratio sahaja tidak
-     cukup — pelayar lama (Safari <15, Chrome <88, Samsung Internet lama)
-     abaikan ia, tinggi jadi 0, dan logo langsung tidak muncul. */
   width:150px; height:150px;
   width:min(38vw,160px); height:min(38vw,160px);
   aspect-ratio:1;
@@ -114,12 +111,9 @@ body.busy  #aura{opacity:2.2}
 }
 .handles{position:absolute;inset:-9px;border:1px solid var(--border2);border-radius:4px;opacity:.85;transition:opacity .5s;}
 
-/* Sheen & reflect bergantung pada CSS mask. Jika pelayar tak menyokongnya,
-   sorokkan — kalau tidak ia jadi kotak segi empat menutupi logo. */
 @supports not ((-webkit-mask-image:linear-gradient(#000,#000)) or (mask-image:linear-gradient(#000,#000))){
   .sheen,.reflect{display:none !important;}
 }
-/* Fallback bila pkpj.png gagal dimuatkan */
 body.nologo .slice,body.nologo .sheen,body.nologo .reflect{display:none;}
 body.nologo #rig::after{
   content:"PKPJ";position:absolute;inset:0;display:grid;place-items:center;
@@ -145,7 +139,6 @@ body.focused .handles{opacity:0}
   white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--gold);}
 body.focused .panel{opacity:.18}
 
-/* Panel kekal ada pada telefon — dikecilkan & dirapatkan supaya tak terkeluar skrin */
 @media (max-width:560px){
   .panel{
     padding:8px 10px;border-radius:11px;
@@ -169,7 +162,7 @@ body.focused .panel{opacity:.18}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
   background:radial-gradient(ellipse at 50% 34%,transparent 30%,var(--vig) 100%);}
 
-/* ══ LAPISAN 1b · FIGURA YAB & YB (penyeri, penjuru bawah-kanan) ══ */
+/* ══ LAPISAN 1b · FIGURA YAB & YB ══ */
 #vip{
   position:fixed;right:8px;bottom:0;z-index:4;pointer-events:none;
   width:min(26vw,170px);aspect-ratio:880/1210;
@@ -181,7 +174,6 @@ body.focused .panel{opacity:.18}
 }
 @keyframes vipRise{from{opacity:0;transform:translateY(34px)}}
 [data-theme="light"] #vip{filter:drop-shadow(0 6px 18px rgba(120,95,40,.28));}
-/* Beralih tepi bila pengguna menaip / semasa loader — tak menghalang kad */
 body.focused #vip{opacity:.35;transform:translateY(14px)}
 body.busy    #vip{opacity:0;transform:translateY(24px)}
 @media (max-width:480px){ #vip{width:34vw;right:2px;} }
@@ -206,7 +198,7 @@ body.busy    #vip{opacity:0;transform:translateY(24px)}
 .theme-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all var(--ease);backdrop-filter:blur(14px);box-shadow:0 2px 10px var(--shadow);}
 .theme-btn:hover{border-color:var(--gold);transform:rotate(15deg);}
 
-/* ── KAD SEMAKAN (kaca) ── */
+/* ── KAD (kaca) ── */
 .card{
   width:100%;max-width:440px;padding:22px 20px;border-radius:24px;
   background:linear-gradient(180deg,var(--card),var(--card2));
@@ -292,7 +284,7 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   -webkit-background-clip:text;background-clip:text;color:transparent;}
 .stage-txt{font-size:12px;color:var(--text3);letter-spacing:.04em;min-height:17px;text-align:center;padding:0 24px;}
 
-/* ══ KEPUTUSAN (susunan kekal seperti asal) ══ */
+/* ══ KEPUTUSAN ══ */
 #result{margin-top:20px;display:none;}
 #result.show{display:block;animation:pop .45s cubic-bezier(.2,1.4,.4,1);}
 @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}}
@@ -360,6 +352,8 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .mc-terima-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
 .mc-terima-strip.received .mc-terima-dot{background:var(--gold);}
 .mc-terima-strip.pending .mc-terima-dot{background:var(--border2);}
+/* Mod pendaftaran kehadiran — strip "belum diterima" tidak relevan */
+body.mode-pendaftaran .mc-terima-strip.pending{display:none;}
 
 .mc-sesi{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;padding:3px 9px;border-radius:99px;
   font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:2px;}
@@ -367,14 +361,9 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .mc-sesi.petang{background:rgba(129,140,248,.14);color:#a5b4fc;border:1px solid rgba(129,140,248,.32);}
 [data-theme="light"] .mc-sesi.pagi{color:#8a5a06;} [data-theme="light"] .mc-sesi.petang{color:#3f3a9e;}
 
-.mc-terima-action{display:flex;align-items:center;gap:7px;padding:10px 14px;border-top:1px solid var(--border);}
-.btn-terima-card{flex:1;background:linear-gradient(180deg,var(--gold),var(--gold-lo));color:#1a1305;border:none;border-radius:10px;padding:11px;
-  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s,transform .15s;box-shadow:0 3px 14px rgba(217,180,92,.35);}
-.btn-terima-card:hover{opacity:.9;} .btn-terima-card:active{transform:scale(.98);} .btn-terima-card:disabled{opacity:.5;cursor:not-allowed;}
 .mc-terima-locked{display:flex;align-items:center;gap:7px;padding:9px 14px;border-top:1px solid var(--border);font-size:11.5px;font-weight:600;color:var(--text3);background:rgba(120,120,120,.05);}
 
-/* ── SENARAI BANTUAN (mod biasa — tanpa nombor kaunter) ── */
+/* ── SENARAI BANTUAN ── */
 .bantuan-list{display:grid;gap:10px;margin-bottom:18px;}
 .bantuan-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:12px 14px 12px 16px;position:relative;overflow:hidden;}
@@ -405,39 +394,13 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;transition:all .2s;}
 .btn-tidak:hover{border-color:var(--red);color:var(--red);}
 .sudah-hadir{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(92,232,164,.1);
-  border:1px solid rgba(92,232,164,.28);border-radius:12px;padding:14px;color:var(--green);font-weight:700;font-size:14px;}
+  border:1px solid rgba(92,232,164,.28);border-radius:12px;padding:14px;color:var(--green);font-weight:700;font-size:14px;text-align:center;line-height:1.4;}
+.pend-wait{display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(217,180,92,.08);
+  border:1px solid var(--border);border-radius:12px;padding:14px;color:var(--text2);font-weight:600;font-size:13.5px;text-align:center;}
 .keh-msg{margin-top:10px;border-radius:10px;padding:12px 14px;font-size:13px;font-weight:600;text-align:center;}
 .keh-msg.ok{background:rgba(92,232,164,.1);border:1px solid rgba(92,232,164,.25);color:var(--green);}
 .keh-msg.err{background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.22);color:var(--red);}
 .err-box{background:rgba(255,122,122,.07);border:1px solid rgba(255,122,122,.22);border-radius:12px;padding:15px;font-size:13.5px;color:var(--red);line-height:1.5;}
-
-/* ── BANNER MOD TERIMA ── */
-.terima-banner{width:100%;max-width:440px;background:linear-gradient(135deg,rgba(217,180,92,.16),rgba(217,180,92,.06));
-  border:1px solid var(--border2);border-radius:14px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:12px;
-  backdrop-filter:blur(14px);}
-.terima-banner-icon{font-size:24px;flex-shrink:0;}
-.terima-banner-title{font-size:14px;font-weight:800;color:var(--gold);margin-bottom:2px;}
-.terima-banner-sub{font-size:12px;color:var(--text2);}
-
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeUp .2s ease both;}
-.confirm-box{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:24px;
-  width:100%;max-width:360px;padding:30px 26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.6);backdrop-filter:blur(20px);}
-.confirm-icon{font-size:42px;margin-bottom:12px;line-height:1;}
-.confirm-title{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.03em;margin-bottom:6px;line-height:1.35;}
-.confirm-sub{font-size:12.5px;color:var(--text2);margin-bottom:22px;line-height:1.5;}
-.confirm-sub b{color:var(--gold);font-weight:700;}
-.confirm-btns{display:flex;gap:10px;}
-.confirm-ya{flex:1;background:linear-gradient(180deg,var(--gold),var(--gold-lo));color:#1a1305;border:none;border-radius:13px;padding:13px;
-  font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:800;cursor:pointer;transition:opacity .2s,transform .15s;box-shadow:0 4px 16px rgba(217,180,92,.4);}
-.confirm-ya:hover{opacity:.9;} .confirm-ya:active{transform:scale(.98);} .confirm-ya:disabled{opacity:.5;cursor:not-allowed;}
-.confirm-tidak{flex:1;background:var(--surface);color:var(--text2);border:1.5px solid var(--border);border-radius:13px;padding:13px;
-  font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;transition:all .2s;}
-.confirm-tidak:hover{border-color:var(--red);color:var(--red);}
-.confirm-result{margin-top:14px;border-radius:10px;padding:11px;font-size:13px;font-weight:600;}
-.confirm-result.ok{background:rgba(92,232,164,.1);border:1px solid rgba(92,232,164,.25);color:var(--green);}
-.confirm-result.err{background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.2);color:var(--red);}
 
 /* ── FOOTER ── */
 .footer{margin-top:24px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .5s .2s ease both;}
@@ -463,11 +426,9 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 </head>
 <body>
 
-<!-- ══ LAPISAN 0 · LATAR ══ -->
 <canvas id="grid"></canvas>
 <div id="aura"></div>
 
-<!-- ══ LAPISAN 1 · LOGO 3D ══ -->
 <div id="stage">
   <div id="rig">
     <div class="layer" id="logo">
@@ -490,20 +451,18 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   </div>
 </div>
 
-<!-- ══ FIGURA YAB & YB (penyeri) ══ -->
 <div id="vip" aria-hidden="true"></div>
 
 <div id="vignette"></div>
 
-<!-- ══ LAPISAN 3 · KANDUNGAN ══ -->
 <div id="shell">
 
   <div class="topbar">
     <div class="lang-row">
       <button class="lb on" onclick="setLang('ms',this)">BM</button>
       <button class="lb" onclick="setLang('en',this)">EN</button>
-      <!-- <button class="lb" onclick="setLang('zh',this)">中文</button> -->
-      <!-- <button class="lb" onclick="setLang('ta',this)">தமிழ்</button> -->
+      <button class="lb" onclick="setLang('zh',this)">中文</button>
+      <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>
     </div>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
   </div>
@@ -511,14 +470,13 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   <div class="card" id="card">
     <div class="grabber"></div>
     <span class="eyebrow" data-i18n="badge">PKPJ · Perumahan Kasih Johor</span>
-    <h1 data-i18n-html="title">Semak <em>Nombor Kaunter</em> Anda</h1>
+    <h1 data-i18n-html="title">Masukkan <em>Nombor Kad Pengenalan</em> anda</h1>
 
     <label class="flabel" for="icInput" data-i18n="label">Nombor Kad Pengenalan (IC)</label>
     <input type="text" id="icInput" inputmode="numeric" autocomplete="off" maxlength="14" placeholder="000000-00-0000"/>
     <div class="count" id="cnt">0 / 12 digit</div>
     <div class="err" id="err" role="alert"></div>
 
-    <!-- KOTAK AJAKAN GONCANG -->
     <div id="shakeBox" aria-live="polite">
       <div id="askShake">
         <div class="phone"></div>
@@ -527,7 +485,7 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
       </div>
       <div id="newCheck" hidden>
         <div class="tick">✓</div>
-        <div class="shakeMsg" data-i18n="shakeDone">Semakan selesai</div>
+        <div class="shakeMsg" data-i18n="shakeDone">Pengesahan Selesai</div>
         <button class="btn" id="reset" style="margin-top:11px" data-i18n="btnNew">Semakan Baru</button>
       </div>
     </div>
@@ -536,7 +494,7 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
       Laman ini menggunakan sensor gerakan untuk semakan sebagai <b>pilihan interaksi</b>.
     </p>
 
-    <button class="btn" id="searchBtn" onclick="doSearch()" disabled data-i18n="btnSearch">Semak Sekarang</button>
+    <button class="btn" id="searchBtn" onclick="doSearch()" disabled data-i18n="btnSearch">Klik Disini</button>
     <button class="btn ghost" id="enableMotion" hidden data-i18n="btnMotion">Aktifkan sensor goncangan</button>
 
     <div id="result"></div>
@@ -557,25 +515,10 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   </div>
 </div>
 
-<!-- ══ LOADER MENARA ══ -->
 <div id="loader" role="status" aria-live="assertive">
   <div><div class="roof" id="roof"></div><div class="tower" id="tower"></div></div>
   <div class="pct" id="pct">0%</div>
   <div class="stage-txt" id="stageTxt">Menyambung ke pangkalan data…</div>
-</div>
-
-<!-- ══ MODAL SAHKAN TERIMA BANTUAN ══ -->
-<div class="modal-overlay" id="terimaConfirmModal" style="display:none;">
-  <div class="confirm-box">
-    <div class="confirm-icon">🎁</div>
-    <div class="confirm-title" id="terimaQTitle">Adakah anda telah terima bantuan?</div>
-    <div class="confirm-sub" id="terimaQSub"></div>
-    <div class="confirm-btns" id="terimaQBtns">
-      <button class="confirm-tidak" onclick="closeTerimaConfirm()" id="terimaQTidak">Tidak</button>
-      <button class="confirm-ya" onclick="submitTerimaConfirm()" id="terimaQYa">✓ Ya, Telah Terima</button>
-    </div>
-    <div class="confirm-result" id="terimaQResult" style="display:none;"></div>
-  </div>
 </div>
 
 <script>
@@ -587,11 +530,11 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBQ9F6-vTTnoZK
 const i18n = {
   ms:{
     badge:"PKPJ · Perumahan Kasih Johor",
-    title:"Semak <em>Nombor Kaunter</em> Anda",
+    title:"Masukkan <em>Nombor Kad Pengenalan</em> anda",
     label:"Nombor Kad Pengenalan (IC)", ph:"000000-00-0000",
-    btnSearch:"Semak Sekarang", btnMotion:"Aktifkan sensor goncangan",
+    btnSearch:"Klik Disini", btnMotion:"Aktifkan sensor goncangan",
     shakeMsg:"Goncang telefon anda", shakeSub:"untuk menghantar semakan",
-    shakeDone:"Semakan selesai", btnNew:"Semakan Baru",
+    shakeDone:"Pengesahan Selesai", btnNew:"Semakan Baru",
     motionNote:"Laman ini menggunakan sensor gerakan untuk semakan sebagai <b>pilihan interaksi</b>.",
     tapMsg:"Tekan butang di bawah", tapSub:"untuk menghantar semakan",
     countTxt:"{n} / 12 digit",
@@ -605,7 +548,13 @@ const i18n = {
     btnYa:"✅ Ya, Sahkan", btnTidak:"✕ Tidak",
     sudahHadir:"✅ Kehadiran telah direkodkan",
     statusTerima:"✓ Bantuan telah diterima", statusBelumTerima:"Bantuan belum diterima",
-    terimaModeTitle:"Mod Sahkan Terima Bantuan",terimaModeSub:"Cari IC, kemudian tekan butang pada kaunter yang telah menerima bantuan.",btnTerimaCard:"🎁 Telah Terima Bantuan",terimaLocked:"Sahkan kehadiran dahulu",terimaQTitle:"Adakah anda telah terima bantuan?",terimaQSub:"Sahkan penerimaan bantuan untuk Kaunter <b>{k}</b>.",terimaYa:"✓ Ya, Telah Terima",terimaTidak:"Tidak",terimaDone:"Bantuan direkodkan sebagai telah diterima!",terimaErr:"Gagal merekod. Cuba lagi.",sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",hadirSemasaDone:"Kehadiran anda telah direkodkan!",knTitle:"Maklumat mengenai Kaunter",knSub:"Sukacita dimaklumkan bahawa nombor kaunter serta butiran bantuan akan hanya dipaparkan setelah Tuan/Puan mengimbas kod QR yang disediakan di lokasi pada hari program. Kerjasama Tuan/Puan amatlah dihargai.",
+    pendTitle:"Pendaftaran Kehadiran",
+    pendWait:"⏳ Merekod pendaftaran kehadiran…",
+    pendDone:"✅ Pendaftaran Kehadiran telah direkodkan",
+    pendErr:"⚠️ Gagal merekod pendaftaran. Sila maklum kepada petugas.",
+    terimaModeTitle:"Mod Pendaftaran Kehadiran",
+    sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",
+    knTitle:"Maklumat mengenai Kaunter",knSub:"Sukacita dimaklumkan bahawa nombor kaunter serta butiran bantuan akan hanya dipaparkan setelah Tuan/Puan mengimbas kod QR yang disediakan di lokasi pada hari program. Kerjasama Tuan/Puan amatlah dihargai.",
     recodOk:"Kehadiran berjaya direkodkan!", recodErr:"Gagal merekod kehadiran.",
     errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan.",
     errTimeout:"Masa tamat. Cuba semula.",
@@ -613,11 +562,11 @@ const i18n = {
   },
   en:{
     badge:"PKPJ · Perumahan Kasih Johor",
-    title:"Check Your <em>Counter Number</em>",
+    title:"Enter Your <em>Identity Card Number</em>",
     label:"Identity Card Number (IC)", ph:"000000-00-0000",
-    btnSearch:"Check Now", btnMotion:"Enable shake sensor",
+    btnSearch:"Click Here", btnMotion:"Enable shake sensor",
     shakeMsg:"Shake your phone", shakeSub:"to submit the lookup",
-    shakeDone:"Lookup complete", btnNew:"New Lookup",
+    shakeDone:"Verification Complete", btnNew:"New Lookup",
     motionNote:"This page uses motion sensors for lookups as an <b>optional interaction</b>.",
     tapMsg:"Tap the button below", tapSub:"to submit the lookup",
     countTxt:"{n} / 12 digits",
@@ -631,7 +580,13 @@ const i18n = {
     btnYa:"✅ Yes, Confirm", btnTidak:"✕ No",
     sudahHadir:"✅ Attendance already recorded",
     statusTerima:"✓ Aid received", statusBelumTerima:"Aid not yet received",
-    terimaModeTitle:"Aid Receipt Confirmation Mode",terimaModeSub:"Search an IC, then tap the button on each counter that has received aid.",btnTerimaCard:"🎁 Aid Received",terimaLocked:"Confirm attendance first",terimaQTitle:"Have you received your aid?",terimaQSub:"Confirm aid receipt for Counter <b>{k}</b>.",terimaYa:"✓ Yes, Received",terimaTidak:"No",terimaDone:"Aid recorded as received!",terimaErr:"Failed to record. Try again.",sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",hadirSemasaDone:"Your attendance has been recorded!",knTitle:"Counter Information",knSub:"Please be informed that your counter number and aid details will be displayed only after you scan the QR code provided at the venue on the event day. Your kind cooperation is greatly appreciated.",
+    pendTitle:"Attendance Registration",
+    pendWait:"⏳ Recording your attendance registration…",
+    pendDone:"✅ Attendance registration has been recorded",
+    pendErr:"⚠️ Failed to record. Please inform the officer on duty.",
+    terimaModeTitle:"Attendance Registration Mode",
+    sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",
+    knTitle:"Counter Information",knSub:"Please be informed that your counter number and aid details will be displayed only after you scan the QR code provided at the venue on the event day. Your kind cooperation is greatly appreciated.",
     recodOk:"Attendance recorded successfully!", recodErr:"Failed to record attendance.",
     errEmpty:"Please enter your IC number.", errServer:"Failed to reach server.",
     errTimeout:"Request timed out. Please try again.",
@@ -639,11 +594,11 @@ const i18n = {
   },
   zh:{
     badge:"PKPJ · Perumahan Kasih Johor",
-    title:"查询您的<em>柜台号码</em>",
+    title:"请输入您的<em>身份证号码</em>",
     label:"身份证号码（IC）", ph:"000000-00-0000",
-    btnSearch:"立即查询", btnMotion:"启用摇动感应器",
+    btnSearch:"点击这里", btnMotion:"启用摇动感应器",
     shakeMsg:"摇动您的手机", shakeSub:"以提交查询",
-    shakeDone:"查询完成", btnNew:"重新查询",
+    shakeDone:"验证完成", btnNew:"重新查询",
     motionNote:"本页面使用动作感应器进行查询，作为一种<b>可选的互动方式</b>。",
     tapMsg:"请点击下方按钮", tapSub:"以提交查询",
     countTxt:"{n} / 12 位数字",
@@ -657,7 +612,13 @@ const i18n = {
     btnYa:"✅ 是，确认", btnTidak:"✕ 否",
     sudahHadir:"✅ 出席已记录",
     statusTerima:"✓ 援助已领取", statusBelumTerima:"援助未领取",
-    terimaModeTitle:"领取援助确认模式",terimaModeSub:"搜索身份证号码，然后在已领取援助的柜台点击按钮。",btnTerimaCard:"🎁 已领取援助",terimaLocked:"请先确认出席",terimaQTitle:"您是否已领取援助？",terimaQSub:"确认柜台 <b>{k}</b> 的援助领取。",terimaYa:"✓ 是，已领取",terimaTidak:"否",terimaDone:"援助已记录为已领取！",terimaErr:"记录失败，请重试。",sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",hadirSemasaDone:"您的出席已记录！",knTitle:"柜台相关资料",knSub:"谨此通知，您的柜台号码及援助详情将在您于活动当天在现场扫描所提供的二维码后才会显示。感谢您的配合。",
+    pendTitle:"出席登记",
+    pendWait:"⏳ 正在记录出席登记…",
+    pendDone:"✅ 出席登记已记录",
+    pendErr:"⚠️ 记录失败，请通知现场工作人员。",
+    terimaModeTitle:"出席登记模式",
+    sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",
+    knTitle:"柜台相关资料",knSub:"谨此通知，您的柜台号码及援助详情将在您于活动当天在现场扫描所提供的二维码后才会显示。感谢您的配合。",
     recodOk:"出席记录成功！", recodErr:"出席记录失败。",
     errEmpty:"请输入您的身份证号码。", errServer:"无法连接服务器。",
     errTimeout:"请求超时，请再试一次。",
@@ -665,9 +626,9 @@ const i18n = {
   },
   ta:{
     badge:"PKPJ · Perumahan Kasih Johor",
-    title:"உங்கள் <em>கவுண்டர் எண்ணை</em> சரிபார்க்கவும்",
+    title:"உங்கள் <em>அடையாள அட்டை எண்ணை</em> உள்ளிடவும்",
     label:"அடையாள அட்டை எண் (IC)", ph:"000000-00-0000",
-    btnSearch:"இப்போது சரிபார்", btnMotion:"அசைவு சென்சாரை இயக்கு",
+    btnSearch:"இங்கே கிளிக் செய்யவும்", btnMotion:"அசைவு சென்சாரை இயக்கு",
     shakeMsg:"உங்கள் தொலைபேசியை அசைக்கவும்", shakeSub:"சரிபார்ப்பை அனுப்ப",
     shakeDone:"சரிபார்ப்பு முடிந்தது", btnNew:"புதிய சரிபார்ப்பு",
     motionNote:"இந்தப் பக்கம் சரிபார்ப்புக்கு அசைவு சென்சாரை ஒரு <b>விருப்பத் தொடர்பு முறையாக</b> பயன்படுத்துகிறது.",
@@ -683,7 +644,13 @@ const i18n = {
     btnYa:"✅ ஆம், உறுதிப்படுத்து", btnTidak:"✕ இல்லை",
     sudahHadir:"✅ வருகை ஏற்கனவே பதிவு செய்யப்பட்டது",
     statusTerima:"✓ உதவி பெற்றார்", statusBelumTerima:"உதவி இன்னும் பெறவில்லை",
-    terimaModeTitle:"உதவி பெற்றதை உறுதிப்படுத்தும் முறை",terimaModeSub:"IC ஐ தேடி, உதவி பெற்ற ஒவ்வொரு கவுண்டரிலும் பொத்தானை அழுத்தவும்.",btnTerimaCard:"🎁 உதவி பெற்றேன்",terimaLocked:"முதலில் வருகையை உறுதிப்படுத்தவும்",terimaQTitle:"நீங்கள் உதவி பெற்றீர்களா?",terimaQSub:"கவுண்டர் <b>{k}</b> க்கான உதவி பெற்றதை உறுதிப்படுத்தவும்.",terimaYa:"✓ ஆம், பெற்றேன்",terimaTidak:"இல்லை",terimaDone:"உதவி பெறப்பட்டதாக பதிவு செய்யப்பட்டது!",terimaErr:"பதிவு தோல்வி. மீண்டும் முயற்சி.",sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",hadirSemasaDone:"உங்கள் வருகை பதிவு செய்யப்பட்டது!",knTitle:"கவுண்டர் தகவல்",knSub:"நிகழ்ச்சி நாளில் வழங்கப்படும் QR குறியீட்டை ஸ்கேன் செய்த பின்னரே உங்கள் கவுண்டர் எண் மற்றும் உதவி விவரங்கள் காட்டப்படும் என்பதை தயவுசெய்து கவனத்தில் கொள்ளவும். உங்கள் ஒத்துழைப்பிற்கு நன்றி.",
+    pendTitle:"வருகைப் பதிவு",
+    pendWait:"⏳ வருகைப் பதிவு செய்யப்படுகிறது…",
+    pendDone:"✅ வருகைப் பதிவு பதிவு செய்யப்பட்டது",
+    pendErr:"⚠️ பதிவு தோல்வி. பணியாளரிடம் தெரிவிக்கவும்.",
+    terimaModeTitle:"வருகைப் பதிவு முறை",
+    sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",
+    knTitle:"கவுண்டர் தகவல்",knSub:"நிகழ்ச்சி நாளில் வழங்கப்படும் QR குறியீட்டை ஸ்கேன் செய்த பின்னரே உங்கள் கவுண்டர் எண் மற்றும் உதவி விவரங்கள் காட்டப்படும் என்பதை தயவுசெய்து கவனத்தில் கொள்ளவும். உங்கள் ஒத்துழைப்பிற்கு நன்றி.",
     recodOk:"வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr:"வருகை பதிவு தோல்வியடைந்தது.",
     errEmpty:"தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer:"சேவையகத்தை அடைய முடியவில்லை.",
     errTimeout:"கோரிக்கை நேரம் முடிந்தது.",
@@ -698,19 +665,20 @@ let _lastResult = null;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const buzz = ms => { if (navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} };
 
+// Mod pendaftaran kehadiran (?terima=1) — dibaca awal kerana showSuccess bergantung padanya
+const _urlParams  = new URLSearchParams(window.location.search);
+const _terimaMode = _urlParams.get('terima') === '1';
+let _pendState = 'wait';   // 'wait' | 'done' | 'err' — kekal sehingga refresh
+
 // ══════════════════════════════════════════════════
-// A · LOGO 3D — bina 14 lapisan pepejal
+// A · LOGO 3D
 // ══════════════════════════════════════════════════
 const LOGO_SRC = './pkpj.png';
-
-// Pengesanan: jika fail logo gagal dimuatkan (nama fail salah huruf besar/kecil,
-// fail tiada, atau laluan salah), tunjuk teks "PKPJ" dan lapor ke konsol.
 (function checkLogo(){
   const probe = new Image();
   probe.onerror = () => {
     document.body.classList.add('nologo');
-    console.warn('[PKPJ] Logo tidak dijumpai: ' + LOGO_SRC +
-      ' — semak nama fail (huruf besar/kecil penting di GitHub Pages) dan lokasinya.');
+    console.warn('[PKPJ] Logo tidak dijumpai: ' + LOGO_SRC);
   };
   probe.src = LOGO_SRC;
 })();
@@ -729,7 +697,7 @@ const LOGO_SRC = './pkpj.png';
 })();
 
 // ══════════════════════════════════════════════════
-// B · CONDONGAN (gyroscope / tetikus)
+// B · CONDONGAN
 // ══════════════════════════════════════════════════
 let tx=0, ty=0, cx=0, cy=0, gyroLive=false, base=null;
 const clamp = v => Math.max(-1, Math.min(1, v));
@@ -791,13 +759,12 @@ if (needsPerm){
       if (typeof DeviceOrientationEvent.requestPermission === 'function')
         await DeviceOrientationEvent.requestPermission();
       if (a === 'granted'){ attachSensors(); motionBtn.hidden = true; }
-      else motionBtn.textContent = 'Akses ditolak — guna butang Semak';
-    }catch(e){ motionBtn.textContent = 'Sensor perlu HTTPS — guna butang Semak'; }
+      else motionBtn.textContent = 'Akses ditolak — guna butang di atas';
+    }catch(e){ motionBtn.textContent = 'Sensor perlu HTTPS — guna butang di atas'; }
   });
 } else if (typeof DeviceMotionEvent !== 'undefined'){
   attachSensors();
 }
-// Jika tiada sensor (desktop) — tukar teks kepada arahan tekan butang
 setTimeout(() => {
   if (!motionOn && !needsPerm) fallbackToTap();
 }, 1500);
@@ -880,7 +847,7 @@ for (let i=0;i<FLOORS;i++){ const f=document.createElement('div'); f.className='
 const floors = [...tower.children];
 const STAGE_AT = [0,22,48,72,92];
 
-let _dataReady = false;   // ditetapkan bila JSONP selesai
+let _dataReady = false;
 function runLoader(done){
   const t = i18n[lang];
   $('loader').classList.add('show');
@@ -888,13 +855,10 @@ function runLoader(done){
   floors.forEach(f => f.classList.remove('built'));
   roof.classList.remove('built');
   const t0 = performance.now();
-  // Jika data sudah sedia (pra-ambil / cache), pendekkan animasi — jangan
-  // paksa pengguna tunggu tanpa sebab.
   const DURATION = reduce ? 250 : (_dataReady ? 1000 : 2200);
   (function step(now){
     const k = Math.min((now-t0)/DURATION, 1);
     let p = Math.round((1 - Math.pow(1-k,2.2)) * 100);
-    // Tahan pada 92% sehingga data tiba (elak "siap" sebelum pelayan jawab)
     if (!_dataReady) p = Math.min(p, 92);
     $('pct').textContent = p + '%';
     const built = Math.floor(p/100 * FLOORS);
@@ -941,7 +905,7 @@ function toggleTheme() {
 }
 
 // ══════════════════════════════════════════════════
-// H · INPUT IC + KEADAAN GONCANG
+// H · INPUT IC
 // ══════════════════════════════════════════════════
 const ic = $('icInput'), cnt = $('cnt'), errEl = $('err'), box = $('shakeBox'), searchBtn = $('searchBtn');
 let ready = false, busy = false;
@@ -971,9 +935,9 @@ ic.addEventListener('input', () => {
   document.body.classList.toggle('armed', full);
   if (full){
     buzz(20);
-    setTimeout(() => ic.blur(), 180);   // tutup papan kekunci
+    setTimeout(() => ic.blur(), 180);
     startShakeWatch();
-    startPrefetch(ic.value.trim());     // ⚡ mula ambil data sekarang juga
+    startPrefetch(ic.value.trim());
   } else { stopShakeWatch(); cancelPrefetch(); }
 });
 
@@ -983,6 +947,7 @@ function resetAll(){
   ic.value = ''; updateCount(); errEl.textContent = '';
   ic.classList.remove('done');
   ready = false; busy = false; _lastResult = null;
+  _pendState = 'wait';
   box.classList.remove('show');
   const r = $('result'); r.classList.remove('show'); r.style.display='none'; r.innerHTML='';
   $('askShake').hidden = false;
@@ -1019,13 +984,8 @@ function jsonp(url, cb, timeoutMs) {
 }
 
 // ══════════════════════════════════════════════════
-// I2 · PEMANASAN + PRA-AMBIL (prefetch) + CACHE
+// I2 · PEMANASAN + PRA-AMBIL + CACHE
 // ══════════════════════════════════════════════════
-// PENTING: Apps Script menyiri pelaksanaan bagi pengguna yang sama —
-// dua permintaan serentak akan BERATUR, bukan berjalan seiring. Di telefon
-// (latensi tinggi) pemanasan boleh masih berjalan bila pengguna siap taip,
-// menyebabkan permintaan sebenar beratur di belakangnya dan tamat masa.
-// Sebab itu pra-ambil MESTI menunggu pemanasan selesai dahulu.
 let _warmed = false, _warmDone = false;
 const _warmQueue = [];
 function warmUp(){
@@ -1040,9 +1000,6 @@ if (document.readyState === 'loading')
   document.addEventListener('DOMContentLoaded', () => setTimeout(warmUp, 250));
 else setTimeout(warmUp, 250);
 
-// Cache keputusan mengikut IC — tekan Semak semula = 0 saat.
-// TTL 45 saat: data kehadiran boleh berubah (kaunter lain merekod serentak),
-// jadi cache tidak boleh kekal selamanya.
 const _cache = new Map();
 const CACHE_TTL = 45000;
 function cacheGet(key){
@@ -1052,10 +1009,8 @@ function cacheGet(key){
   return e.d;
 }
 function cacheSet(key, d){ _cache.set(key, { d, t: Date.now() }); }
-// Dipanggil selepas SETIAP penulisan — jika tidak, semakan berikutnya
-// memaparkan status lama (bug: kehadiran disahkan tapi masih "belum hadir").
 function invalidateCache(){ _cache.clear(); _pf = null; }
-let _pf = null;   // { key, status:'wait'|'done', data, err, cbs:[] }
+let _pf = null;
 let _lastErrKind = '';
 
 function startPrefetch(icVal){
@@ -1069,10 +1024,9 @@ function startPrefetch(icVal){
   let attempt = 0;
   const go = () => {
     attempt++;
-    // Tempoh lebih panjang pada percubaan kemudian — rangkaian mudah alih lambat
     const tmo = attempt === 1 ? 12000 : 20000;
     jsonp(url, (err, data) => {
-      if (_pf !== rec) return;              // IC sudah berubah — buang
+      if (_pf !== rec) return;
       if ((err || !data) && attempt < 3) { setTimeout(go, 500 * attempt); return; }
       rec.status = 'done'; rec.data = data; rec.err = err;
       if (err) _lastErrKind = err.message || 'network';
@@ -1080,11 +1034,10 @@ function startPrefetch(icVal){
       rec.cbs.splice(0).forEach(cb => cb(err, data));
     }, tmo);
   };
-  afterWarm(go);   // ⬅ jangan bertindih dengan pemanasan
+  afterWarm(go);
 }
 function cancelPrefetch(){ _pf = null; }
 
-// Ambil hasil: guna cache → prefetch yang sedang jalan → permintaan baharu
 function fetchResult(icVal, cb){
   const key = icVal.replace(/\D/g,'');
   const c = cacheGet(key);
@@ -1099,7 +1052,7 @@ function fetchResult(icVal, cb){
 }
 
 // ══════════════════════════════════════════════════
-// J · SEMAKAN (loader + data serentak)
+// J · SEMAKAN
 // ══════════════════════════════════════════════════
 function doSearch(via) {
   const val = ic.value.trim();
@@ -1109,14 +1062,13 @@ function doSearch(via) {
 
   busy = true; stopShakeWatch(); buzz(30);
   _dataReady = false;
+  _pendState = 'wait';
   let payload = null, payloadErr = null;
 
-  // 1) Mula loader (ia akan tahan pada 92% sehingga data tiba)
   runLoader(() => {
     busy = false;
     _lastResult = payload;
     if (payloadErr || !payload) {
-      // Bezakan tamat masa daripada masalah rangkaian — memudahkan diagnosis
       const kind = (payloadErr && payloadErr.message) || _lastErrKind;
       showError(kind === 'timeout' ? t.errTimeout : t.errServer);
     }
@@ -1125,7 +1077,6 @@ function doSearch(via) {
     finishUI();
   });
 
-  // 2) Data — selalunya sudah siap dari pra-ambil, jadi serta-merta
   fetchResult(val, (err, data) => {
     payload = data; payloadErr = err;
     _dataReady = true;
@@ -1144,9 +1095,8 @@ function finishUI(){
 }
 
 // ══════════════════════════════════════════════════
-// K · PAPAR KEPUTUSAN (susunan kekal seperti asal)
+// K · PAPAR KEPUTUSAN
 // ══════════════════════════════════════════════════
-// Bina lencana Sesi (Column K) — dipakai oleh mod biasa dan mod terima
 function sesiBadge(sesi) {
   const t = i18n[lang];
   if (sesi === undefined || sesi === null || String(sesi).trim() === '') return '';
@@ -1155,8 +1105,16 @@ function sesiBadge(sesi) {
              : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
   if (!sCls) return '';
   const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
-  const sTime = sCls === 'pagi' ? '8.30 pagi' : '2.30-6.00 petang';
+  const sTime = sCls === 'pagi' ? '9.00-11.00 pagi' : '2.00 petang';
   return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
+}
+
+// Blok status pendaftaran kehadiran — kekal dipaparkan sehingga refresh
+function pendBlockHTML(){
+  const t = i18n[lang];
+  if (_pendState === 'done') return `<div class="sudah-hadir" id="pendStatus">${esc(t.pendDone)}</div>`;
+  if (_pendState === 'err')  return `<div class="keh-msg err" id="pendStatus" style="margin-top:0">${esc(t.pendErr)}</div>`;
+  return `<div class="pend-wait" id="pendStatus">${esc(t.pendWait)}</div>`;
 }
 
 function showSuccess(d) {
@@ -1186,29 +1144,12 @@ function showSuccess(d) {
   const groupsHTML = Object.entries(groups).map(([sheetName, matches]) => {
     const matchCards = matches.map(m => {
       const cardId = ('mc_' + m.sheet + '_' + m.row).replace(/[^a-zA-Z0-9_]/g, '_');
-
       const sesiHTML = sesiBadge(m.sesi);
 
-      let footerHTML;
-      if (_terimaMode) {
-        if (m.sudahTerima) {
-          footerHTML = `<div class="mc-terima-strip received"><span class="mc-terima-dot"></span><span>${esc(t.statusTerima)}</span></div>`;
-        } else if (m.sudahHadir) {
-          footerHTML = `<div class="mc-terima-action">
-            <button class="btn-terima-card"
-              onclick="openTerimaConfirm('${esc(m.sheet)}',${Number(m.row)||0},'${esc(m.ic)}','${esc(m.kaunter||'')}','${cardId}')">
-              ${esc(t.btnTerimaCard)}
-            </button>
-          </div>`;
-        } else {
-          footerHTML = `<div class="mc-terima-locked">🔒 ${esc(t.terimaLocked)}</div>`;
-        }
-      } else {
-        footerHTML = `<div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
+      const footerHTML = `<div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
           <span class="mc-terima-dot"></span>
           ${m.sudahTerima ? `<span>${esc(t.statusTerima)}</span>` : `<span>${esc(t.statusBelumTerima)}</span>`}
         </div>`;
-      }
 
       return `
       <div class="match-card" id="${cardId}">
@@ -1243,8 +1184,6 @@ function showSuccess(d) {
       </div>`;
   }).join('');
 
-  // Mod biasa: papar Nama Bantuan (Column E) + Sesi (Column K) sahaja.
-  // Nombor kaunter sengaja disembunyikan sehingga imbas QR di lokasi.
   const bantuanHTML = _terimaMode ? '' : `
     <div class="bantuan-list">
       ${d.matches.map(m => `
@@ -1256,7 +1195,10 @@ function showSuccess(d) {
     </div>`;
 
   let kehHTML = '';
-  if (allHadir) {
+  if (_terimaMode) {
+    // Mod Pendaftaran Kehadiran — status sahaja, tiada butang
+    kehHTML = pendBlockHTML();
+  } else if (allHadir) {
     kehHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
   } else {
     const entries = JSON.stringify(d.matches.map(m => ({sheet: m.sheet, row: m.row})));
@@ -1280,7 +1222,7 @@ function showSuccess(d) {
     ${_terimaMode ? (totalCount > 1 ? summaryHTML : '') : ''}
     ${_terimaMode ? groupsHTML : bantuanHTML}
     <div class="keh-section">
-      <div class="keh-title">${esc(t.kehTitle)}</div>
+      <div class="keh-title">${esc(_terimaMode ? t.pendTitle : t.kehTitle)}</div>
       ${kehHTML}
     </div>
     ${_terimaMode ? '' : `<div class="kaunter-notice">
@@ -1294,7 +1236,7 @@ function showSuccess(d) {
   el.style.display = 'block';
   el.classList.add('show');
 
-  if (_terimaMode) recordKehadiranSemasa(d.matches);
+  if (_terimaMode && _pendState === 'wait') recordKehadiranSemasa(d.matches);
 }
 
 function showError(msg) {
@@ -1308,7 +1250,7 @@ function showError(msg) {
   el.removeAttribute('data-sheet');
 }
 
-// ── REKOD KEHADIRAN (Column F) ──
+// ── REKOD KEHADIRAN (Column F) — mod biasa ──
 function rekodMulti(btn) {
   const t = i18n[lang];
   const entries = btn ? btn.getAttribute('data-entries') : '[]';
@@ -1327,8 +1269,8 @@ function rekodMulti(btn) {
       msg.style.display = 'block';
     }
     if (data.success) {
-      invalidateCache();                       // status F berubah — buang cache
-      if (_lastResult && _lastResult.matches)  // kemas kini salinan dalam memori
+      invalidateCache();
+      if (_lastResult && _lastResult.matches)
         _lastResult.matches.forEach(m => { m.kehadiran = 'Ya'; m.sudahHadir = true; });
       if (btns) btns.innerHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
     }
@@ -1345,112 +1287,65 @@ function esc(s) {
 applyI18n(); updateCount();
 
 // ══════════════════════════════════════════════════
-// L · MOD TERIMA (?terima=1)
+// L · MOD PENDAFTARAN KEHADIRAN (?terima=1)
 // ══════════════════════════════════════════════════
-const _urlParams  = new URLSearchParams(window.location.search);
-const _terimaMode = _urlParams.get('terima') === '1';
-
 if (_terimaMode) {
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showTerimaBanner);
-  else setTimeout(showTerimaBanner, 100);
+  document.body.classList.add('mode-pendaftaran');
+  const _focusIC = () => { try { ic.focus(); } catch(e){} };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _focusIC);
+  else setTimeout(_focusIC, 100);
 }
 
-function showTerimaBanner() {
-  const t = i18n[lang];
-  const shell = $('shell'), card = $('card');
-  if (!card) return;
-  const existing = $('terimaBanner');
-  if (existing) existing.remove();
-  const banner = document.createElement('div');
-  banner.className = 'terima-banner';
-  banner.id = 'terimaBanner';
-  banner.innerHTML =
-    '<div class="terima-banner-icon">🎁</div>' +
-    '<div class="terima-banner-text">' +
-      '<div class="terima-banner-title">' + esc(t.terimaModeTitle) + '</div>' +
-      '<div class="terima-banner-sub">' + esc(t.terimaModeSub) + '</div>' +
-    '</div>';
-  shell.insertBefore(banner, card);
-  ic.focus();
-}
-
-let _terimaTarget = null;
-function openTerimaConfirm(sheet, row, icNo, kaunter, cardId) {
-  const t = i18n[lang];
-  _terimaTarget = { sheet, row: parseInt(row, 10), ic: icNo, cardId };
-  $('terimaQTitle').textContent = t.terimaQTitle;
-  $('terimaQSub').innerHTML     = t.terimaQSub.replace('{k}', esc(kaunter || '—'));
-  $('terimaQYa').textContent    = t.terimaYa;
-  $('terimaQTidak').textContent = t.terimaTidak;
-  $('terimaQYa').disabled = false;
-  $('terimaQResult').style.display = 'none';
-  $('terimaQBtns').style.display   = 'flex';
-  $('terimaConfirmModal').style.display = 'flex';
-}
-function closeTerimaConfirm() {
-  $('terimaConfirmModal').style.display = 'none';
-  _terimaTarget = null;
-}
-function submitTerimaConfirm() {
-  if (!_terimaTarget) return;
-  const t = i18n[lang];
-  const yaBtn = $('terimaQYa');
-  yaBtn.disabled = true; yaBtn.textContent = '⏳';
-  const { sheet, row, ic: icNo, cardId } = _terimaTarget;
-  jsonp(`${APPS_SCRIPT_URL}?action=rekodterimaIC&sheet=${encodeURIComponent(sheet)}&row=${row}&ic=${encodeURIComponent(icNo)}`,
-    (err, res) => {
-      const resultEl = $('terimaQResult');
-      resultEl.style.display = 'block';
-      if (err || !res || (!res.success && !res.alreadyDone)) {
-        resultEl.className   = 'confirm-result err';
-        resultEl.textContent = (res && res.message) ? res.message : t.terimaErr;
-        yaBtn.disabled = false; yaBtn.textContent = t.terimaYa;
-        return;
-      }
-      resultEl.className   = 'confirm-result ok';
-      resultEl.textContent = t.terimaDone;
-      $('terimaQBtns').style.display = 'none';
-      markCardReceived(cardId);
-      invalidateCache();                       // status G berubah
-      if (_lastResult && _lastResult.matches) {
-        const rec = _lastResult.matches.find(m => m.sheet === sheet && parseInt(m.row,10) === row);
-        if (rec) { rec.terima = 'Ya'; rec.sudahTerima = true; }
-      }
-      setTimeout(closeTerimaConfirm, 1500);
-    });
-}
-function markCardReceived(cardId) {
-  const t = i18n[lang];
-  const c = $(cardId);
-  if (!c) return;
-  const footer = c.querySelector('.mc-terima-action, .mc-terima-locked, .mc-terima-strip');
-  if (footer) {
-    footer.className = 'mc-terima-strip received';
-    footer.innerHTML = '<span class="mc-terima-dot"></span><span>' + esc(t.statusTerima) + '</span>';
-  }
-}
-
-// ── KEHADIRAN SEMASA (Column H) ──
+// ── PENDAFTARAN KEHADIRAN — tulis F, G dan H ──
+// Dirantai satu demi satu: Apps Script menyiri permintaan pengguna yang sama,
+// jadi menghantar serentak hanya akan membuatkannya beratur dan tamat masa.
 function recordKehadiranSemasa(matches) {
   if (!matches || !matches.length) return;
-  const pending = matches.filter(m => !m.sudahHadir2);
-  if (!pending.length) { showKehadiranSemasaBanner(); return; }
-  const entries = pending.map(m => ({ sheet: m.sheet, row: m.row }));
-  jsonp(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${encodeURIComponent(JSON.stringify(entries))}`,
-    (err, res) => {
-      if (res && res.success) {
-        invalidateCache();                     // status H berubah
-        matches.forEach(m => { m.hadir2 = 'Ya'; m.sudahHadir2 = true; });
-        if (_lastResult && _lastResult.matches) _lastResult.matches.forEach(m => { m.hadir2='Ya'; m.sudahHadir2=true; });
-        showKehadiranSemasaBanner();
-      }
-    });
+  const entries = encodeURIComponent(JSON.stringify(matches.map(m => ({ sheet: m.sheet, row: m.row }))));
+
+  // 1) Column F — Pengesahan Kehadiran
+  jsonp(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${entries}`, () => {
+    // 2) Column H — Kehadiran Semasa
+    jsonp(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${entries}`, () => {
+      // 3) Column G — Telah Terima Bantuan (satu panggilan per baris)
+      terimaBerturut(matches.slice(), () => {
+        invalidateCache();
+        matches.forEach(m => {
+          m.kehadiran='Ya'; m.sudahHadir=true;
+          m.hadir2='Ya';    m.sudahHadir2=true;
+          m.terima='Ya';    m.sudahTerima=true;
+        });
+        markSemuaTerima();
+        setPendStatus('done');
+      });
+    }, 20000);
+  }, 20000);
 }
-function showKehadiranSemasaBanner() {
-  const b = $('terimaBanner');
-  if (!b) return;
-  const sub = b.querySelector('.terima-banner-sub');
-  if (sub) sub.innerHTML = '✓ ' + esc(i18n[lang].hadirSemasaDone);
+
+function terimaBerturut(queue, done) {
+  if (!queue.length) { done(); return; }
+  const m = queue.shift();
+  jsonp(`${APPS_SCRIPT_URL}?action=rekodterimaIC&sheet=${encodeURIComponent(m.sheet)}&row=${Number(m.row)||0}&ic=${encodeURIComponent(m.ic||'')}`,
+    () => terimaBerturut(queue, done), 20000);
+}
+
+// Tukar semua strip "belum diterima" kepada "telah diterima"
+function markSemuaTerima() {
+  const t = i18n[lang];
+  document.querySelectorAll('.mc-terima-strip.pending').forEach(s => {
+    s.className = 'mc-terima-strip received';
+    s.innerHTML = '<span class="mc-terima-dot"></span><span>' + esc(t.statusTerima) + '</span>';
+  });
+}
+
+// Kekal dipaparkan sehingga pengguna refresh / tekan "Semakan Baru"
+function setPendStatus(state) {
+  _pendState = state;
+  const el = $('pendStatus');
+  if (!el) return;
+  const t = i18n[lang];
+  if (state === 'done') { el.className = 'sudah-hadir'; el.textContent = t.pendDone; }
+  else if (state === 'err') { el.className = 'keh-msg err'; el.style.marginTop = '0'; el.textContent = t.pendErr; }
 }
 
 // ══════════════════════════════════════════════════
