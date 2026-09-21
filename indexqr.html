@@ -407,7 +407,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .cam-badge.ok{background:rgba(16,185,129,.88);}
 .cam-badge.no{background:rgba(239,68,68,.82);}
 .mnote{font-size:11px;color:var(--text3);line-height:1.55;margin-top:10px;text-align:center;}
-.mres{margin-top:13px;border-radius:11px;padding:12px;font-size:13px;font-weight:600;text-align:center;line-height:1.45;}
+.mres{white-space:pre-line;word-break:break-word;margin-top:13px;border-radius:11px;padding:12px;font-size:13px;font-weight:600;text-align:center;line-height:1.45;}
 .mres.ok{background:rgba(92,232,164,.1);border:1px solid rgba(92,232,164,.26);color:var(--green);}
 .mres.err{background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.22);color:var(--red);}
 .mres.info{background:rgba(217,180,92,.08);border:1px solid var(--border);color:var(--text2);}
@@ -602,7 +602,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 // ─────────────────────────────────
 // ⚠️ TETAPAN — ISI BAHAGIAN INI
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMGyjbsavyuHxoz9D0LA53YGwoA75Xauis0b5rh5vOpoFlsonZYVPMhvxcexn7zS8D/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw36X5rEcDfdAHcdPUqNjdOhppzanROdVLA-6IBp6ibAiUjL-c_ba0F8mxTEZ6erJJ8/exec";
 
 // Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
 const TARIKH_SURAT = "";
@@ -1939,14 +1939,21 @@ async function hantarPembetulan() {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-    const data = await r.json();
-    if (!data || !data.success) throw new Error((data && data.message) || 'gagal');
+    const teks = await r.text();
+    let data;
+    try { data = JSON.parse(teks); }
+    catch (_) {
+      // Apps Script pulangkan HTML, bukan JSON — biasanya doPost belum di-deploy
+      throw new Error('Respons bukan JSON (HTTP ' + r.status + '): ' + teks.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,160));
+    }
+    if (!data || !data.success) throw new Error('Pelayan: ' + ((data && data.message) || 'tiada mesej'));
     tunjukPbRes('ok', t.pbOk);
     btn.textContent = '✓';
     setTimeout(tutupSurat, 2500);
   } catch (e) {
-    console.error('[PKPJ] pembetulan:', e);
-    tunjukPbRes('err', t.pbErr);
+    const sebab = (e && e.message) ? e.message : String(e);
+    console.error('[PKPJ] pembetulan: ' + sebab);
+    tunjukPbRes('err', t.pbErr + '\n(' + sebab + ')');
     btn.textContent = t.pbRetry;
     btn.disabled = false;
   }
@@ -1982,14 +1989,6 @@ if (_urlParams.get('demo') === '1') {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _runDemo);
   else setTimeout(_runDemo, 200);
 }
-
-if (new URLSearchParams(location.search).get('debug') === '1') {
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/eruda';
-  s.onload = () => eruda.init();
-  document.head.appendChild(s);
-}
-
 </script>
 </body>
 </html>
