@@ -582,7 +582,6 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
         <div class="cam-badge" id="camBadge">—</div>
       </div>
 
-      <button class="mb-ok" id="pbCam" style="width:100%" onclick="mulaKamera()">📷 Buka Kamera</button>
       <div class="mbtns">
         <button class="mb-no" id="pbBack" onclick="kembaliSemak()">Kembali</button>
         <button class="mb-ok" id="pbHantar" onclick="hantarPembetulan()" disabled>Hantar</button>
@@ -674,7 +673,9 @@ const i18n = {
     suratErr:"⚠️ Gagal menjana surat. Cuba semula.",
     pbTtl:"Pembetulan butiran", pbSub:"Masukkan butiran yang betul. Gambar wajah diperlukan sebagai rekod sebelum permohonan pembetulan dihantar.",
     pbLNama:"Nama Penuh", pbLIc:"Nombor Kad Pengenalan",
-    pbCam:"📷 Buka Kamera", pbCamShot:"📸 Ambil Gambar", pbCamAgain:"↻ Ambil Semula",
+    pbRetry:"↻ Cuba Lagi",
+    camOpen:"⏳ Membuka kamera…", camHold:"Pandang kamera…", camShot:"📸 Gambar diambil",
+    camTimeout:"⚠️ Wajah tidak dapat dikesan. Pastikan wajah dalam bulatan dan cahaya mencukupi, kemudian cuba lagi.",
     pbBack:"Kembali", pbHantar:"Hantar",
     pbNote:"Gambar disimpan sebagai rekod sahaja. Pembetulan akan disemak oleh pegawai sebelum diluluskan.",
     camLoad:"Memuatkan pengesan wajah…", camSearch:"Mencari wajah…",
@@ -725,7 +726,9 @@ const i18n = {
     suratErr:"⚠️ Failed to generate letter. Please try again.",
     pbTtl:"Correct your details", pbSub:"Enter the correct details. A face photo is required as a record before the correction request is submitted.",
     pbLNama:"Full Name", pbLIc:"IC Number",
-    pbCam:"📷 Open Camera", pbCamShot:"📸 Take Photo", pbCamAgain:"↻ Retake",
+    pbRetry:"↻ Try Again",
+    camOpen:"⏳ Opening camera…", camHold:"Look at the camera…", camShot:"📸 Photo captured",
+    camTimeout:"⚠️ No face detected. Keep your face inside the circle with enough light, then try again.",
     pbBack:"Back", pbHantar:"Submit",
     pbNote:"The photo is stored as a record only. Corrections are reviewed by an officer before approval.",
     camLoad:"Loading face detector…", camSearch:"Looking for a face…",
@@ -776,7 +779,9 @@ const i18n = {
     suratErr:"⚠️ 生成失败，请重试。",
     pbTtl:"更正资料", pbSub:"请输入正确资料。提交更正申请前需拍摄人脸照片作为记录。",
     pbLNama:"全名", pbLIc:"身份证号码",
-    pbCam:"📷 开启相机", pbCamShot:"📸 拍照", pbCamAgain:"↻ 重拍",
+    pbRetry:"↻ 再试一次",
+    camOpen:"⏳ 正在开启相机…", camHold:"请看向相机…", camShot:"📸 已拍照",
+    camTimeout:"⚠️ 未检测到人脸。请将脸部置于圆圈内并确保光线充足，然后再试一次。",
     pbBack:"返回", pbHantar:"提交",
     pbNote:"照片仅作记录用途。更正申请须经工作人员审核。",
     camLoad:"正在加载人脸检测…", camSearch:"正在寻找人脸…",
@@ -827,7 +832,9 @@ const i18n = {
     suratErr:"⚠️ உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
     pbTtl:"விவரத் திருத்தம்", pbSub:"சரியான விவரங்களை உள்ளிடவும். திருத்தக் கோரிக்கை அனுப்பும் முன் முகப் படம் தேவை.",
     pbLNama:"முழுப் பெயர்", pbLIc:"IC எண்",
-    pbCam:"📷 கேமராவைத் திற", pbCamShot:"📸 படம் எடு", pbCamAgain:"↻ மீண்டும் எடு",
+    pbRetry:"↻ மீண்டும் முயற்சி",
+    camOpen:"⏳ கேமரா திறக்கப்படுகிறது…", camHold:"கேமராவைப் பாருங்கள்…", camShot:"📸 படம் எடுக்கப்பட்டது",
+    camTimeout:"⚠️ முகம் கண்டறியப்படவில்லை. முகத்தை வட்டத்திற்குள் வைத்து போதிய ஒளியுடன் மீண்டும் முயற்சிக்கவும்.",
     pbBack:"பின்", pbHantar:"அனுப்பு",
     pbNote:"படம் பதிவுக்காக மட்டுமே சேமிக்கப்படும். திருத்தம் பணியாளரால் சரிபார்க்கப்படும்.",
     camLoad:"முக கண்டறிதல் ஏற்றப்படுகிறது…", camSearch:"முகம் தேடப்படுகிறது…",
@@ -1101,8 +1108,7 @@ function applyI18n() {
   const M = ['smTtl','smSub','smKNama','smKIc','smKSiri','smYes','smNo','smTutup',
              'pbTtl','pbSub','pbLNama','pbLIc','pbBack','pbHantar','pbNote'];
   M.forEach(k => { const el = $(k); if (el && t[k] !== undefined) el.textContent = t[k]; });
-  const camBtn = $('pbCam');
-  if (camBtn && !_camOn && !_shotData) camBtn.textContent = t.pbCam;
+
 }
 function toggleTheme() {
   isDark = !isDark;
@@ -1707,12 +1713,30 @@ async function janaSurat() {
 
 // ══════════════════════════════════════════════════
 // O · PEMBETULAN BUTIRAN + GAMBAR WAJAH
+// Satu tekan sahaja: butang "Hantar" membuka kamera sendiri,
+// menangkap gambar sebaik wajah dikesan, kemudian menghantar.
 // Pengesanan wajah hanya mengesahkan ADA wajah dalam bingkai —
 // ia bukan pengesahan identiti. Gambar disimpan sebagai rekod audit.
 // ══════════════════════════════════════════════════
 // Pemboleh ubah kamera diisytihar di bahagian awal skrip.
-const FACEAPI_SRC   = 'https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js';
-const FACEAPI_MODEL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model';
+
+// Pustaka dan model MESTI daripada projek yang sama — face-api.js 0.22.2
+// mencari fail bernama *-weights_manifest.json, yang hanya wujud dalam
+// folder weights repo justadudewhohacks. Beberapa cermin disediakan
+// sekiranya satu CDN disekat oleh rangkaian.
+const FACEAPI_SRCS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js',
+  'https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js',
+  'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js'
+];
+const FACEAPI_MODELS = [
+  'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+  'https://unpkg.com/face-api.js@0.22.2/weights',
+  'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'
+];
+
+const CAM_TIMEOUT_MS = 25000;   // had masa mencari wajah
+const CAM_SAH        = 2;       // bilangan kesanan berturut sebelum tangkap
 
 function bukaPembetulan() {
   const t = i18n[lang];
@@ -1720,9 +1744,8 @@ function bukaPembetulan() {
   $('pbNama').value = _suratTarget.nama || '';
   $('pbIc').value   = _suratTarget.ic   || '';
   $('pbRes').style.display = 'none';
-  $('pbHantar').disabled = true;
+  $('pbHantar').disabled = false;
   $('pbHantar').textContent = t.pbHantar;
-  $('pbCam').textContent = t.pbCam;
   $('camWrap').classList.remove('show');
   $('camShot').hidden = true;
   $('camVid').hidden = false;
@@ -1736,25 +1759,31 @@ $('pbIc').addEventListener('input', e => { e.target.value = formatIC(e.target.va
 function muatSkrip(src) {
   return new Promise((ok, no) => {
     const s = document.createElement('script');
-    s.src = src; s.onload = ok; s.onerror = () => no(new Error('gagal muat ' + src));
+    s.src = src;
+    s.onload  = () => ok();
+    s.onerror = () => { s.remove(); no(new Error('gagal muat ' + src)); };
     document.head.appendChild(s);
   });
 }
 
+// Cuba setiap cermin sehingga satu berjaya
+async function cubaBerturut(senarai, fn) {
+  let akhir = null;
+  for (const item of senarai) {
+    try { await fn(item); return item; }
+    catch (e) { akhir = e; console.warn('[PKPJ] cermin gagal:', item, e.message); }
+  }
+  throw akhir || new Error('semua cermin gagal');
+}
+
 async function siapkanPengesan() {
   if (_faceReady) return true;
-  const t = i18n[lang];
-  setBadge(t.camLoad, '');
-  try {
-    if (typeof faceapi === 'undefined') await muatSkrip(FACEAPI_SRC);
-    await faceapi.nets.tinyFaceDetector.loadFromUri(FACEAPI_MODEL);
-    _faceReady = true;
-    return true;
-  } catch (e) {
-    console.error('[PKPJ] face-api:', e);
-    tunjukPbRes('err', t.camFail);
-    return false;
+  if (typeof faceapi === 'undefined') {
+    await cubaBerturut(FACEAPI_SRCS, muatSkrip);
   }
+  await cubaBerturut(FACEAPI_MODELS, u => faceapi.nets.tinyFaceDetector.loadFromUri(u));
+  _faceReady = true;
+  return true;
 }
 
 function setBadge(teks, kelas) {
@@ -1771,76 +1800,83 @@ function tunjukPbRes(jenis, teks) {
   r.textContent = teks;
 }
 
-async function mulaKamera() {
+// Buka kamera, tunggu wajah, tangkap gambar. Pulangkan dataURL atau lempar ralat.
+async function tangkapWajahAuto() {
   const t = i18n[lang];
-  // Keadaan 3: gambar sudah diambil → ambil semula
-  if (_shotData) {
-    _shotData = null;
-    $('camShot').hidden = true;
-    $('camVid').hidden = false;
-    $('pbHantar').disabled = true;
-    $('pbCam').textContent = t.pbCam;
-    return mulaKamera();
-  }
-  // Keadaan 2: kamera sedang hidup → ambil gambar
-  if (_camOn) { return ambilGambar(); }
 
-  // Keadaan 1: buka kamera
+  // 1) Kamera
+  tunjukPbRes('info', t.camOpen);
   try {
     _camStream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false
     });
   } catch (e) {
-    tunjukPbRes('err', t.camDeny);
-    return;
+    throw { jenis: 'deny', asal: e };
   }
+
   const v = $('camVid');
   v.srcObject = _camStream;
+  v.hidden = false;
+  $('camShot').hidden = true;
+  $('camWrap').classList.add('show');
   await v.play().catch(()=>{});
   _camOn = true;
-  $('camWrap').classList.add('show');
-  $('pbRes').style.display = 'none';
   setBadge(t.camLoad, '');
 
-  const sedia = await siapkanPengesan();
-  if (!sedia) { hentikanKamera(); return; }
+  // 2) Pengesan wajah
+  try {
+    await siapkanPengesan();
+  } catch (e) {
+    hentikanKamera();
+    throw { jenis: 'model', asal: e };
+  }
 
-  $('pbCam').textContent = t.pbCamShot;
-  pantauWajah();
-}
+  // 3) Cari wajah, tangkap automatik
+  tunjukPbRes('info', t.camHold);
+  setBadge(t.camSearch, '');
 
-function pantauWajah() {
-  const t = i18n[lang];
-  const v = $('camVid');
-  const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.45 });
-  clearInterval(_faceLoop);
-  _faceLoop = setInterval(async () => {
-    if (!_camOn || v.readyState < 2) return;
-    try {
-      const det = await faceapi.detectSingleFace(v, opts);
-      _adaWajah = !!det;
-      setBadge(_adaWajah ? t.camOk : t.camNo, _adaWajah ? 'ok' : 'no');
-    } catch (e) { /* abaikan bingkai gagal */ }
-  }, 450);
-}
+  return await new Promise((selesai, gagal) => {
+    const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.45 });
+    let berturut = 0;
+    const mula = Date.now();
 
-function ambilGambar() {
-  const t = i18n[lang];
-  if (!_adaWajah) { tunjukPbRes('err', t.camNo); buzz(40); return; }
-  const v = $('camVid');
-  const c = document.createElement('canvas');
-  c.width = v.videoWidth || 640; c.height = v.videoHeight || 480;
-  c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-  _shotData = c.toDataURL('image/jpeg', 0.72);
-  $('camShot').src = _shotData;
-  $('camShot').hidden = false;
-  $('camVid').hidden = true;
-  setBadge(t.camOk, 'ok');
-  hentikanKamera(true);
-  $('pbCam').textContent = t.pbCamAgain;
-  $('pbHantar').disabled = false;
-  $('pbRes').style.display = 'none';
-  buzz(25);
+    clearInterval(_faceLoop);
+    _faceLoop = setInterval(async () => {
+      if (!_camOn) return;
+      if (Date.now() - mula > CAM_TIMEOUT_MS) {
+        hentikanKamera();
+        gagal({ jenis: 'timeout' });
+        return;
+      }
+      if (v.readyState < 2) return;
+      try {
+        const det = await faceapi.detectSingleFace(v, opts);
+        _adaWajah = !!det;
+        if (det) {
+          berturut++;
+          setBadge(t.camOk, 'ok');
+          if (berturut >= CAM_SAH) {
+            clearInterval(_faceLoop); _faceLoop = null;
+            const c = document.createElement('canvas');
+            c.width  = v.videoWidth  || 640;
+            c.height = v.videoHeight || 480;
+            c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+            const data = c.toDataURL('image/jpeg', 0.72);
+            $('camShot').src = data;
+            $('camShot').hidden = false;
+            v.hidden = true;
+            setBadge(t.camShot, 'ok');
+            hentikanKamera(true);
+            buzz(25);
+            selesai(data);
+          }
+        } else {
+          berturut = 0;
+          setBadge(t.camNo, 'no');
+        }
+      } catch (e) { /* abaikan bingkai gagal */ }
+    }, 400);
+  });
 }
 
 function hentikanKamera(kekalPaparan) {
@@ -1852,15 +1888,36 @@ function hentikanKamera(kekalPaparan) {
 }
 
 async function hantarPembetulan() {
-  const t = i18n[lang];
-  const nama = $('pbNama').value.trim();
+  const t   = i18n[lang];
+  const btn = $('pbHantar');
+  const nama   = $('pbNama').value.trim();
   const icBaru = $('pbIc').value.trim();
-  if (!nama || icBaru.replace(/\D/g,'').length !== 12 || !_shotData) {
+
+  if (!nama || icBaru.replace(/\D/g,'').length !== 12) {
     tunjukPbRes('err', t.pbNeedAll);
     return;
   }
-  const btn = $('pbHantar');
+
   btn.disabled = true;
+
+  // Gambar belum ada → buka kamera sendiri dan tangkap
+  if (!_shotData) {
+    try {
+      _shotData = await tangkapWajahAuto();
+    } catch (e) {
+      hentikanKamera();
+      if      (e && e.jenis === 'deny')    tunjukPbRes('err', t.camDeny);
+      else if (e && e.jenis === 'timeout') tunjukPbRes('err', t.camTimeout);
+      else {
+        console.error('[PKPJ] pengesan wajah:', e && e.asal ? e.asal : e);
+        tunjukPbRes('err', t.camFail);
+      }
+      btn.textContent = t.pbRetry;
+      btn.disabled = false;
+      return;
+    }
+  }
+
   tunjukPbRes('info', t.pbBusy);
 
   const payload = {
@@ -1890,6 +1947,7 @@ async function hantarPembetulan() {
   } catch (e) {
     console.error('[PKPJ] pembetulan:', e);
     tunjukPbRes('err', t.pbErr);
+    btn.textContent = t.pbRetry;
     btn.disabled = false;
   }
 }
