@@ -402,9 +402,14 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .cam-wrap.show{display:block;}
 .cam-wrap video,.cam-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
 .cam-wrap video[hidden],.cam-wrap img[hidden]{display:none !important;}
+.cam-wrap img{object-fit:contain;background:#0e1526;}
+.cam-wrap.siap{aspect-ratio:720/950;}
+.cam-wrap.siap .cam-ring{display:none;}
+.cam-wrap.siap .cam-badge{top:10px;bottom:auto;}
 .chk-row.baru{border-color:rgba(92,232,164,.45);background:rgba(92,232,164,.07);}
 .chk-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.06em;background:rgba(92,232,164,.16);color:var(--green);vertical-align:middle;}
-.cam-ring{position:absolute;inset:10% 24%;border:2px dashed rgba(255,255,255,.45);border-radius:50%;pointer-events:none;}
+.cam-ring{position:absolute;inset:10% 24%;border:2px dashed rgba(255,255,255,.45);border-radius:50%;pointer-events:none;transition:border-color .2s;}
+.cam-wrap.fit .cam-ring{border:3px solid #10b981;}
 .cam-badge{position:absolute;left:10px;bottom:10px;padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;
   background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(6px);}
 .cam-badge.ok{background:rgba(16,185,129,.88);}
@@ -495,7 +500,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 
 <div id="shell">
 
-  <!--<div class="topbar">
+  <div class="topbar">
     <div class="lang-row">
       <button class="lb on" onclick="setLang('ms',this)">BM</button>
       <button class="lb" onclick="setLang('en',this)">EN</button>
@@ -503,7 +508,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
       <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>
     </div>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-  </div>-->
+  </div>
 
   <div class="card" id="card">
     <div class="grabber"></div>
@@ -694,6 +699,7 @@ const i18n = {
     pbLNama:"Nama Penuh", pbLIc:"Nombor Kad Pengenalan",
     pbRetry:"↻ Cuba Lagi",
     pbOkSurat:"✅ Pembetulan diterima. Menjana surat dengan butiran baharu…", tagBaru:"DIBETULKAN",
+    camFitIn:"Letakkan wajah di dalam bulatan", camFitNear:"Dekatkan wajah ke kamera", camFitFar:"Jauhkan sedikit wajah", pbSemak:"⏳ Mengesahkan rekod…",
     camOpen:"⏳ Membuka kamera…", camHold:"Pandang kamera…", camShot:"📸 Gambar diambil",
     camTimeout:"⚠️ Wajah tidak dapat dikesan. Pastikan wajah dalam bulatan dan cahaya mencukupi, kemudian cuba lagi.",
     pbBack:"Kembali", pbHantar:"Hantar",
@@ -748,6 +754,7 @@ const i18n = {
     pbLNama:"Full Name", pbLIc:"IC Number",
     pbRetry:"↻ Try Again",
     pbOkSurat:"✅ Correction received. Generating letter with the new details…", tagBaru:"CORRECTED",
+    camFitIn:"Place your face inside the circle", camFitNear:"Move closer to the camera", camFitFar:"Move back a little", pbSemak:"⏳ Verifying record…",
     camOpen:"⏳ Opening camera…", camHold:"Look at the camera…", camShot:"📸 Photo captured",
     camTimeout:"⚠️ No face detected. Keep your face inside the circle with enough light, then try again.",
     pbBack:"Back", pbHantar:"Submit",
@@ -802,6 +809,7 @@ const i18n = {
     pbLNama:"全名", pbLIc:"身份证号码",
     pbRetry:"↻ 再试一次",
     pbOkSurat:"✅ 更正已提交。正在以新资料生成信函…", tagBaru:"已更正",
+    camFitIn:"请将脸部置于圆圈内", camFitNear:"请靠近相机", camFitFar:"请稍微后退", pbSemak:"⏳ 正在核实记录…",
     camOpen:"⏳ 正在开启相机…", camHold:"请看向相机…", camShot:"📸 已拍照",
     camTimeout:"⚠️ 未检测到人脸。请将脸部置于圆圈内并确保光线充足，然后再试一次。",
     pbBack:"返回", pbHantar:"提交",
@@ -856,6 +864,7 @@ const i18n = {
     pbLNama:"முழுப் பெயர்", pbLIc:"IC எண்",
     pbRetry:"↻ மீண்டும் முயற்சி",
     pbOkSurat:"✅ திருத்தம் பெறப்பட்டது. புதிய விவரங்களுடன் கடிதம் உருவாக்கப்படுகிறது…", tagBaru:"திருத்தப்பட்டது",
+    camFitIn:"முகத்தை வட்டத்திற்குள் வைக்கவும்", camFitNear:"கேமராவுக்கு அருகில் வரவும்", camFitFar:"சற்று பின்னால் செல்லவும்", pbSemak:"⏳ பதிவு சரிபார்க்கப்படுகிறது…",
     camOpen:"⏳ கேமரா திறக்கப்படுகிறது…", camHold:"கேமராவைப் பாருங்கள்…", camShot:"📸 படம் எடுக்கப்பட்டது",
     camTimeout:"⚠️ முகம் கண்டறியப்படவில்லை. முகத்தை வட்டத்திற்குள் வைத்து போதிய ஒளியுடன் மீண்டும் முயற்சிக்கவும்.",
     pbBack:"பின்", pbHantar:"அனுப்பு",
@@ -1800,8 +1809,109 @@ const FACEAPI_MODELS = [
   'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'
 ];
 
+let _pbRid = '';
+
+// ── Watermark gambar rekod ──
+const WM_LOGO    = './pkpj.png';
+const WM_OPACITY = 0.28;   // cukup jelas untuk dilihat, wajah masih jelas. Naikkan ke 0.38 jika mahu lebih pekat
+const WM_LEBAR   = 0.62;   // lebar logo berbanding lebar gambar
+let _wmLogo = null;
+
+function muatLogoWM() {
+  if (_wmLogo) return Promise.resolve(_wmLogo);
+  return new Promise(ok => {
+    const im = new Image();
+    im.onload  = () => { _wmLogo = im; ok(im); };
+    im.onerror = () => ok(null);            // tiada logo → guna teks "PKPJ"
+    im.src = WM_LOGO;
+  });
+}
+
+// Hasilkan gambar rekod: foto (potong segi empat, tengah) + logo watermark
+// di atas wajah + jalur maklumat nama/IC di bawah.
+function bingkaiRekod(sumber, nama, ic, siri) {
+  const W = 720, FOTO = 720, JALUR = 230;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = FOTO + JALUR;
+  const g = c.getContext('2d');
+
+  // Foto — potong tengah (cover) ke segi empat
+  const sw = sumber.width, sh = sumber.height, sisi = Math.min(sw, sh);
+  g.drawImage(sumber, (sw - sisi) / 2, (sh - sisi) / 2, sisi, sisi, 0, 0, W, FOTO);
+
+  // Watermark logo di tengah wajah
+  g.save();
+  g.globalAlpha = WM_OPACITY;
+  if (_wmLogo) {
+    const lw = W * WM_LEBAR, lh = lw * _wmLogo.height / _wmLogo.width;
+    g.drawImage(_wmLogo, (W - lw) / 2, (FOTO - lh) / 2, lw, lh);
+  } else {
+    g.fillStyle = '#ffffff';
+    g.font = '800 150px "DM Sans", Arial, sans-serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('PKPJ', W / 2, FOTO / 2);
+  }
+  g.restore();
+
+  // Jalur maklumat
+  g.fillStyle = '#0e1526';
+  g.fillRect(0, FOTO, W, JALUR);
+  g.fillStyle = '#d9b45c';
+  g.fillRect(0, FOTO, W, 5);
+
+  const kiri = 36;
+  const baris = (lbl, nilai, y, besar) => {
+    g.fillStyle = '#d9b45c';
+    g.font = '700 19px "DM Sans", Arial, sans-serif';
+    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+    g.fillText(lbl, kiri, y);
+    g.fillStyle = '#ffffff';
+    g.font = (besar ? '800 ' : '700 ') + (besar ? 34 : 30) + 'px "DM Sans", Arial, sans-serif';
+    let teks = String(nilai || '-');
+    while (g.measureText(teks).width > W - kiri * 2 && teks.length > 4) teks = teks.slice(0, -2) + '…';
+    g.fillText(teks, kiri, y + (besar ? 38 : 34));
+  };
+  baris('NAMA PEMOHON', String(nama).toUpperCase(), FOTO + 48, true);
+  baris('NO. KAD PENGENALAN', ic, FOTO + 128, false);
+
+  // Cap masa & rujukan (kecil, kanan bawah)
+  const masa = new Date().toLocaleString('ms-MY', { hour12: false });
+  g.fillStyle = 'rgba(255,255,255,.55)';
+  g.font = '500 16px "DM Sans", Arial, sans-serif';
+  g.textAlign = 'right';
+  g.fillText((siri ? siri + '  ·  ' : '') + masa, W - kiri, FOTO + JALUR - 18);
+
+  return c.toDataURL('image/jpeg', 0.8);
+}
 const CAM_TIMEOUT_MS = 25000;   // had masa mencari wajah
-const CAM_SAH        = 2;       // bilangan kesanan berturut sebelum tangkap
+const CAM_SAH        = 3;       // bilangan bingkai berturut (wajah dalam bulatan) sebelum tangkap
+
+// Bulatan panduan — MESTI sepadan dengan CSS .cam-ring { inset:10% 24% }
+const RING = { x0: 0.24, x1: 0.76, y0: 0.10, y1: 0.90 };
+
+// Semak kedudukan wajah berbanding bulatan seperti yang DILIHAT pemohon.
+// Video guna object-fit:cover, jadi koordinat video perlu dipetakan ke paparan.
+function semakKedudukan(det, v) {
+  const W = v.clientWidth, H = v.clientHeight, vw = v.videoWidth, vh = v.videoHeight;
+  if (!W || !H || !vw || !vh) return 'in';
+  const sk = Math.max(W / vw, H / vh);
+  const ox = (W - vw * sk) / 2, oy = (H - vh * sk) / 2;
+  const b = det.box;
+  const L = (b.x * sk + ox) / W, R = ((b.x + b.width) * sk + ox) / W;
+  const T = (b.y * sk + oy) / H, B = ((b.y + b.height) * sk + oy) / H;
+  const cx = (L + R) / 2, cy = (T + B) / 2;
+  const rx = (RING.x1 - RING.x0) / 2, ry = (RING.y1 - RING.y0) / 2;
+  const ex = (RING.x0 + RING.x1) / 2, ey = (RING.y0 + RING.y1) / 2;
+  // Pusat wajah mesti dekat dengan pusat bulatan
+  const jarak = Math.pow((cx - ex) / rx, 2) + Math.pow((cy - ey) / ry, 2);
+  if (jarak > 0.18) return 'in';
+  // Tepi kotak wajah mesti dalam bulatan (dengan sedikit kelonggaran)
+  const tol = 0.04;
+  if (L < RING.x0 - tol || R > RING.x1 + tol || T < RING.y0 - tol || B > RING.y1 + tol) return 'far';
+  // Wajah tidak terlalu kecil
+  if ((R - L) < (RING.x1 - RING.x0) * 0.45) return 'near';
+  return 'ok';
+}
 
 function bukaPembetulan() {
   const t = i18n[lang];
@@ -1811,10 +1921,12 @@ function bukaPembetulan() {
   $('pbRes').style.display = 'none';
   $('pbHantar').disabled = false;
   $('pbHantar').textContent = t.pbHantar;
-  $('camWrap').classList.remove('show');
+  $('camWrap').classList.remove('show', 'siap');
   $('camShot').hidden = true;
   $('camVid').hidden = false;
   _shotData = null;
+  muatLogoWM();
+  _pbRid = 'PB' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
   $('stepSemak').hidden = true;
   $('stepBetul').hidden = false;
 }
@@ -1917,6 +2029,13 @@ async function tangkapWajahAuto() {
       try {
         const det = await faceapi.detectSingleFace(v, opts);
         _adaWajah = !!det;
+        const pos = det ? semakKedudukan(det, v) : null;
+        $('camWrap').classList.toggle('fit', pos === 'ok');
+        if (det && pos !== 'ok') {
+          berturut = 0;
+          setBadge(pos === 'near' ? t.camFitNear : pos === 'far' ? t.camFitFar : t.camFitIn, 'no');
+          return;
+        }
         if (det) {
           berturut++;
           setBadge(t.camOk, 'ok');
@@ -1932,10 +2051,12 @@ async function tangkapWajahAuto() {
             for (let i = 0; i < px.length; i += 400) { jum += px[i] + px[i+1] + px[i+2]; n++; }
             if (jum / (n * 3) < 18) { berturut = 0; return; }
             clearInterval(_faceLoop); _faceLoop = null;
-            const data = c.toDataURL('image/jpeg', 0.72);
+            const data = bingkaiRekod(c, $('pbNama').value.trim(), formatIC($('pbIc').value), _suratTarget && _suratTarget.siri);
             $('camShot').src = data;
             $('camShot').hidden = false;
             v.hidden = true;
+            $('camWrap').classList.remove('fit');
+            $('camWrap').classList.add('siap');
             setBadge(t.camShot, 'ok');
             hentikanKamera(true);
             buzz(25);
@@ -1943,6 +2064,7 @@ async function tangkapWajahAuto() {
           }
         } else {
           berturut = 0;
+          $('camWrap').classList.remove('fit');
           setBadge(t.camNo, 'no');
         }
       } catch (e) { /* abaikan bingkai gagal */ }
@@ -1956,6 +2078,22 @@ function hentikanKamera(kekalPaparan) {
   if (_camStream) { _camStream.getTracks().forEach(tr => tr.stop()); _camStream = null; }
   const v = $('camVid'); if (v) v.srcObject = null;
   if (!kekalPaparan) { $('camWrap').classList.remove('show'); }
+}
+
+// Tanya pelayan (JSONP) sama ada rekod dengan rid ini sudah wujud. Cuba beberapa kali.
+function sahkanPembetulan(rid) {
+  return new Promise(selesai => {
+    let cubaan = 0;
+    const semak = () => {
+      cubaan++;
+      jsonp(`${APPS_SCRIPT_URL}?action=semakpembetulan&rid=${encodeURIComponent(rid)}`, (err, d) => {
+        if (d && d.success && d.ada) return selesai(true);
+        if (cubaan >= 5) return selesai(false);
+        setTimeout(semak, 1500);
+      }, 15000);
+    };
+    setTimeout(semak, 800);
+  });
 }
 
 async function hantarPembetulan() {
@@ -1993,6 +2131,7 @@ async function hantarPembetulan() {
 
   const payload = {
     action:    'hantarPembetulan',
+    rid:       _pbRid,
     sheet:     _suratTarget.sheet,
     row:       _suratTarget.row,
     icAsal:    _suratTarget.ic,
@@ -2004,20 +2143,23 @@ async function hantarPembetulan() {
   };
 
   try {
-    // text/plain mengelak preflight CORS — Apps Script tidak menjawab OPTIONS
-    const r = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    const teks = await r.text();
-    let data;
-    try { data = JSON.parse(teks); }
-    catch (_) {
-      // Apps Script pulangkan HTML, bukan JSON — biasanya doPost belum di-deploy
-      throw new Error('Respons bukan JSON (HTTP ' + r.status + '): ' + teks.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,160));
+    // Jawapan POST Apps Script tidak boleh dipercayai: selepas redirect, sesetengah
+    // pelayar mengambilnya sebagai GET dan doGet yang menjawab. Jadi kita hantar
+    // (no-cors, tiada preflight), abaikan jawapan, dan sahkan rekod melalui JSONP.
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.warn('[PKPJ] POST pembetulan: ' + (e && e.message) + ' — tetap semak rekod');
     }
-    if (!data || !data.success) throw new Error('Pelayan: ' + ((data && data.message) || 'tiada mesej'));
+
+    tunjukPbRes('info', t.pbSemak);
+    const ada = await sahkanPembetulan(_pbRid);
+    if (!ada) throw new Error('Rekod tidak dijumpai selepas dihantar. Semak sambungan internet dan cuba lagi.');
+
     // Kemas kini sasaran surat dengan butiran yang dibetulkan
     _suratTarget.nama = nama.toUpperCase();
     _suratTarget.ic   = formatIC(icBaru);
