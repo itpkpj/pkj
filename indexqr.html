@@ -403,7 +403,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .cam-wrap video,.cam-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
 .cam-wrap video[hidden],.cam-wrap img[hidden]{display:none !important;}
 .cam-wrap img{object-fit:contain;background:#0e1526;}
-.cam-wrap.siap{aspect-ratio:720/950;}
+.cam-wrap.siap{aspect-ratio:640/790;}
 .cam-wrap.siap .cam-ring{display:none;}
 .cam-wrap.siap .cam-badge{top:10px;bottom:auto;}
 .chk-row.baru{border-color:rgba(92,232,164,.45);background:rgba(92,232,164,.07);}
@@ -610,7 +610,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 // ─────────────────────────────────
 // ⚠️ TETAPAN — ISI BAHAGIAN INI
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzH5WAvOXtq-AJm-mY1GEJ7mElS0U0qQO8R4F9YxGcWB591xCjZwWpf8xdxyMnb5sy/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoVagPEh1wiwtla38m5EmuVkMdQMP6sjpUqZzoUUmzZXGeH9KNl7hVqJk4062oVQi3/exec";
 
 // Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
 const TARIKH_SURAT = "";
@@ -1813,8 +1813,8 @@ let _pbRid = '';
 
 // ── Watermark gambar rekod ──
 const WM_LOGO    = './pkpj.png';
-const WM_OPACITY = 0.28;   // cukup jelas untuk dilihat, wajah masih jelas. Naikkan ke 0.38 jika mahu lebih pekat
-const WM_LEBAR   = 0.62;   // lebar logo berbanding lebar gambar
+const WM_OPACITY = 0.09;   // kelegapan logo watermark
+// Logo diregang (kekal nisbah) untuk menutup 100% gambar, termasuk jalur maklumat
 let _wmLogo = null;
 
 function muatLogoWM() {
@@ -1830,7 +1830,7 @@ function muatLogoWM() {
 // Hasilkan gambar rekod: foto (potong segi empat, tengah) + logo watermark
 // di atas wajah + jalur maklumat nama/IC di bawah.
 function bingkaiRekod(sumber, nama, ic, siri) {
-  const W = 720, FOTO = 720, JALUR = 230;
+  const W = 640, FOTO = 640, JALUR = 150;
   const c = document.createElement('canvas');
   c.width = W; c.height = FOTO + JALUR;
   const g = c.getContext('2d');
@@ -1839,49 +1839,37 @@ function bingkaiRekod(sumber, nama, ic, siri) {
   const sw = sumber.width, sh = sumber.height, sisi = Math.min(sw, sh);
   g.drawImage(sumber, (sw - sisi) / 2, (sh - sisi) / 2, sisi, sisi, 0, 0, W, FOTO);
 
-  // Watermark logo di tengah wajah
+  // Jalur maklumat — ringkas
+  g.fillStyle = '#0e1526';
+  g.fillRect(0, FOTO, W, JALUR);
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  const kiri = 28;
+  const muat = (teks, maks) => { teks = String(teks || '-');
+    while (g.measureText(teks).width > maks && teks.length > 4) teks = teks.slice(0, -2) + '…'; return teks; };
+  g.fillStyle = '#ffffff';
+  g.font = '700 30px Arial, sans-serif';
+  g.fillText(muat(String(nama).toUpperCase(), W - kiri * 2), kiri, FOTO + 50);
+  g.font = '600 28px Arial, sans-serif';
+  g.fillText(muat(ic, W - kiri * 2), kiri, FOTO + 92);
+  g.fillStyle = 'rgba(255,255,255,.6)';
+  g.font = '15px Arial, sans-serif';
+  g.fillText((siri ? siri + '  ·  ' : '') + new Date().toLocaleString('ms-MY', { hour12: false }), kiri, FOTO + 128);
+  // Watermark — menutup 100% gambar (foto + jalur), nisbah logo dikekalkan
   g.save();
   g.globalAlpha = WM_OPACITY;
   if (_wmLogo) {
-    const lw = W * WM_LEBAR, lh = lw * _wmLogo.height / _wmLogo.width;
-    g.drawImage(_wmLogo, (W - lw) / 2, (FOTO - lh) / 2, lw, lh);
+    const k = Math.max(c.width / _wmLogo.width, c.height / _wmLogo.height);
+    const lw = _wmLogo.width * k, lh = _wmLogo.height * k;
+    g.drawImage(_wmLogo, (c.width - lw) / 2, (c.height - lh) / 2, lw, lh);
   } else {
     g.fillStyle = '#ffffff';
-    g.font = '800 150px "DM Sans", Arial, sans-serif';
+    g.font = '800 260px Arial, sans-serif';
     g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText('PKPJ', W / 2, FOTO / 2);
+    g.fillText('PKPJ', c.width / 2, c.height / 2);
   }
   g.restore();
 
-  // Jalur maklumat
-  g.fillStyle = '#0e1526';
-  g.fillRect(0, FOTO, W, JALUR);
-  g.fillStyle = '#d9b45c';
-  g.fillRect(0, FOTO, W, 5);
-
-  const kiri = 36;
-  const baris = (lbl, nilai, y, besar) => {
-    g.fillStyle = '#d9b45c';
-    g.font = '700 19px "DM Sans", Arial, sans-serif';
-    g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-    g.fillText(lbl, kiri, y);
-    g.fillStyle = '#ffffff';
-    g.font = (besar ? '800 ' : '700 ') + (besar ? 34 : 30) + 'px "DM Sans", Arial, sans-serif';
-    let teks = String(nilai || '-');
-    while (g.measureText(teks).width > W - kiri * 2 && teks.length > 4) teks = teks.slice(0, -2) + '…';
-    g.fillText(teks, kiri, y + (besar ? 38 : 34));
-  };
-  baris('NAMA PEMOHON', String(nama).toUpperCase(), FOTO + 48, true);
-  baris('NO. KAD PENGENALAN', ic, FOTO + 128, false);
-
-  // Cap masa & rujukan (kecil, kanan bawah)
-  const masa = new Date().toLocaleString('ms-MY', { hour12: false });
-  g.fillStyle = 'rgba(255,255,255,.55)';
-  g.font = '500 16px "DM Sans", Arial, sans-serif';
-  g.textAlign = 'right';
-  g.fillText((siri ? siri + '  ·  ' : '') + masa, W - kiri, FOTO + JALUR - 18);
-
-  return c.toDataURL('image/jpeg', 0.8);
+  return c.toDataURL('image/jpeg', 0.7);
 }
 const CAM_TIMEOUT_MS = 25000;   // had masa mencari wajah
 const CAM_SAH        = 3;       // bilangan bingkai berturut (wajah dalam bulatan) sebelum tangkap
@@ -2080,19 +2068,21 @@ function hentikanKamera(kekalPaparan) {
   if (!kekalPaparan) { $('camWrap').classList.remove('show'); }
 }
 
-// Tanya pelayan (JSONP) sama ada rekod dengan rid ini sudah wujud. Cuba beberapa kali.
+// Tanya pelayan (JSONP) sama ada rekod dengan rid ini sudah wujud.
+// Pulangkan 'ada' | 'tiada' | 'lama' (Code.gs belum dikemas kini / belum deploy)
 function sahkanPembetulan(rid) {
   return new Promise(selesai => {
     let cubaan = 0;
     const semak = () => {
       cubaan++;
       jsonp(`${APPS_SCRIPT_URL}?action=semakpembetulan&rid=${encodeURIComponent(rid)}`, (err, d) => {
-        if (d && d.success && d.ada) return selesai(true);
-        if (cubaan >= 5) return selesai(false);
-        setTimeout(semak, 1500);
-      }, 15000);
+        if (d && d.success && d.ada) return selesai('ada');
+        if (d && d.message === 'Unknown action.') return selesai('lama');   // tiada gunanya cuba lagi
+        if (cubaan >= 3) return selesai('tiada');
+        setTimeout(semak, 1000);
+      }, 10000);
     };
-    setTimeout(semak, 800);
+    semak();   // doPost sudah selesai bila fetch pulang — semak terus
   });
 }
 
@@ -2157,8 +2147,9 @@ async function hantarPembetulan() {
     }
 
     tunjukPbRes('info', t.pbSemak);
-    const ada = await sahkanPembetulan(_pbRid);
-    if (!ada) throw new Error('Rekod tidak dijumpai selepas dihantar. Semak sambungan internet dan cuba lagi.');
+    const status = await sahkanPembetulan(_pbRid);
+    if (status === 'lama') throw new Error('Pelayan belum dikemas kini. Tampal Code.gs terbaru, kemudian Deploy → Manage deployments → Edit → New version.');
+    if (status !== 'ada')  throw new Error('Rekod tidak dijumpai selepas dihantar. Semak sambungan internet dan cuba lagi.');
 
     // Kemas kini sasaran surat dengan butiran yang dibetulkan
     _suratTarget.nama = nama.toUpperCase();
