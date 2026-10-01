@@ -9,6 +9,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Pendaftaran Kehadiran — PKPJ</title>
+<link rel="preconnect" href="https://script.google.com" crossorigin/>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin/>
+<link rel="dns-prefetch" href="https://script.google.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <style>
@@ -353,6 +356,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .mc-terima-locked{display:flex;align-items:center;gap:7px;padding:9px 14px;border-top:1px solid var(--border);font-size:11.5px;font-weight:600;color:var(--text3);background:rgba(120,120,120,.05);}
 
 .bantuan-list{display:grid;gap:10px;margin-bottom:18px;}
+.nota-rekod{font-size:11.5px;line-height:1.55;color:var(--text3);text-align:center;margin:0 4px 16px;}
 .bantuan-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:12px 14px 12px 16px;position:relative;overflow:hidden;}
 .bantuan-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--gold);}
@@ -576,7 +580,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
       <div class="chk-row"><div class="chk-k" id="smKIc">Nombor Kad Pengenalan</div><div class="chk-v mono" id="smIc">—</div></div>
       <div class="chk-row"><div class="chk-k" id="smKSiri">Nombor Siri</div><div class="chk-v mono" id="smSiri">—</div></div>
       <div class="mbtns">
-        <button class="mb-no" id="smNo" onclick="bukaPembetulan()">Tidak betul</button>
+        <button class="mb-no" id="smNo" onclick="maklumPegawai()">Tidak betul</button>
         <button class="mb-ok" id="smYes" onclick="janaSurat()">Betul</button>
       </div>
       <button class="mb-close" id="smTutup" onclick="tutupSurat()">Tutup</button>
@@ -691,16 +695,19 @@ const i18n = {
     pendErr:"⚠️ Gagal merekod pendaftaran. Sila maklum kepada petugas.",
     terimaModeTitle:"Mod Pendaftaran Kehadiran",
     sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",
-    knTitle:"Maklumat mengenai Kaunter",knSub:"Sila hadir di kaunter yang dinyatakan di atas mengikut sesi masing-masing. Tuan/Puan dinasihatkan tiba 15 minit lebih awal dan membawa Kad Pengenalan asal bersama surat pemakluman ini untuk urusan pengesahan di kaunter.",
+    knTitle:"Maklumat mengenai Kaunter",knSub:"Sila hadir di kaunter yang dinyatakan di atas mengikut sesi masing-masing. Tuan/Puan dinasihatkan tiba lebih awal dan membawa Kad Pengenalan asal untuk urusan pengesahan di kaunter.",
     recodOk:"Kehadiran berjaya direkodkan!", recodErr:"Gagal merekod kehadiran.",
-    errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan.",
-    errTimeout:"Masa tamat. Cuba semula.",
+    errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan. Semak sambungan internet anda, kemudian cuba semula.",
+    errTimeout:"Pelayan lambat memberi respons. Sila cuba semula.",
+    btnCuba:"↻ Cuba Semula", errBantu:"Jika masih gagal, cuba gunakan pelayar lain (Firefox) atau mod Peribadi/Incognito, atau maklumkan kepada petugas di kaunter.",
     stages:["Menyambung ke pangkalan data…","Mengesahkan nombor kad pengenalan…","Mencari rekod permohonan…","Menyemak kelayakan bantuan…","Menyiapkan keputusan…"],
     btnSurat:"📄 Jana Surat Pemakluman",
     btnRekod:"🖼️ Simpan Rekod Sebagai Gambar",
+    notaRekod:"Sekiranya butang gagal menyimpan, tolong tangkap layar/screenshot rekod ini sebagai simpanan untuk rujukan.",
     smTtl:"Semak butiran anda", smSub:"Pastikan nama dan nombor kad pengenalan di bawah adalah tepat sebelum surat dijana.",
     smKNama:"Nama", smKIc:"Nombor Kad Pengenalan", smKSiri:"Nombor Siri",
     smYes:"Betul", smNo:"Tidak betul", smTutup:"Tutup",
+    smPegawai:"Sila berhubung dengan pegawai bagi pembetulan maklumat yang silap.",
     suratBusy:"⏳ Menyediakan surat…", suratOk:"✅ Surat telah dimuat turun.",
     suratErr:"⚠️ Gagal menjana surat. Cuba semula.",
     pbTtl:"Pembetulan butiran", pbSub:"Masukkan butiran yang betul. Gambar wajah diperlukan sebagai rekod sebelum permohonan pembetulan dihantar.",
@@ -747,16 +754,19 @@ const i18n = {
     pendErr:"⚠️ Failed to record. Please inform the officer on duty.",
     terimaModeTitle:"Attendance Registration Mode",
     sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",
-    knTitle:"Counter Information",knSub:"Please proceed to the counter shown above according to your session. You are advised to arrive 15 minutes early and bring your original identity card together with this notification letter for verification at the counter.",
+    knTitle:"Counter Information",knSub:"Please proceed to the counter shown above according to your session. You are advised to arrive early and bring your original identity card for verification at the counter.",
     recodOk:"Attendance recorded successfully!", recodErr:"Failed to record attendance.",
-    errEmpty:"Please enter your IC number.", errServer:"Failed to reach server.",
-    errTimeout:"Request timed out. Please try again.",
+    errEmpty:"Please enter your IC number.", errServer:"Failed to reach the server. Check your internet connection and try again.",
+    errTimeout:"The server is slow to respond. Please try again.",
+    btnCuba:"↻ Try Again", errBantu:"If it keeps failing, try another browser (Firefox) or a Private/Incognito window, or inform the officer at the counter.",
     stages:["Connecting to database…","Verifying identity card number…","Searching application records…","Checking aid eligibility…","Preparing your result…"],
     btnSurat:"📄 Generate Notification Letter",
     btnRekod:"🖼️ Save Record as Image",
+    notaRekod:"If the button fails to save, please take a screenshot of this record for your reference.",
     smTtl:"Check your details", smSub:"Make sure the name and IC number below are correct before the letter is generated.",
     smKNama:"Name", smKIc:"IC Number", smKSiri:"Serial Number",
     smYes:"Correct", smNo:"Not correct", smTutup:"Close",
+    smPegawai:"Please contact an officer to correct any incorrect details.",
     suratBusy:"⏳ Preparing letter…", suratOk:"✅ Letter downloaded.",
     suratErr:"⚠️ Failed to generate letter. Please try again.",
     pbTtl:"Correct your details", pbSub:"Enter the correct details. A face photo is required as a record before the correction request is submitted.",
@@ -803,16 +813,19 @@ const i18n = {
     pendErr:"⚠️ 记录失败，请通知现场工作人员。",
     terimaModeTitle:"出席登记模式",
     sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",
-    knTitle:"柜台相关资料",knSub:"请按照您的时段前往上述柜台。建议您提前15分钟抵达，并携带身份证正本及此通知函以便在柜台办理核实手续。",
+    knTitle:"柜台相关资料",knSub:"请按照您的时段前往上述柜台。建议您提早抵达，并携带身份证正本以便在柜台办理核实手续。",
     recodOk:"出席记录成功！", recodErr:"出席记录失败。",
-    errEmpty:"请输入您的身份证号码。", errServer:"无法连接服务器。",
-    errTimeout:"请求超时，请再试一次。",
+    errEmpty:"请输入您的身份证号码。", errServer:"无法连接服务器。请检查网络连接后再试。",
+    errTimeout:"服务器响应缓慢，请再试一次。",
+    btnCuba:"↻ 再试一次", errBantu:"若仍然失败，请改用其他浏览器（Firefox）或无痕模式，或通知柜台工作人员。",
     stages:["正在连接数据库…","正在验证身份证号码…","正在搜索申请记录…","正在检查援助资格…","正在准备查询结果…"],
     btnSurat:"📄 生成通知函",
     btnRekod:"🖼️ 将记录保存为图片",
+    notaRekod:"如果按钮无法保存，请截屏保存此记录以供参考。",
     smTtl:"请核对您的资料", smSub:"生成信函前，请确认以下姓名与身份证号码正确无误。",
     smKNama:"姓名", smKIc:"身份证号码", smKSiri:"系列号",
     smYes:"正确", smNo:"不正确", smTutup:"关闭",
+    smPegawai:"如资料有误，请联络现场工作人员进行更正。",
     suratBusy:"⏳ 正在准备信函…", suratOk:"✅ 信函已下载。",
     suratErr:"⚠️ 生成失败，请重试。",
     pbTtl:"更正资料", pbSub:"请输入正确资料。提交更正申请前需拍摄人脸照片作为记录。",
@@ -859,16 +872,19 @@ const i18n = {
     pendErr:"⚠️ பதிவு தோல்வி. பணியாளரிடம் தெரிவிக்கவும்.",
     terimaModeTitle:"வருகைப் பதிவு முறை",
     sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",
-    knTitle:"கவுண்டர் தகவல்",knSub:"உங்கள் அமர்வுக்கு ஏற்ப மேலே குறிப்பிடப்பட்ட கவுண்டருக்குச் செல்லவும். 15 நிமிடங்கள் முன்னதாக வருகை தந்து, அசல் அடையாள அட்டை மற்றும் இந்த அறிவிப்புக் கடிதத்தை சரிபார்ப்புக்காக கொண்டு வரவும்.",
+    knTitle:"கவுண்டர் தகவல்",knSub:"உங்கள் அமர்வுக்கு ஏற்ப மேலே குறிப்பிடப்பட்ட கவுண்டருக்குச் செல்லவும். முன்னதாக வருகை தந்து, அசல் அடையாள அட்டையை சரிபார்ப்புக்காக கொண்டு வரவும்.",
     recodOk:"வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr:"வருகை பதிவு தோல்வியடைந்தது.",
-    errEmpty:"தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer:"சேவையகத்தை அடைய முடியவில்லை.",
-    errTimeout:"கோரிக்கை நேரம் முடிந்தது.",
+    errEmpty:"தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer:"சேவையகத்தை அடைய முடியவில்லை. இணைய இணைப்பைச் சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
+    errTimeout:"சேவையகம் தாமதமாக பதிலளிக்கிறது. மீண்டும் முயற்சிக்கவும்.",
+    btnCuba:"↻ மீண்டும் முயற்சி", errBantu:"தொடர்ந்து தோல்வியடைந்தால், வேறு உலாவி (Firefox) அல்லது தனிப்பட்ட முறையைப் பயன்படுத்தவும், அல்லது கவுண்டர் அலுவலரிடம் தெரிவிக்கவும்.",
     stages:["தரவுத்தளத்துடன் இணைக்கிறது…","அடையாள அட்டை எண் சரிபார்க்கப்படுகிறது…","விண்ணப்பப் பதிவுகள் தேடப்படுகின்றன…","உதவி தகுதி சரிபார்க்கப்படுகிறது…","முடிவு தயாராகிறது…"],
     btnSurat:"📄 அறிவிப்புக் கடிதம் உருவாக்கு",
     btnRekod:"🖼️ பதிவை படமாக சேமி",
+    notaRekod:"பொத்தான் சேமிக்கத் தவறினால், இந்தப் பதிவை ஸ்கிரீன்ஷாட் எடுத்து வைத்துக்கொள்ளவும்.",
     smTtl:"உங்கள் விவரங்களைச் சரிபார்க்கவும்", smSub:"கடிதம் உருவாக்கப்படும் முன் கீழே உள்ள பெயர் மற்றும் IC எண் சரியானது என உறுதிப்படுத்தவும்.",
     smKNama:"பெயர்", smKIc:"IC எண்", smKSiri:"தொடர் எண்",
     smYes:"சரி", smNo:"சரியில்லை", smTutup:"மூடு",
+    smPegawai:"தவறான விவரங்களைத் திருத்த அலுவலரைத் தொடர்பு கொள்ளவும்.",
     suratBusy:"⏳ கடிதம் தயாராகிறது…", suratOk:"✅ கடிதம் பதிவிறக்கப்பட்டது.",
     suratErr:"⚠️ உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
     pbTtl:"விவரத் திருத்தம்", pbSub:"சரியான விவரங்களை உள்ளிடவும். திருத்தக் கோரிக்கை அனுப்பும் முன் முகப் படம் தேவை.",
@@ -1107,7 +1123,7 @@ function runLoader(done){
   floors.forEach(f => f.classList.remove('built'));
   roof.classList.remove('built');
   const t0 = performance.now();
-  const DURATION = reduce ? 250 : (_dataReady ? 1000 : 2200);
+  const DURATION = reduce ? 200 : (_dataReady ? 550 : 1800);
   (function step(now){
     const k = Math.min((now-t0)/DURATION, 1);
     let p = Math.round((1 - Math.pow(1-k,2.2)) * 100);
@@ -1125,7 +1141,7 @@ function runLoader(done){
       $('loader').classList.remove('show');
       document.body.classList.remove('busy');
       done();
-    }, 400);
+    }, 180);
   })(t0);
 }
 
@@ -1255,6 +1271,36 @@ function jsonp(url, cb, timeoutMs) {
   cuba(url, true);
 }
 
+// Transport kedua — fetch terus. Jawapan Apps Script dibalut 'cb(...)',
+// jadi kita kupas pembalut itu. Berguna bila JSONP disekat/ dialih oleh Chrome.
+function fetchJson(url, timeoutMs) {
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), timeoutMs || 12000);
+  return fetch(url, { signal: ac.signal, redirect: 'follow', cache: 'no-store' })
+    .then(r => r.text())
+    .then(teks => {
+      clearTimeout(timer);
+      const t = teks.trim();
+      const m = t.match(/^[A-Za-z0-9_$.]*\s*\(([\s\S]*)\)\s*;?$/);
+      const mentah = m ? m[1] : t;
+      return JSON.parse(mentah);
+    })
+    .catch(e => { clearTimeout(timer); throw e; });
+}
+
+// Panggil pelayan melalui KEDUA-DUA laluan serentak; yang pertama berjaya menang.
+function panggil(url, cb, timeoutMs) {
+  let selesai = false, gagal = 0;
+  const siap = (err, d) => {
+    if (selesai) return;
+    if (err) { if (++gagal < 2) return; selesai = true; return cb(err, null); }
+    selesai = true; cb(null, d);
+  };
+  jsonp(url, (e, d) => siap(e || (d ? null : new Error('kosong')), d), timeoutMs);
+  const u = url + (_authuser && url.indexOf('authuser=') === -1 ? '&authuser=0' : '');
+  fetchJson(u, timeoutMs).then(d => siap(null, d)).catch(e => siap(e, null));
+}
+
 // ══════════════════════════════════════════════════
 // I2 · PEMANASAN + PRA-AMBIL + CACHE
 // ══════════════════════════════════════════════════
@@ -1262,7 +1308,7 @@ let _warmed = false, _warmDone = false;
 const _warmQueue = [];
 function warmUp(){
   if (_warmed) return; _warmed = true;
-  jsonp(`${APPS_SCRIPT_URL}?action=search&ic=000000000000`, () => {
+  panggil(`${APPS_SCRIPT_URL}?action=search&ic=000000000000`, () => {
     _warmDone = true;
     _warmQueue.splice(0).forEach(fn => fn());
   }, 10000);
@@ -1296,10 +1342,10 @@ function startPrefetch(icVal){
   let attempt = 0;
   const go = () => {
     attempt++;
-    const tmo = attempt === 1 ? 12000 : 20000;
-    jsonp(url, (err, data) => {
+    const tmo = attempt === 1 ? 9000 : attempt === 2 ? 14000 : 20000;
+    panggil(url, (err, data) => {
       if (_pf !== rec) return;
-      if ((err || !data) && attempt < 3) { setTimeout(go, 500 * attempt); return; }
+      if ((err || !data) && attempt < 4) { setTimeout(go, 400 * attempt); return; }
       rec.status = 'done'; rec.data = data; rec.err = err;
       if (err) _lastErrKind = err.message || 'network';
       if (data && data.success !== undefined) cacheSet(key, data);
@@ -1342,7 +1388,7 @@ function doSearch(via) {
     _lastResult = payload;
     if (payloadErr || !payload) {
       const kind = (payloadErr && payloadErr.message) || _lastErrKind;
-      showError(kind === 'timeout' ? t.errTimeout : t.errServer);
+      showError(kind === 'timeout' ? t.errTimeout : t.errServer, true);
     }
     else if (payload.success) showSuccess(payload);
     else showError(payload.message || t.foundErr);
@@ -1479,7 +1525,8 @@ function showSuccess(d) {
     <div class="res-ic">${esc(d.ic)}</div>
     ${totalCount > 1 ? summaryHTML : ''}
     ${groupsHTML}
-    <button class="btn-surat" style="margin-bottom:16px" onclick="simpanRekodGambar()">${esc(t.btnRekod)}</button>
+    <button class="btn-surat" style="margin-bottom:6px" onclick="simpanRekodGambar()">${esc(t.btnRekod)}</button>
+    <div class="nota-rekod">${esc(t.notaRekod)}</div>
     <div class="keh-section">
       <div class="keh-title">${esc(_terimaMode ? t.pendTitle : t.kehTitle)}</div>
       ${kehHTML}
@@ -1586,12 +1633,26 @@ async function simpanRekodGambar() {
   buzz([20, 40, 20]);
 }
 
-function showError(msg) {
+// Cuba semula tanpa menaip semula IC
+function ulangSemakan() {
+  if (!ic.value || digits().length !== 12) return;
+  invalidateCache();
+  _lastResult = null;
+  const r = $('result'); r.classList.remove('show'); r.style.display = 'none'; r.innerHTML = '';
+  busy = false;
+  startPrefetch(ic.value.trim());
+  doSearch('ulang');
+}
+
+function showError(msg, bolehUlang) {
   const t  = i18n[lang];
   const el = $('result');
   el.innerHTML = `
     <div class="res-header"><span class="found-tag err">✕ ${esc(t.foundErr)}</span></div>
-    <div class="err-box">${esc(msg)}</div>`;
+    <div class="err-box">${esc(msg)}
+      ${bolehUlang ? `<div style="margin-top:6px;font-weight:400;opacity:.85">${esc(t.errBantu)}</div>` : ''}
+    </div>
+    ${bolehUlang ? `<button class="btn" style="margin-top:12px" onclick="ulangSemakan()">${esc(t.btnCuba)}</button>` : ''}`;
   el.style.display = 'block';
   el.classList.add('show');
   el.removeAttribute('data-sheet');
@@ -1603,7 +1664,7 @@ function rekodMulti(btn) {
   const entries = btn ? btn.getAttribute('data-entries') : '[]';
   const btns  = $('kehBtns');
   if (btn) btn.disabled = true;
-  jsonp(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${encodeURIComponent(entries)}`, (err, data) => {
+  panggil(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${encodeURIComponent(entries)}`, (err, data) => {
     const msg = $('kehMsg');
     if (err || !data) {
       if (msg) { msg.className='keh-msg err'; msg.textContent=t.recodErr; msg.style.display='block'; }
@@ -1647,8 +1708,8 @@ if (_terimaMode) {
 function recordKehadiranSemasa(matches) {
   if (!matches || !matches.length) return;
   const entries = encodeURIComponent(JSON.stringify(matches.map(m => ({ sheet: m.sheet, row: m.row }))));
-  jsonp(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${entries}`, () => {
-    jsonp(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${entries}`, () => {
+  panggil(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${entries}`, () => {
+    panggil(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${entries}`, () => {
       terimaBerturut(matches.slice(), () => {
         invalidateCache();
         matches.forEach(m => {
@@ -1666,7 +1727,7 @@ function recordKehadiranSemasa(matches) {
 function terimaBerturut(queue, done) {
   if (!queue.length) { done(); return; }
   const m = queue.shift();
-  jsonp(`${APPS_SCRIPT_URL}?action=rekodterimaIC&sheet=${encodeURIComponent(m.sheet)}&row=${Number(m.row)||0}&ic=${encodeURIComponent(m.ic||'')}`,
+  panggil(`${APPS_SCRIPT_URL}?action=rekodterimaIC&sheet=${encodeURIComponent(m.sheet)}&row=${Number(m.row)||0}&ic=${encodeURIComponent(m.ic||'')}`,
     () => terimaBerturut(queue, done), 20000);
 }
 
@@ -2023,6 +2084,15 @@ function semakKedudukan(det, v) {
   return 'ok';
 }
 
+// "Tidak betul" — pembetulan kini diuruskan oleh pegawai di kaunter
+function maklumPegawai() {
+  const r = $('smRes');
+  r.style.display = 'block';
+  r.className = 'mres info';
+  r.textContent = i18n[lang].smPegawai;
+  $('smNo').disabled = true;
+}
+
 function bukaPembetulan() {
   const t = i18n[lang];
   if (!_suratTarget) return;
@@ -2197,7 +2267,7 @@ function sahkanPembetulan(rid) {
     let cubaan = 0;
     const semak = () => {
       cubaan++;
-      jsonp(`${APPS_SCRIPT_URL}?action=semakpembetulan&rid=${encodeURIComponent(rid)}`, (err, d) => {
+      panggil(`${APPS_SCRIPT_URL}?action=semakpembetulan&rid=${encodeURIComponent(rid)}`, (err, d) => {
         if (d && d.success && d.ada) return selesai('ada');
         if (d && d.message === 'Unknown action.') return selesai('lama');   // tiada gunanya cuba lagi
         if (cubaan >= 3) return selesai('tiada');
