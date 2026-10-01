@@ -10,17 +10,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
 <title>Pendaftaran Kehadiran — PKPJ</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --mono:'DM Mono',monospace;
   --radius:18px; --radius-sm:12px;
   --ease:.28s cubic-bezier(.4,0,.2,1);
-
-  /* ══ TEMA EMAS (aura gold) ══ */
   --gold:#d9b45c; --gold-hi:#f7e2a8; --gold-lo:#8c6b28;
-
-  /* Warna kumpulan sheet — kekal berbeza untuk pengecaman pantas */
   --bsr-h:#5b9dff; --bsr-d:rgba(91,157,255,.16); --bsr-b:rgba(91,157,255,.38);
   --bmr-h:#c084fc; --bmr-d:rgba(192,132,252,.16); --bmr-b:rgba(192,132,252,.38);
   --bbr-h:#34d399; --bbr-d:rgba(52,211,153,.16); --bbr-b:rgba(52,211,153,.38);
@@ -47,11 +44,9 @@
   --grid-r:160; --grid-g:120; --grid-b:40; --grid-op:.75;
   --vig:rgba(251,247,238,.9);
 }
-/* Tema cerah — emas lebih gelap supaya kontras cukup di atas latar krim */
 [data-theme="light"]{
   --gold:#9a7420; --gold-hi:#5f4610; --gold-lo:#c9a04a;
 }
-/* Sheet active color switching */
 [data-sheet="BSR"]{--sheet-h:var(--bsr-h);--sheet-d:var(--bsr-d);--sheet-b:var(--bsr-b);}
 [data-sheet="BMR"]{--sheet-h:var(--bmr-h);--sheet-d:var(--bmr-d);--sheet-b:var(--bmr-b);}
 [data-sheet="BBR"]{--sheet-h:var(--bbr-h);--sheet-d:var(--bbr-d);--sheet-b:var(--bbr-b);}
@@ -63,8 +58,11 @@ body{
   -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
   transition:background var(--ease),color var(--ease);
 }
+/* Halang pilihan teks / seret imej (penghalang kasual sahaja) */
+body{-webkit-user-select:none;-moz-user-select:none;user-select:none;}
+input,textarea{-webkit-user-select:text;user-select:text;}
+img{-webkit-user-drag:none;user-drag:none;}
 
-/* ══ LAPISAN 0 · latar grid + aura ══ */
 #grid{position:fixed;inset:0;z-index:0;opacity:.55;}
 #aura{
   position:fixed;left:50%;top:38%;width:min(130vw,880px);aspect-ratio:1;z-index:0;
@@ -75,7 +73,6 @@ body{
 body.armed #aura{opacity:1.5}
 body.busy  #aura{opacity:2.2}
 
-/* ══ LAPISAN 1 · LOGO 3D ══ */
 #stage{
   position:fixed;inset:0;z-index:1;display:flex;justify-content:center;align-items:flex-start;
   padding-top:calc(9vh + env(safe-area-inset-top));
@@ -162,7 +159,6 @@ body.focused .panel{opacity:.18}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
   background:radial-gradient(ellipse at 50% 34%,transparent 30%,var(--vig) 100%);}
 
-/* ══ LAPISAN 1b · FIGURA YAB & YB ══ */
 #vip{
   position:fixed;right:8px;bottom:0;z-index:4;pointer-events:none;
   width:min(26vw,170px);aspect-ratio:880/1210;
@@ -179,14 +175,12 @@ body.busy    #vip{opacity:0;transform:translateY(24px)}
 @media (max-width:480px){ #vip{width:34vw;right:2px;} }
 @media (prefers-reduced-motion:reduce){ #vip{animation:none} }
 
-/* ══ LAPISAN 3 · SHELL BOLEH SKROL ══ */
 #shell{
   position:relative;z-index:3;min-height:100vh;
   display:flex;flex-direction:column;align-items:center;
   padding:14px 16px calc(40px + env(safe-area-inset-bottom));
 }
 
-/* ── TOPBAR ── */
 .topbar{
   width:100%;max-width:440px;display:flex;justify-content:space-between;align-items:center;
   margin-bottom:calc(24vh);position:relative;z-index:10;animation:fadeDown .4s ease both;
@@ -198,7 +192,6 @@ body.busy    #vip{opacity:0;transform:translateY(24px)}
 .theme-btn{width:38px;height:38px;border:1px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all var(--ease);backdrop-filter:blur(14px);box-shadow:0 2px 10px var(--shadow);}
 .theme-btn:hover{border-color:var(--gold);transform:rotate(15deg);}
 
-/* ── KAD (kaca) ── */
 .card{
   width:100%;max-width:440px;padding:22px 20px;border-radius:24px;
   background:linear-gradient(180deg,var(--card),var(--card2));
@@ -229,7 +222,6 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .count{margin-top:6px;font-size:10.5px;color:var(--text3);text-align:right;font-variant-numeric:tabular-nums;}
 .err{color:var(--red);font-size:12px;margin-top:4px;min-height:15px;}
 
-/* ── KOTAK GONCANG ── */
 #shakeBox{
   margin-top:12px;border-radius:15px;text-align:center;
   border:1px dashed var(--border2);background:rgba(217,180,92,.07);
@@ -246,7 +238,6 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .note{margin-top:11px;font-size:11px;line-height:1.55;color:var(--text3);opacity:.8;}
 .note b{color:var(--gold);font-weight:600;}
 
-/* ── BUTANG ── */
 .btn{
   width:100%;margin-top:12px;padding:15px;border-radius:13px;border:1px solid var(--border);
   background:linear-gradient(180deg,rgba(217,180,92,.24),rgba(217,180,92,.10));
@@ -257,7 +248,6 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .btn:disabled{opacity:.32;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--text3);font-weight:400;font-size:12.5px;padding:10px;}
 
-/* ══ LOADER MENARA ══ */
 #loader{
   position:fixed;inset:0;z-index:250;display:none;
   background:color-mix(in srgb,var(--bg) 93%,transparent);
@@ -284,7 +274,6 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
   -webkit-background-clip:text;background-clip:text;color:transparent;}
 .stage-txt{font-size:12px;color:var(--text3);letter-spacing:.04em;min-height:17px;text-align:center;padding:0 24px;}
 
-/* ══ KEPUTUSAN ══ */
 #result{margin-top:20px;display:none;}
 #result.show{display:block;animation:pop .45s cubic-bezier(.2,1.4,.4,1);}
 @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}}
@@ -310,7 +299,6 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 .rs-sheet-tag.BMR{background:var(--bmr-d);color:var(--bmr-h);}
 .rs-sheet-tag.BBR{background:var(--bbr-d);color:var(--bbr-h);}
 
-/* ── KUMPULAN SHEET ── */
 .sheet-group{margin-bottom:16px;border-radius:18px;overflow:hidden;border:1px solid var(--border);}
 .sheet-group-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;
   font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap;}
@@ -364,7 +352,6 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 
 .mc-terima-locked{display:flex;align-items:center;gap:7px;padding:9px 14px;border-top:1px solid var(--border);font-size:11.5px;font-weight:600;color:var(--text3);background:rgba(120,120,120,.05);}
 
-/* ── SENARAI BANTUAN ── */
 .bantuan-list{display:grid;gap:10px;margin-bottom:18px;}
 .bantuan-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;
   padding:12px 14px 12px 16px;position:relative;overflow:hidden;}
@@ -375,14 +362,75 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
   line-height:1.35;word-break:break-word;margin-bottom:8px;}
 .bantuan-item .mc-sesi{margin-top:0;}
 
-/* ── NOTIS KAUNTER ── */
+/* ── BUTANG JANA SURAT ── */
+.btn-surat{width:100%;margin-top:10px;background:linear-gradient(180deg,rgba(217,180,92,.22),rgba(217,180,92,.08));
+  border:1px solid var(--border2);color:var(--gold);border-radius:10px;padding:10px;
+  font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s,transform .15s;}
+.btn-surat:hover{opacity:.88;} .btn-surat:active{transform:scale(.98);} .btn-surat:disabled{opacity:.45;cursor:not-allowed;}
+
+/* ── MODAL SURAT / PEMBETULAN ── */
+.ov{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:18px;overflow-y:auto;}
+.ov.show{display:flex;animation:fadeUp .2s ease both;}
+[data-theme="light"] .ov{background:rgba(40,30,10,.5);}
+.mbox{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:22px;
+  width:100%;max-width:400px;padding:26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.6);backdrop-filter:blur(20px);
+  max-height:92vh;overflow-y:auto;}
+.mico{font-size:38px;text-align:center;margin-bottom:10px;line-height:1;}
+.mttl{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.03em;text-align:center;margin-bottom:12px;line-height:1.35;}
+.msub{font-size:12.5px;color:var(--text2);text-align:center;margin-bottom:16px;line-height:1.55;}
+.chk-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:9px;}
+.chk-k{font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+.chk-v{font-size:15px;font-weight:800;color:var(--text);word-break:break-word;line-height:1.35;}
+.chk-v.mono{font-family:var(--mono);font-size:14px;letter-spacing:.07em;}
+.mbtns{display:flex;gap:9px;margin-top:16px;}
+.mb-ok{flex:1;background:linear-gradient(180deg,var(--gold),var(--gold-lo));color:#1a1305;border:none;border-radius:12px;padding:13px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:opacity .2s,transform .15s;
+  box-shadow:0 4px 16px rgba(217,180,92,.35);}
+.mb-ok:hover{opacity:.9;} .mb-ok:active{transform:scale(.98);} .mb-ok:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;}
+.mb-no{flex:1;background:var(--surface);color:var(--text2);border:1.5px solid var(--border);border-radius:12px;padding:13px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;}
+.mb-no:hover{border-color:var(--red);color:var(--red);}
+.mb-close{width:100%;margin-top:9px;background:transparent;border:none;color:var(--text3);
+  font-family:'DM Sans',sans-serif;font-size:12.5px;cursor:pointer;padding:8px;}
+.mb-close:hover{color:var(--text2);}
+.fld{margin-bottom:12px;}
+.fld label{display:block;font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.fld input{width:100%;padding:12px 14px;border-radius:11px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;text-align:left;letter-spacing:0;outline:none;
+  transition:border-color .25s,box-shadow .25s;}
+.fld input.mono{font-family:var(--mono);letter-spacing:.07em;}
+.fld input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,180,92,.13);}
+.cam-wrap{position:relative;border-radius:14px;overflow:hidden;background:#000;border:1px solid var(--border);
+  aspect-ratio:4/3;margin-bottom:10px;display:none;}
+.cam-wrap.show{display:block;}
+.cam-wrap video,.cam-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.cam-wrap video[hidden],.cam-wrap img[hidden]{display:none !important;}
+.cam-wrap img{object-fit:contain;background:#0e1526;}
+.cam-wrap.siap{aspect-ratio:640/790;}
+.cam-wrap.siap .cam-ring{display:none;}
+.cam-wrap.siap .cam-badge{top:10px;bottom:auto;}
+.chk-row.baru{border-color:rgba(92,232,164,.45);background:rgba(92,232,164,.07);}
+.chk-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.06em;background:rgba(92,232,164,.16);color:var(--green);vertical-align:middle;}
+.cam-ring{position:absolute;inset:10% 24%;border:2px dashed rgba(255,255,255,.45);border-radius:50%;pointer-events:none;transition:border-color .2s;}
+.cam-wrap.fit .cam-ring{border:3px solid #10b981;}
+.cam-badge{position:absolute;left:10px;bottom:10px;padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;
+  background:rgba(0,0,0,.6);color:#fff;backdrop-filter:blur(6px);}
+.cam-badge.ok{background:rgba(16,185,129,.88);}
+.cam-badge.no{background:rgba(239,68,68,.82);}
+.mnote{font-size:11px;color:var(--text3);line-height:1.55;margin-top:10px;text-align:center;}
+.mres{white-space:pre-line;word-break:break-word;margin-top:13px;border-radius:11px;padding:12px;font-size:13px;font-weight:600;text-align:center;line-height:1.45;}
+.mres.ok{background:rgba(92,232,164,.1);border:1px solid rgba(92,232,164,.26);color:var(--green);}
+.mres.err{background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.22);color:var(--red);}
+.mres.info{background:rgba(217,180,92,.08);border:1px solid var(--border);color:var(--text2);}
+
 .kaunter-notice{display:flex;align-items:flex-start;gap:12px;background:rgba(217,180,92,.08);
   border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin:18px 0 0;}
 .kn-icon{font-size:22px;line-height:1;flex-shrink:0;margin-top:1px;}
 .kn-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.4;}
 .kn-sub{font-size:12px;color:var(--text2);line-height:1.6;}
 
-/* ── KEHADIRAN ── */
 .keh-section{border-top:1px solid var(--border);padding-top:18px;margin-top:4px;}
 .keh-title{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:10px;}
 .keh-q{font-size:14.5px;font-weight:600;color:var(--text);text-align:center;margin-bottom:14px;line-height:1.5;}
@@ -403,7 +451,6 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .keh-msg.err{background:rgba(255,122,122,.08);border:1px solid rgba(255,122,122,.22);color:var(--red);}
 .err-box{background:rgba(255,122,122,.07);border:1px solid rgba(255,122,122,.22);border-radius:12px;padding:15px;font-size:13.5px;color:var(--red);line-height:1.5;}
 
-/* ── FOOTER ── */
 .footer{margin-top:24px;font-size:11px;color:var(--text3);display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .5s .2s ease both;}
 .footer-link{display:flex;align-items:center;gap:5px;color:var(--text3);text-decoration:none;font-weight:600;letter-spacing:.04em;transition:color var(--ease);}
 .footer-link:hover{color:var(--gold);}
@@ -461,16 +508,18 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
   <div class="topbar">
     <div class="lang-row">
       <button class="lb on" onclick="setLang('ms',this)">BM</button>
+      <!-- Pilihan bahasa lain dimatikan buat sementara. Nyahkomen untuk mengaktifkan semula.
       <button class="lb" onclick="setLang('en',this)">EN</button>
       <button class="lb" onclick="setLang('zh',this)">中文</button>
       <button class="lb" onclick="setLang('ta',this)">தமிழ்</button>
+      -->
     </div>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
   </div>
 
   <div class="card" id="card">
     <div class="grabber"></div>
-    <span class="eyebrow" data-i18n="badge">PKPJ · Perumahan Kasih Johor</span>
+    <span class="eyebrow" data-i18n="badge">Inisiatif Perumahan Kasih Johor</span>
     <h1 data-i18n-html="title">Masukkan <em>Nombor Kad Pengenalan</em> anda</h1>
 
     <label class="flabel" for="icInput" data-i18n="label">Nombor Kad Pengenalan (IC)</label>
@@ -516,6 +565,48 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
   </div>
 </div>
 
+<!-- ══ MODAL SEMAK BUTIRAN / JANA SURAT ══ -->
+<div class="ov" id="suratModal">
+  <div class="mbox">
+    <div id="stepSemak">
+      <div class="mico">📄</div>
+      <div class="mttl" id="smTtl">Semak butiran anda</div>
+      <div class="msub" id="smSub">Pastikan nama dan nombor kad pengenalan di bawah adalah tepat sebelum surat dijana.</div>
+      <div class="chk-row"><div class="chk-k" id="smKNama">Nama</div><div class="chk-v" id="smNama">—</div></div>
+      <div class="chk-row"><div class="chk-k" id="smKIc">Nombor Kad Pengenalan</div><div class="chk-v mono" id="smIc">—</div></div>
+      <div class="chk-row"><div class="chk-k" id="smKSiri">Nombor Siri</div><div class="chk-v mono" id="smSiri">—</div></div>
+      <div class="mbtns">
+        <button class="mb-no" id="smNo" onclick="bukaPembetulan()">Tidak betul</button>
+        <button class="mb-ok" id="smYes" onclick="janaSurat()">Betul</button>
+      </div>
+      <button class="mb-close" id="smTutup" onclick="tutupSurat()">Tutup</button>
+      <div class="mres" id="smRes" style="display:none;"></div>
+    </div>
+
+    <div id="stepBetul" hidden>
+      <div class="mico">✍️</div>
+      <div class="mttl" id="pbTtl">Pembetulan butiran</div>
+      <div class="msub" id="pbSub">Masukkan butiran yang betul. Gambar wajah diperlukan sebagai rekod sebelum permohonan pembetulan dihantar.</div>
+      <div class="fld"><label for="pbNama" id="pbLNama">Nama Penuh</label><input type="text" id="pbNama" autocomplete="off"/></div>
+      <div class="fld"><label for="pbIc" id="pbLIc">Nombor Kad Pengenalan</label><input type="text" class="mono" id="pbIc" inputmode="numeric" maxlength="14" autocomplete="off"/></div>
+
+      <div class="cam-wrap" id="camWrap">
+        <video id="camVid" playsinline muted autoplay></video>
+        <img id="camShot" hidden alt=""/>
+        <div class="cam-ring"></div>
+        <div class="cam-badge" id="camBadge">—</div>
+      </div>
+
+      <div class="mbtns">
+        <button class="mb-no" id="pbBack" onclick="kembaliSemak()">Kembali</button>
+        <button class="mb-ok" id="pbHantar" onclick="hantarPembetulan()" disabled>Hantar</button>
+      </div>
+      <div class="mnote" id="pbNote">Gambar disimpan sebagai rekod sahaja. Pembetulan akan disemak oleh pegawai sebelum diluluskan.</div>
+      <div class="mres" id="pbRes" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
 <div id="loader" role="status" aria-live="assertive">
   <div><div class="roof" id="roof"></div><div class="tower" id="tower"></div></div>
   <div class="pct" id="pct">0%</div>
@@ -524,13 +615,58 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 
 <script>
 // ─────────────────────────────────
-// ⚠️ GANTIKAN DENGAN URL ANDA
+// ⚠️ TETAPAN — ISI BAHAGIAN INI
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzH5WAvOXtq-AJm-mY1GEJ7mElS0U0qQO8R4F9YxGcWB591xCjZwWpf8xdxyMnb5sy/exec";
+
+// Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
+const TARIKH_SURAT = "1 Oktober 2026";
+
+// Letterhead (imej daripada LetterHead_PKPJ.docx), diletak bersebelahan index.html
+const LETTERHEAD_SRC = "./letterhead.jpg";
+
+// Fon surat — TeX Gyre Adventor 11pt (percuma, GUST Font License; hampir serupa Century Gothic).
+// Letak fail dalam folder ./fonts/. Jika tiada, surat guna Helvetica sebagai ganti.
+const FONT_SURAT = {
+  reg:  "./fonts/pkpj-adventor-regular.ttf",
+  bold: "./fonts/pkpj-adventor-bold.ttf",
+  ital: "./fonts/pkpj-adventor-italic.ttf"
+};
+const SAIZ_FON = 11;
+// Fail fon sudah dipotong ke huruf Latin (~20KB) — benam penuh.
+// Pemotong pdf-lib merosakkan fon ini, jadi jangan tukar kepada true.
+const SUBSET_FON = false;
+const FONTKIT_SRCS = [
+  "https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js",
+  "https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js"
+];
+
+// Rujukan surat
+const RUJ_KAMI = "PKPJ.700-1/6/1";
+
+// ── Kandungan surat mengikut kumpulan sheet ──
+// BSR = Sewa (RM2,500) · BMR = Masuk (RM2,000) · BBR = Beli (RM5,000)
+const SURAT = {
+  BSR: {
+    tajuk: "PEMAKLUMAN KELULUSAN BANTUAN SEWA RUMAH PERTAMA (RM2,500) DI BAWAH INISIATIF PERUMAHAN KASIH JOHOR BELANJAWAN JOHOR 2026",
+    p2: "Dimaklumkan bahawa, selaras dengan pengumuman YAB Menteri Besar Johor semasa Pembentangan Belanjawan Johor 2026 di bawah Teras 3: Jaringan Keselamatan Sosial (Perumahan), permohonan Bantuan Sewa Rumah Pertama secara one-off berjumlah RM2,500.00 telah diluluskan.",
+    p3: "Sehubungan itu, kelulusan bantuan ini adalah tertakluk kepada terma dan syarat yang ditetapkan oleh pihak Perbadanan Kemajuan Perumahan Negeri Johor (PKPJ). Penyaluran Bantuan Sewa Rumah Pertama ini akan dilaksanakan melalui pengeluaran 'Banker Cheque' kepada penerima yang berjaya."
+  },
+  BMR: {
+    tajuk: "PEMAKLUMAN KELULUSAN BANTUAN MASUK RUMAH PERTAMA (RM2,000) DI BAWAH INISIATIF PERUMAHAN KASIH JOHOR BELANJAWAN JOHOR 2026",
+    p2: "Dimaklumkan bahawa, selaras dengan pengumuman YAB Menteri Besar Johor semasa Pembentangan Belanjawan Johor 2026 di bawah Teras 3: Jaringan Keselamatan Sosial (Perumahan), permohonan Bantuan Masuk Rumah Pertama secara one-off berjumlah RM2,000.00 telah diluluskan.",
+    p3: "Sehubungan itu, kelulusan bantuan ini adalah tertakluk kepada terma dan syarat yang ditetapkan oleh pihak Perbadanan Kemajuan Perumahan Negeri Johor (PKPJ). Penyaluran Bantuan Masuk Rumah Pertama ini akan dilaksanakan melalui pengeluaran 'Banker Cheque' kepada penerima yang berjaya."
+  },
+  BBR: {
+    tajuk: "PEMAKLUMAN KELULUSAN BANTUAN BELI RUMAH PERTAMA (RM5,000) DI BAWAH INISIATIF PERUMAHAN KASIH JOHOR BELANJAWAN JOHOR 2026",
+    p2: "Dimaklumkan bahawa, selaras dengan pengumuman YAB Menteri Besar Johor semasa Pembentangan Belanjawan Johor 2026 di bawah Teras 3: Jaringan Keselamatan Sosial (Perumahan), permohonan Bantuan Beli Rumah Pertama secara one-off berjumlah RM5,000.00 telah diluluskan.",
+    p3: "Sehubungan itu, kelulusan bantuan ini adalah tertakluk kepada terma dan syarat yang ditetapkan oleh pihak Perbadanan Kemajuan Perumahan Negeri Johor (PKPJ). Penyaluran Bantuan Beli Rumah Pertama ini akan dilaksanakan melalui pengeluaran 'Banker Cheque' kepada penerima yang berjaya."
+  }
+};
 
 const i18n = {
   ms:{
-    badge:"PKPJ · Perumahan Kasih Johor",
+    badge:"Inisiatif Perumahan Kasih Johor",
     title:"Masukkan <em>Nombor Kad Pengenalan</em> anda",
     label:"Nombor Kad Pengenalan (IC)", ph:"000000-00-0000",
     btnSearch:"Klik Disini", btnMotion:"Aktifkan sensor goncangan",
@@ -555,14 +691,38 @@ const i18n = {
     pendErr:"⚠️ Gagal merekod pendaftaran. Sila maklum kepada petugas.",
     terimaModeTitle:"Mod Pendaftaran Kehadiran",
     sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",
-    knTitle:"Maklumat mengenai Kaunter",knSub:"Sukacita dimaklumkan bahawa nombor kaunter serta butiran bantuan akan hanya dipaparkan setelah Tuan/Puan mengimbas kod QR yang disediakan di lokasi pada hari program. Kerjasama Tuan/Puan amatlah dihargai.",
+    knTitle:"Maklumat mengenai Kaunter",knSub:"Sila hadir di kaunter yang dinyatakan di atas mengikut sesi masing-masing. Tuan/Puan dinasihatkan tiba lebih awal dan membawa Kad Pengenalan asal untuk urusan pengesahan di kaunter.",
     recodOk:"Kehadiran berjaya direkodkan!", recodErr:"Gagal merekod kehadiran.",
     errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan.",
     errTimeout:"Masa tamat. Cuba semula.",
-    stages:["Menyambung ke pangkalan data…","Mengesahkan nombor kad pengenalan…","Mencari rekod permohonan…","Menyemak kelayakan bantuan…","Menyiapkan keputusan…"]
+    stages:["Menyambung ke pangkalan data…","Mengesahkan nombor kad pengenalan…","Mencari rekod permohonan…","Menyemak kelayakan bantuan…","Menyiapkan keputusan…"],
+    btnSurat:"📄 Jana Surat Pemakluman",
+    btnRekod:"🖼️ Simpan Rekod Sebagai Gambar",
+    smTtl:"Semak butiran anda", smSub:"Pastikan nama dan nombor kad pengenalan di bawah adalah tepat sebelum surat dijana.",
+    smKNama:"Nama", smKIc:"Nombor Kad Pengenalan", smKSiri:"Nombor Siri",
+    smYes:"Betul", smNo:"Tidak betul", smTutup:"Tutup",
+    suratBusy:"⏳ Menyediakan surat…", suratOk:"✅ Surat telah dimuat turun.",
+    suratErr:"⚠️ Gagal menjana surat. Cuba semula.",
+    pbTtl:"Pembetulan butiran", pbSub:"Masukkan butiran yang betul. Gambar wajah diperlukan sebagai rekod sebelum permohonan pembetulan dihantar.",
+    pbLNama:"Nama Penuh", pbLIc:"Nombor Kad Pengenalan",
+    pbRetry:"↻ Cuba Lagi",
+    pbOkSurat:"✅ Pembetulan diterima. Menjana surat dengan butiran baharu…", tagBaru:"DIBETULKAN",
+    camFitIn:"Letakkan wajah di dalam bulatan", camFitNear:"Dekatkan wajah ke kamera", camFitFar:"Jauhkan sedikit wajah", pbSemak:"⏳ Mengesahkan rekod…",
+    camOpen:"⏳ Membuka kamera…", camHold:"Pandang kamera…", camShot:"📸 Gambar diambil",
+    camTimeout:"⚠️ Wajah tidak dapat dikesan. Pastikan wajah dalam bulatan dan cahaya mencukupi, kemudian cuba lagi.",
+    pbBack:"Kembali", pbHantar:"Hantar",
+    pbNote:"Gambar disimpan sebagai rekod sahaja. Pembetulan akan disemak oleh pegawai sebelum diluluskan.",
+    camLoad:"Memuatkan pengesan wajah…", camSearch:"Mencari wajah…",
+    camOk:"Wajah dikesan", camNo:"Wajah tidak dikesan",
+    camDeny:"⚠️ Akses kamera ditolak. Gambar diperlukan untuk menghantar pembetulan.",
+    camFail:"⚠️ Pengesan wajah gagal dimuatkan. Sila maklum kepada petugas.",
+    pbNeedAll:"Sila lengkapkan nama, nombor IC (12 digit) dan gambar wajah.",
+    pbBusy:"⏳ Menghantar…",
+    pbOk:"✅ Permohonan pembetulan telah dihantar untuk semakan pegawai.",
+    pbErr:"⚠️ Gagal menghantar. Cuba semula."
   },
   en:{
-    badge:"PKPJ · Perumahan Kasih Johor",
+    badge:"Inisiatif Perumahan Kasih Johor",
     title:"Enter Your <em>Identity Card Number</em>",
     label:"Identity Card Number (IC)", ph:"000000-00-0000",
     btnSearch:"Click Here", btnMotion:"Enable shake sensor",
@@ -587,14 +747,38 @@ const i18n = {
     pendErr:"⚠️ Failed to record. Please inform the officer on duty.",
     terimaModeTitle:"Attendance Registration Mode",
     sesiLbl:"Session",sesiPagi:"Morning",sesiPetang:"Afternoon",
-    knTitle:"Counter Information",knSub:"Please be informed that your counter number and aid details will be displayed only after you scan the QR code provided at the venue on the event day. Your kind cooperation is greatly appreciated.",
+    knTitle:"Counter Information",knSub:"Please proceed to the counter shown above according to your session. You are advised to arrive 15 minutes early and bring your original identity card together with this notification letter for verification at the counter.",
     recodOk:"Attendance recorded successfully!", recodErr:"Failed to record attendance.",
     errEmpty:"Please enter your IC number.", errServer:"Failed to reach server.",
     errTimeout:"Request timed out. Please try again.",
-    stages:["Connecting to database…","Verifying identity card number…","Searching application records…","Checking aid eligibility…","Preparing your result…"]
+    stages:["Connecting to database…","Verifying identity card number…","Searching application records…","Checking aid eligibility…","Preparing your result…"],
+    btnSurat:"📄 Generate Notification Letter",
+    btnRekod:"🖼️ Save Record as Image",
+    smTtl:"Check your details", smSub:"Make sure the name and IC number below are correct before the letter is generated.",
+    smKNama:"Name", smKIc:"IC Number", smKSiri:"Serial Number",
+    smYes:"Correct", smNo:"Not correct", smTutup:"Close",
+    suratBusy:"⏳ Preparing letter…", suratOk:"✅ Letter downloaded.",
+    suratErr:"⚠️ Failed to generate letter. Please try again.",
+    pbTtl:"Correct your details", pbSub:"Enter the correct details. A face photo is required as a record before the correction request is submitted.",
+    pbLNama:"Full Name", pbLIc:"IC Number",
+    pbRetry:"↻ Try Again",
+    pbOkSurat:"✅ Correction received. Generating letter with the new details…", tagBaru:"CORRECTED",
+    camFitIn:"Place your face inside the circle", camFitNear:"Move closer to the camera", camFitFar:"Move back a little", pbSemak:"⏳ Verifying record…",
+    camOpen:"⏳ Opening camera…", camHold:"Look at the camera…", camShot:"📸 Photo captured",
+    camTimeout:"⚠️ No face detected. Keep your face inside the circle with enough light, then try again.",
+    pbBack:"Back", pbHantar:"Submit",
+    pbNote:"The photo is stored as a record only. Corrections are reviewed by an officer before approval.",
+    camLoad:"Loading face detector…", camSearch:"Looking for a face…",
+    camOk:"Face detected", camNo:"No face detected",
+    camDeny:"⚠️ Camera access denied. A photo is required to submit a correction.",
+    camFail:"⚠️ Face detector failed to load. Please inform the officer on duty.",
+    pbNeedAll:"Please complete the name, IC number (12 digits) and face photo.",
+    pbBusy:"⏳ Submitting…",
+    pbOk:"✅ Correction request submitted for officer review.",
+    pbErr:"⚠️ Submission failed. Please try again."
   },
   zh:{
-    badge:"PKPJ · Perumahan Kasih Johor",
+    badge:"Inisiatif Perumahan Kasih Johor",
     title:"请输入您的<em>身份证号码</em>",
     label:"身份证号码（IC）", ph:"000000-00-0000",
     btnSearch:"点击这里", btnMotion:"启用摇动感应器",
@@ -619,14 +803,38 @@ const i18n = {
     pendErr:"⚠️ 记录失败，请通知现场工作人员。",
     terimaModeTitle:"出席登记模式",
     sesiLbl:"时段",sesiPagi:"上午",sesiPetang:"下午",
-    knTitle:"柜台相关资料",knSub:"谨此通知，您的柜台号码及援助详情将在您于活动当天在现场扫描所提供的二维码后才会显示。感谢您的配合。",
+    knTitle:"柜台相关资料",knSub:"请按照您的时段前往上述柜台。建议您提前15分钟抵达，并携带身份证正本及此通知函以便在柜台办理核实手续。",
     recodOk:"出席记录成功！", recodErr:"出席记录失败。",
     errEmpty:"请输入您的身份证号码。", errServer:"无法连接服务器。",
     errTimeout:"请求超时，请再试一次。",
-    stages:["正在连接数据库…","正在验证身份证号码…","正在搜索申请记录…","正在检查援助资格…","正在准备查询结果…"]
+    stages:["正在连接数据库…","正在验证身份证号码…","正在搜索申请记录…","正在检查援助资格…","正在准备查询结果…"],
+    btnSurat:"📄 生成通知函",
+    btnRekod:"🖼️ 将记录保存为图片",
+    smTtl:"请核对您的资料", smSub:"生成信函前，请确认以下姓名与身份证号码正确无误。",
+    smKNama:"姓名", smKIc:"身份证号码", smKSiri:"系列号",
+    smYes:"正确", smNo:"不正确", smTutup:"关闭",
+    suratBusy:"⏳ 正在准备信函…", suratOk:"✅ 信函已下载。",
+    suratErr:"⚠️ 生成失败，请重试。",
+    pbTtl:"更正资料", pbSub:"请输入正确资料。提交更正申请前需拍摄人脸照片作为记录。",
+    pbLNama:"全名", pbLIc:"身份证号码",
+    pbRetry:"↻ 再试一次",
+    pbOkSurat:"✅ 更正已提交。正在以新资料生成信函…", tagBaru:"已更正",
+    camFitIn:"请将脸部置于圆圈内", camFitNear:"请靠近相机", camFitFar:"请稍微后退", pbSemak:"⏳ 正在核实记录…",
+    camOpen:"⏳ 正在开启相机…", camHold:"请看向相机…", camShot:"📸 已拍照",
+    camTimeout:"⚠️ 未检测到人脸。请将脸部置于圆圈内并确保光线充足，然后再试一次。",
+    pbBack:"返回", pbHantar:"提交",
+    pbNote:"照片仅作记录用途。更正申请须经工作人员审核。",
+    camLoad:"正在加载人脸检测…", camSearch:"正在寻找人脸…",
+    camOk:"已检测到人脸", camNo:"未检测到人脸",
+    camDeny:"⚠️ 相机权限被拒绝。提交更正需要照片。",
+    camFail:"⚠️ 人脸检测加载失败，请通知工作人员。",
+    pbNeedAll:"请填写姓名、身份证号码（12位）并拍摄照片。",
+    pbBusy:"⏳ 正在提交…",
+    pbOk:"✅ 更正申请已提交，等待工作人员审核。",
+    pbErr:"⚠️ 提交失败，请重试。"
   },
   ta:{
-    badge:"PKPJ · Perumahan Kasih Johor",
+    badge:"Inisiatif Perumahan Kasih Johor",
     title:"உங்கள் <em>அடையாள அட்டை எண்ணை</em> உள்ளிடவும்",
     label:"அடையாள அட்டை எண் (IC)", ph:"000000-00-0000",
     btnSearch:"இங்கே கிளிக் செய்யவும்", btnMotion:"அசைவு சென்சாரை இயக்கு",
@@ -651,11 +859,35 @@ const i18n = {
     pendErr:"⚠️ பதிவு தோல்வி. பணியாளரிடம் தெரிவிக்கவும்.",
     terimaModeTitle:"வருகைப் பதிவு முறை",
     sesiLbl:"அமர்வு",sesiPagi:"காலை",sesiPetang:"மாலை",
-    knTitle:"கவுண்டர் தகவல்",knSub:"நிகழ்ச்சி நாளில் வழங்கப்படும் QR குறியீட்டை ஸ்கேன் செய்த பின்னரே உங்கள் கவுண்டர் எண் மற்றும் உதவி விவரங்கள் காட்டப்படும் என்பதை தயவுசெய்து கவனத்தில் கொள்ளவும். உங்கள் ஒத்துழைப்பிற்கு நன்றி.",
+    knTitle:"கவுண்டர் தகவல்",knSub:"உங்கள் அமர்வுக்கு ஏற்ப மேலே குறிப்பிடப்பட்ட கவுண்டருக்குச் செல்லவும். 15 நிமிடங்கள் முன்னதாக வருகை தந்து, அசல் அடையாள அட்டை மற்றும் இந்த அறிவிப்புக் கடிதத்தை சரிபார்ப்புக்காக கொண்டு வரவும்.",
     recodOk:"வருகை வெற்றிகரமாக பதிவு செய்யப்பட்டது!", recodErr:"வருகை பதிவு தோல்வியடைந்தது.",
     errEmpty:"தயவுசெய்து உங்கள் IC எண்ணை உள்ளிடவும்.", errServer:"சேவையகத்தை அடைய முடியவில்லை.",
     errTimeout:"கோரிக்கை நேரம் முடிந்தது.",
-    stages:["தரவுத்தளத்துடன் இணைக்கிறது…","அடையாள அட்டை எண் சரிபார்க்கப்படுகிறது…","விண்ணப்பப் பதிவுகள் தேடப்படுகின்றன…","உதவி தகுதி சரிபார்க்கப்படுகிறது…","முடிவு தயாராகிறது…"]
+    stages:["தரவுத்தளத்துடன் இணைக்கிறது…","அடையாள அட்டை எண் சரிபார்க்கப்படுகிறது…","விண்ணப்பப் பதிவுகள் தேடப்படுகின்றன…","உதவி தகுதி சரிபார்க்கப்படுகிறது…","முடிவு தயாராகிறது…"],
+    btnSurat:"📄 அறிவிப்புக் கடிதம் உருவாக்கு",
+    btnRekod:"🖼️ பதிவை படமாக சேமி",
+    smTtl:"உங்கள் விவரங்களைச் சரிபார்க்கவும்", smSub:"கடிதம் உருவாக்கப்படும் முன் கீழே உள்ள பெயர் மற்றும் IC எண் சரியானது என உறுதிப்படுத்தவும்.",
+    smKNama:"பெயர்", smKIc:"IC எண்", smKSiri:"தொடர் எண்",
+    smYes:"சரி", smNo:"சரியில்லை", smTutup:"மூடு",
+    suratBusy:"⏳ கடிதம் தயாராகிறது…", suratOk:"✅ கடிதம் பதிவிறக்கப்பட்டது.",
+    suratErr:"⚠️ உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+    pbTtl:"விவரத் திருத்தம்", pbSub:"சரியான விவரங்களை உள்ளிடவும். திருத்தக் கோரிக்கை அனுப்பும் முன் முகப் படம் தேவை.",
+    pbLNama:"முழுப் பெயர்", pbLIc:"IC எண்",
+    pbRetry:"↻ மீண்டும் முயற்சி",
+    pbOkSurat:"✅ திருத்தம் பெறப்பட்டது. புதிய விவரங்களுடன் கடிதம் உருவாக்கப்படுகிறது…", tagBaru:"திருத்தப்பட்டது",
+    camFitIn:"முகத்தை வட்டத்திற்குள் வைக்கவும்", camFitNear:"கேமராவுக்கு அருகில் வரவும்", camFitFar:"சற்று பின்னால் செல்லவும்", pbSemak:"⏳ பதிவு சரிபார்க்கப்படுகிறது…",
+    camOpen:"⏳ கேமரா திறக்கப்படுகிறது…", camHold:"கேமராவைப் பாருங்கள்…", camShot:"📸 படம் எடுக்கப்பட்டது",
+    camTimeout:"⚠️ முகம் கண்டறியப்படவில்லை. முகத்தை வட்டத்திற்குள் வைத்து போதிய ஒளியுடன் மீண்டும் முயற்சிக்கவும்.",
+    pbBack:"பின்", pbHantar:"அனுப்பு",
+    pbNote:"படம் பதிவுக்காக மட்டுமே சேமிக்கப்படும். திருத்தம் பணியாளரால் சரிபார்க்கப்படும்.",
+    camLoad:"முக கண்டறிதல் ஏற்றப்படுகிறது…", camSearch:"முகம் தேடப்படுகிறது…",
+    camOk:"முகம் கண்டறியப்பட்டது", camNo:"முகம் கண்டறியப்படவில்லை",
+    camDeny:"⚠️ கேமரா அனுமதி மறுக்கப்பட்டது. திருத்தம் அனுப்ப படம் தேவை.",
+    camFail:"⚠️ முக கண்டறிதல் ஏற்ற முடியவில்லை. பணியாளரிடம் தெரிவிக்கவும்.",
+    pbNeedAll:"பெயர், IC எண் (12 இலக்கம்) மற்றும் முகப் படத்தை நிறைவு செய்யவும்.",
+    pbBusy:"⏳ அனுப்பப்படுகிறது…",
+    pbOk:"✅ திருத்தக் கோரிக்கை பணியாளர் சரிபார்ப்புக்கு அனுப்பப்பட்டது.",
+    pbErr:"⚠️ அனுப்ப முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
   }
 };
 
@@ -666,10 +898,31 @@ let _lastResult = null;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const buzz = ms => { if (navigator.vibrate) try{ navigator.vibrate(ms); }catch(e){} };
 
-// Mod pendaftaran kehadiran (?terima=1) — dibaca awal kerana showSuccess bergantung padanya
 const _urlParams  = new URLSearchParams(window.location.search);
 const _terimaMode = _urlParams.get('terima') === '1';
-let _pendState = 'wait';   // 'wait' | 'done' | 'err' — kekal sehingga refresh
+let _pendState = 'wait';
+
+// Keadaan modal surat / kamera — diisytihar AWAL kerana applyI18n()
+// merujuknya sebelum bahagian N/O dijalankan (elak ralat TDZ).
+let _suratTarget = null;
+let _lhBytes = null;
+let _camStream = null, _camOn = false, _shotData = null, _faceReady = false, _faceLoop = null;
+let _adaWajah = false;
+
+// ══════════════════════════════════════════════════
+// 0 · PENGHALANG RIGHT-CLICK / DEVTOOLS
+// Nota: ini penghalang kasual sahaja — devtools masih boleh dibuka
+// melalui menu pelayar, dan view-source: masih berfungsi. Apa-apa
+// yang benar-benar sulit mesti dilindungi di sebelah Apps Script.
+// ══════════════════════════════════════════════════
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  const k = (e.key || '').toLowerCase();
+  if (k === 'f12') { e.preventDefault(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['i','j','c'].includes(k)) { e.preventDefault(); return; }
+  if ((e.ctrlKey || e.metaKey) && k === 'u') { e.preventDefault(); }
+});
+document.addEventListener('dragstart', e => { if (e.target.tagName === 'IMG') e.preventDefault(); });
 
 // ══════════════════════════════════════════════════
 // A · LOGO 3D
@@ -766,9 +1019,7 @@ if (needsPerm){
 } else if (typeof DeviceMotionEvent !== 'undefined'){
   attachSensors();
 }
-setTimeout(() => {
-  if (!motionOn && !needsPerm) fallbackToTap();
-}, 1500);
+setTimeout(() => { if (!motionOn && !needsPerm) fallbackToTap(); }, 1500);
 function fallbackToTap(){
   const t = i18n[lang];
   const a = $('askShake');
@@ -841,7 +1092,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // ══════════════════════════════════════════════════
-// F · LOADER MENARA 12 TINGKAT
+// F · LOADER MENARA
 // ══════════════════════════════════════════════════
 const FLOORS = 12, tower = $('tower'), roof = $('roof');
 for (let i=0;i<FLOORS;i++){ const f=document.createElement('div'); f.className='floor'; tower.appendChild(f); }
@@ -896,6 +1147,11 @@ function applyI18n() {
   document.querySelectorAll('[data-i18n]').forEach(el => { const k=el.getAttribute('data-i18n'); if(t[k]!==undefined) el.textContent=t[k]; });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { const k=el.getAttribute('data-i18n-html'); if(t[k]!==undefined) el.innerHTML=t[k]; });
   $('icInput').placeholder = t.ph;
+  // Modal surat & pembetulan
+  const M = ['smTtl','smSub','smKNama','smKIc','smKSiri','smYes','smNo','smTutup',
+             'pbTtl','pbSub','pbLNama','pbLIc','pbBack','pbHantar','pbNote'];
+  M.forEach(k => { const el = $(k); if (el && t[k] !== undefined) el.textContent = t[k]; });
+
 }
 function toggleTheme() {
   isDark = !isDark;
@@ -913,21 +1169,22 @@ let ready = false, busy = false;
 
 function digits(){ return ic.value.replace(/\D/g,''); }
 function updateCount(){ cnt.textContent = i18n[lang].countTxt.replace('{n}', digits().length); }
+function formatIC(raw){
+  const d = String(raw).replace(/\D/g,'').slice(0,12);
+  if (d.length > 8) return d.slice(0,6) + '-' + d.slice(6,8) + '-' + d.slice(8);
+  if (d.length > 6) return d.slice(0,6) + '-' + d.slice(6);
+  return d;
+}
 
 ic.addEventListener('focus', () => document.body.classList.add('focused'));
 ic.addEventListener('blur',  () => document.body.classList.remove('focused'));
 ic.addEventListener('keydown', e => { if(e.key==='Enter' && ready) doSearch('butang'); });
 
 ic.addEventListener('input', () => {
-  const d = ic.value.replace(/\D/g,'').slice(0,12);
-  let out = d;
-  if (d.length > 6) out = d.slice(0,6) + '-' + d.slice(6);
-  if (d.length > 8) out = d.slice(0,6) + '-' + d.slice(6,8) + '-' + d.slice(8);
-  ic.value = out;
+  ic.value = formatIC(ic.value);
   updateCount();
   errEl.textContent = '';
-
-  const full = d.length === 12;
+  const full = digits().length === 12;
   if (full === ready) return;
   ready = full;
   ic.classList.toggle('done', full);
@@ -1078,10 +1335,7 @@ function doSearch(via) {
     finishUI();
   });
 
-  fetchResult(val, (err, data) => {
-    payload = data; payloadErr = err;
-    _dataReady = true;
-  });
+  fetchResult(val, (err, data) => { payload = data; payloadErr = err; _dataReady = true; });
 }
 
 function finishUI(){
@@ -1106,11 +1360,10 @@ function sesiBadge(sesi) {
              : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
   if (!sCls) return '';
   const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
-  const sTime = sCls === 'pagi' ? '8.30 pagi' : '2.30-6.00 petang';
+  const sTime = sCls === 'pagi' ? '8.00 pagi' : '1.00 tengahari';
   return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
 }
 
-// Blok status pendaftaran kehadiran — kekal dipaparkan sehingga refresh
 function pendBlockHTML(){
   const t = i18n[lang];
   if (_pendState === 'done') return `<div class="sudah-hadir" id="pendStatus">${esc(t.pendDone)}</div>`;
@@ -1146,12 +1399,10 @@ function showSuccess(d) {
     const matchCards = matches.map(m => {
       const cardId = ('mc_' + m.sheet + '_' + m.row).replace(/[^a-zA-Z0-9_]/g, '_');
       const sesiHTML = sesiBadge(m.sesi);
-
       const footerHTML = `<div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
           <span class="mc-terima-dot"></span>
           ${m.sudahTerima ? `<span>${esc(t.statusTerima)}</span>` : `<span>${esc(t.statusBelumTerima)}</span>`}
         </div>`;
-
       return `
       <div class="match-card" id="${cardId}">
         <div class="mc-main">
@@ -1172,6 +1423,9 @@ function showSuccess(d) {
           </div>
         </div>
         ${footerHTML}
+        ${!_terimaMode && SURAT[m.sheet] ? `<div style="padding:10px 14px 12px">
+          <button class="btn-surat" style="margin-top:0" onclick="bukaSurat(${d.matches.indexOf(m)})">${esc(t.btnSurat)}</button>
+        </div>` : ''}
       </div>`;
     }).join('');
 
@@ -1185,19 +1439,8 @@ function showSuccess(d) {
       </div>`;
   }).join('');
 
-  const bantuanHTML = _terimaMode ? '' : `
-    <div class="bantuan-list">
-      ${d.matches.map(m => `
-        <div class="bantuan-item">
-          <div class="bantuan-lbl">${esc(t.keyBantuan)}</div>
-          <div class="bantuan-nama">${esc(m.bantuan || '—')}</div>
-          ${sesiBadge(m.sesi)}
-        </div>`).join('')}
-    </div>`;
-
   let kehHTML = '';
   if (_terimaMode) {
-    // Mod Pendaftaran Kehadiran — status sahaja, tiada butang
     kehHTML = pendBlockHTML();
   } else if (allHadir) {
     kehHTML = `<div class="sudah-hadir">${esc(t.sudahHadir)}</div>`;
@@ -1215,19 +1458,20 @@ function showSuccess(d) {
 
   el.innerHTML = `
     <div class="res-header">
-      ${_terimaMode ? `<div style="display:flex;gap:6px;flex-wrap:wrap;">${sheetBadgesHTML}</div>` : '<span></span>'}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">${sheetBadgesHTML}</div>
       <span class="found-tag ok">✓ ${esc(t.foundOk)}</span>
     </div>
     <div class="res-nama">${esc(d.nama)}</div>
     <div class="res-ic">${esc(d.ic)}</div>
-    ${_terimaMode ? (totalCount > 1 ? summaryHTML : '') : ''}
-    ${_terimaMode ? groupsHTML : bantuanHTML}
+    ${totalCount > 1 ? summaryHTML : ''}
+    ${groupsHTML}
+    <button class="btn-surat" style="margin-bottom:16px" onclick="simpanRekodGambar()">${esc(t.btnRekod)}</button>
     <div class="keh-section">
       <div class="keh-title">${esc(_terimaMode ? t.pendTitle : t.kehTitle)}</div>
       ${kehHTML}
     </div>
     ${_terimaMode ? '' : `<div class="kaunter-notice">
-        <div class="kn-icon">🔒</div>
+        <div class="kn-icon">ℹ️</div>
         <div class="kn-text">
           <div class="kn-title">${esc(t.knTitle)}</div>
           <div class="kn-sub">${esc(t.knSub)}</div>
@@ -1238,6 +1482,94 @@ function showSuccess(d) {
   el.classList.add('show');
 
   if (_terimaMode && _pendState === 'wait') recordKehadiranSemasa(d.matches);
+}
+
+// ── Slip rekod maklumat kaunter sebagai gambar PNG ──
+async function simpanRekodGambar() {
+  const t = i18n[lang], d = _lastResult;
+  if (!d || !d.matches) return;
+  await muatLogoWM();
+
+  const W = 760, PAD = 32;
+  const TINGGI_KAD = 150, KEPALA = 230, KAKI = 64;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = KEPALA + d.matches.length * (TINGGI_KAD + 12) + KAKI;
+  const g = c.getContext('2d');
+
+  // Latar
+  g.fillStyle = '#0b1220'; g.fillRect(0, 0, c.width, c.height);
+  g.fillStyle = '#d9b45c'; g.fillRect(0, 0, c.width, 6);
+
+  // Logo + tajuk
+  if (_wmLogo) {
+    const h = 72, w = _wmLogo.width * h / _wmLogo.height;
+    g.drawImage(_wmLogo, PAD, 34, w, h);
+  }
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  g.fillStyle = '#d9b45c'; g.font = '700 15px Arial, sans-serif';
+  g.fillText('INISIATIF PERUMAHAN KASIH JOHOR', PAD + 96, 62);
+  g.fillStyle = '#ffffff'; g.font = '800 27px Arial, sans-serif';
+  g.fillText(String(d.nama || '').toUpperCase().slice(0, 34), PAD + 96, 94);
+  g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '600 20px Arial, sans-serif';
+  g.fillText(d.ic || '', PAD + 96, 122);
+
+  g.strokeStyle = 'rgba(217,180,92,.35)'; g.lineWidth = 1;
+  g.beginPath(); g.moveTo(PAD, 160); g.lineTo(W - PAD, 160); g.stroke();
+  g.fillStyle = '#d9b45c'; g.font = '700 14px Arial, sans-serif';
+  g.fillText(t.keyKaunter.toUpperCase() + ' · ' + t.keyBantuan.toUpperCase(), PAD, 192);
+
+  const warna = { BSR: '#5b9dff', BMR: '#c084fc', BBR: '#34d399' };
+  d.matches.forEach((m, i) => {
+    const y = KEPALA + i * (TINGGI_KAD + 12);
+    g.fillStyle = 'rgba(255,255,255,.05)';
+    g.fillRect(PAD, y, W - PAD * 2, TINGGI_KAD);
+    g.fillStyle = warna[m.sheet] || '#d9b45c';
+    g.fillRect(PAD, y, 5, TINGGI_KAD);
+
+    // Nombor kaunter
+    g.textAlign = 'center';
+    g.fillStyle = warna[m.sheet] || '#d9b45c';
+    g.font = '700 12px Arial, sans-serif';
+    g.fillText(t.keyKaunter.toUpperCase(), PAD + 90, y + 34);
+    g.font = '800 54px Arial, sans-serif';
+    g.fillText(String(m.kaunter || '—'), PAD + 90, y + 92);
+    g.font = '700 13px Arial, sans-serif';
+    g.fillText(m.sheet, PAD + 90, y + 120);
+
+    // Butiran
+    const x = PAD + 170;
+    const maks = W - PAD - x - 10;
+    const potong = (teks, fon) => { g.font = fon; let v = String(teks || '-');
+      while (g.measureText(v).width > maks && v.length > 4) v = v.slice(0, -2) + '…'; return v; };
+    g.textAlign = 'left';
+    g.fillStyle = 'rgba(255,255,255,.55)'; g.font = '600 12px Arial, sans-serif';
+    g.fillText(t.keyNoSiri.toUpperCase(), x, y + 30);
+    g.fillStyle = '#ffffff';
+    g.fillText(potong(m.siri, '700 19px Arial, sans-serif'), x, y + 54);
+    g.fillStyle = 'rgba(255,255,255,.55)'; g.font = '600 12px Arial, sans-serif';
+    g.fillText(t.keyBantuan.toUpperCase(), x, y + 84);
+    g.fillStyle = '#ffffff';
+    g.fillText(potong(m.bantuan, '700 17px Arial, sans-serif'), x, y + 106);
+
+    const sv = String(m.sesi || '').trim().toLowerCase();
+    const pagi = sv === '1' || sv.indexOf('pagi') > -1;
+    const ptg  = sv === '2' || sv.indexOf('petang') > -1;
+    if (pagi || ptg) {
+      g.fillStyle = pagi ? '#f0b429' : '#a5b4fc';
+      g.font = '700 14px Arial, sans-serif';
+      g.fillText('🕒 ' + t.sesiLbl + ': ' + (pagi ? t.sesiPagi + ' · 8.00 pagi' : t.sesiPetang + ' · 1.00 tengahari'), x, y + 134);
+    }
+  });
+
+  g.textAlign = 'center';
+  g.fillStyle = 'rgba(255,255,255,.45)'; g.font = '14px Arial, sans-serif';
+  g.fillText('Dijana ' + new Date().toLocaleString('ms-MY', { hour12: false }), W / 2, c.height - 26);
+
+  const a = document.createElement('a');
+  a.href = c.toDataURL('image/png');
+  a.download = 'Rekod_Kaunter_' + String(d.ic || '').replace(/\D/g, '') + '.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  buzz([20, 40, 20]);
 }
 
 function showError(msg) {
@@ -1298,17 +1630,11 @@ if (_terimaMode) {
 }
 
 // ── PENDAFTARAN KEHADIRAN — tulis F, G dan H ──
-// Dirantai satu demi satu: Apps Script menyiri permintaan pengguna yang sama,
-// jadi menghantar serentak hanya akan membuatkannya beratur dan tamat masa.
 function recordKehadiranSemasa(matches) {
   if (!matches || !matches.length) return;
   const entries = encodeURIComponent(JSON.stringify(matches.map(m => ({ sheet: m.sheet, row: m.row }))));
-
-  // 1) Column F — Pengesahan Kehadiran
   jsonp(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${entries}`, () => {
-    // 2) Column H — Kehadiran Semasa
     jsonp(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${entries}`, () => {
-      // 3) Column G — Telah Terima Bantuan (satu panggilan per baris)
       terimaBerturut(matches.slice(), () => {
         invalidateCache();
         matches.forEach(m => {
@@ -1330,7 +1656,6 @@ function terimaBerturut(queue, done) {
     () => terimaBerturut(queue, done), 20000);
 }
 
-// Tukar semua strip "belum diterima" kepada "telah diterima"
 function markSemuaTerima() {
   const t = i18n[lang];
   document.querySelectorAll('.mc-terima-strip.pending').forEach(s => {
@@ -1339,7 +1664,6 @@ function markSemuaTerima() {
   });
 }
 
-// Kekal dipaparkan sehingga pengguna refresh / tekan "Semakan Baru"
 function setPendStatus(state) {
   _pendState = state;
   const el = $('pendStatus');
@@ -1350,7 +1674,613 @@ function setPendStatus(state) {
 }
 
 // ══════════════════════════════════════════════════
-// M · DEMO MODE (?demo=1)
+// N · JANA SURAT PEMAKLUMAN (pdf-lib, sebelah pelayar)
+// ══════════════════════════════════════════════════
+// _suratTarget dan _lhBytes diisytihar di bahagian awal skrip.
+
+function bukaSurat(idx) {
+  const t = i18n[lang];
+  if (!_lastResult || !_lastResult.matches || !_lastResult.matches[idx]) return;
+  const m = _lastResult.matches[idx];
+  _suratTarget = { sheet: m.sheet, row: m.row, siri: m.siri || '', nama: _lastResult.nama || m.nama || '', ic: _lastResult.ic || m.ic || '' };
+
+  $('smNama').textContent = _suratTarget.nama || '—';
+  $('smIc').textContent   = _suratTarget.ic   || '—';
+  $('smSiri').textContent = _suratTarget.siri || '—';
+  $('smRes').style.display = 'none';
+  $('smNo').hidden = false;
+  $('smNama').parentNode.classList.remove('baru');
+  $('smIc').parentNode.classList.remove('baru');
+  $('smYes').disabled = false;
+  $('smYes').textContent = t.smYes;
+  $('stepSemak').hidden = false;
+  $('stepBetul').hidden = true;
+  $('suratModal').classList.add('show');
+}
+
+// Papar semula langkah semakan dengan butiran yang telah dibetulkan
+function paparSemakBaharu() {
+  const t = i18n[lang];
+  $('smNama').innerHTML = esc(_suratTarget.nama) + '<span class="chk-tag">' + esc(t.tagBaru) + '</span>';
+  $('smIc').innerHTML   = esc(_suratTarget.ic)   + '<span class="chk-tag">' + esc(t.tagBaru) + '</span>';
+  $('smNama').parentNode.classList.add('baru');
+  $('smIc').parentNode.classList.add('baru');
+  $('smNo').hidden = true;                 // pembetulan sudah dihantar — tiada pembetulan kedua
+  $('smYes').disabled = false;
+  $('stepBetul').hidden = true;
+  $('stepSemak').hidden = false;
+}
+
+function tutupSurat() {
+  $('suratModal').classList.remove('show');
+  hentikanKamera();
+  _suratTarget = null;
+}
+
+function kembaliSemak() {
+  hentikanKamera();
+  $('stepBetul').hidden = true;
+  $('stepSemak').hidden = false;
+}
+
+async function ambilLetterhead() {
+  if (_lhBytes) return _lhBytes;
+  try {
+    const r = await fetch(LETTERHEAD_SRC, { cache: 'force-cache' });
+    if (!r.ok) throw new Error('404');
+    _lhBytes = await r.arrayBuffer();
+    return _lhBytes;
+  } catch(e) {
+    console.warn('[PKPJ] Letterhead tidak dijumpai: ' + LETTERHEAD_SRC);
+    return null;
+  }
+}
+
+function tarikhSurat() {
+  if (TARIKH_SURAT) return TARIKH_SURAT;
+  const bln = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+  const d = new Date();
+  return `${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// Pecah teks kepada baris mengikut lebar maksimum
+function balutTeks(teks, font, saiz, lebarMax) {
+  const kata = String(teks).split(/\s+/);
+  const baris = [];
+  let semasa = '';
+  for (const w of kata) {
+    const cuba = semasa ? semasa + ' ' + w : w;
+    if (font.widthOfTextAtSize(cuba, saiz) > lebarMax && semasa) { baris.push(semasa); semasa = w; }
+    else semasa = cuba;
+  }
+  if (semasa) baris.push(semasa);
+  return baris;
+}
+
+// Muat fon surat (reg/bold/italik). Gagal → Helvetica, supaya surat tetap dijana.
+let _fonCache = null;
+async function muatFonSurat(pdf, StandardFonts) {
+  try {
+    if (typeof fontkit === 'undefined') await cubaBerturut(FONTKIT_SRCS, muatSkrip);
+    if (!_fonCache) {
+      const ambil = async u => { const r = await fetch(u, { cache: 'force-cache' });
+                                 if (!r.ok) throw new Error(u + ' HTTP ' + r.status);
+                                 return r.arrayBuffer(); };
+      const [a, b, c] = await Promise.all([ambil(FONT_SURAT.reg), ambil(FONT_SURAT.bold), ambil(FONT_SURAT.ital)]);
+      _fonCache = { a, b, c };
+    }
+    pdf.registerFontkit(fontkit);
+    return {
+      reg:  await pdf.embedFont(_fonCache.a, { subset: SUBSET_FON }),
+      bold: await pdf.embedFont(_fonCache.b, { subset: SUBSET_FON }),
+      ital: await pdf.embedFont(_fonCache.c, { subset: SUBSET_FON })
+    };
+  } catch (e) {
+    console.warn('[PKPJ] Fon surat tidak dapat dimuat, guna Helvetica: ' + (e && e.message));
+    return {
+      reg:  await pdf.embedFont(StandardFonts.Helvetica),
+      bold: await pdf.embedFont(StandardFonts.HelveticaBold),
+      ital: await pdf.embedFont(StandardFonts.HelveticaOblique)
+    };
+  }
+}
+
+async function janaSurat() {
+  const t = i18n[lang];
+  if (!_suratTarget) return;
+  const res = $('smRes'), btn = $('smYes');
+  res.style.display = 'block'; res.className = 'mres info'; res.textContent = t.suratBusy;
+  btn.disabled = true;
+
+  try {
+    if (typeof PDFLib === 'undefined') throw new Error('pdf-lib belum dimuatkan');
+    const { PDFDocument, StandardFonts, rgb } = PDFLib;
+    const isi = SURAT[_suratTarget.sheet];
+    if (!isi) throw new Error('Templat surat tiada untuk ' + _suratTarget.sheet);
+
+    const pdf  = await PDFDocument.create();
+    const page = pdf.addPage([595.28, 841.89]);           // A4
+    const { reg, bold, ital } = await muatFonSurat(pdf, StandardFonts);
+    const hitam = rgb(0,0,0);
+
+    // Letterhead ialah halaman A4 PENUH (2481x3508 @300dpi) — dilukis sebagai
+    // latar belakang, bukan header. Teks bermula di bawah jalur header dan
+    // berhenti sebelum jalur footer.
+    const L = 72, R = 72, LEBAR = 595.28 - L - R;
+    const Y_MULA = 688;   // bawah baris "(Sila Nyatakan Rujukan...)"
+    const Y_HENTI = 118;  // atas jalur footer — jangan tulis di bawah ini
+    let y = Y_MULA;
+
+    const lh = await ambilLetterhead();
+    let imgLH = null;
+    if (lh) {
+      try { imgLH = await pdf.embedJpg(lh); } catch(e) { try { imgLH = await pdf.embedPng(lh); } catch(e2) { imgLH = null; } }
+    }
+    const lukisLatar = pg => {
+      if (imgLH) pg.drawImage(imgLH, { x: 0, y: 0, width: 595.28, height: 841.89 });
+    };
+    lukisLatar(page);
+    let pgSemasa = page;
+
+    const tulis = (teks, font, saiz, gap, opt) => {
+      const o = opt || {};
+      const baris = o.nowrap ? [teks] : balutTeks(teks, font, saiz, LEBAR);
+      baris.forEach((b, idx) => {
+        if (y < Y_HENTI) {                      // halaman penuh — sambung di halaman baharu
+          pgSemasa = pdf.addPage([595.28, 841.89]);
+          lukisLatar(pgSemasa);
+          y = Y_MULA;
+        }
+        const akhir = idx === baris.length - 1;
+        if (o.justify && !akhir) {
+          // Ratakan kiri-kanan: agihkan ruang lebih antara perkataan
+          const kata = b.split(' ');
+          if (kata.length > 1) {
+            const lebarKata = kata.reduce((j, w) => j + font.widthOfTextAtSize(w, saiz), 0);
+            const ruang = (LEBAR - lebarKata) / (kata.length - 1);
+            let x = L;
+            kata.forEach(w => {
+              pgSemasa.drawText(w, { x, y, size: saiz, font, color: hitam });
+              x += font.widthOfTextAtSize(w, saiz) + ruang;
+            });
+            y -= saiz * 1.42;
+            return;
+          }
+        }
+        pgSemasa.drawText(b, { x: o.center ? (595.28 - font.widthOfTextAtSize(b, saiz))/2 : L,
+                               y, size: saiz, font, color: hitam });
+        y -= saiz * 1.42;
+      });
+      y -= (gap || 0);
+    };
+
+    // Blok rujukan & tarikh — sebelah KANAN surat
+    const X_RUJ = 330;
+    pgSemasa.drawText('Ruj. Kami  : ' + RUJ_KAMI, { x: X_RUJ, y, size: SAIZ_FON, font: reg, color: hitam });
+    y -= SAIZ_FON * 1.42;
+    pgSemasa.drawText('Tarikh     : ' + tarikhSurat(), { x: X_RUJ, y, size: SAIZ_FON, font: reg, color: hitam });
+    y -= SAIZ_FON * 1.42 + 14;
+
+    // Blok penerima — sebelah KIRI
+    tulis('NOMBOR SIRI: ' + (_suratTarget.siri || '-'), reg, SAIZ_FON, 0, {nowrap:true});
+    tulis((_suratTarget.nama || '').toUpperCase(), reg, SAIZ_FON, 0, {nowrap:true});
+    tulis(_suratTarget.ic || '', reg, SAIZ_FON, 18, {nowrap:true});
+    tulis('Tuan/Puan,', reg, SAIZ_FON, 14, {nowrap:true});
+    tulis(isi.tajuk, bold, SAIZ_FON, 14);
+    tulis('Dengan segala hormatnya perkara di atas adalah dirujuk.', reg, SAIZ_FON, 12);
+    tulis('2.    ' + isi.p2, reg, SAIZ_FON, 12, {justify:true});
+    tulis('3.    ' + isi.p3, reg, SAIZ_FON, 16, {justify:true});
+    tulis('Sekian, terima kasih.', reg, SAIZ_FON, 26);
+    tulis('Surat ini adalah janaan komputer, tandatangan tidak diperlukan', ital, SAIZ_FON, 0, {center:true});
+
+    const bytes = await pdf.save();
+    const blob  = new Blob([bytes], { type: 'application/pdf' });
+    const url   = URL.createObjectURL(blob);
+    const a     = document.createElement('a');
+    a.href = url;
+    a.download = `Surat_Pemakluman_${_suratTarget.sheet}_${(_suratTarget.siri||'PKPJ').replace(/[^A-Za-z0-9_-]/g,'')}.pdf`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+
+    res.className = 'mres ok'; res.textContent = t.suratOk;
+    btn.disabled = false;
+    buzz([25,50,25]);
+  } catch (e) {
+    console.error('[PKPJ] jana surat:', e);
+    res.className = 'mres err'; res.textContent = t.suratErr;
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// O · PEMBETULAN BUTIRAN + GAMBAR WAJAH
+// Satu tekan sahaja: butang "Hantar" membuka kamera sendiri,
+// menangkap gambar sebaik wajah dikesan, kemudian menghantar.
+// Pengesanan wajah hanya mengesahkan ADA wajah dalam bingkai —
+// ia bukan pengesahan identiti. Gambar disimpan sebagai rekod audit.
+// ══════════════════════════════════════════════════
+// Pemboleh ubah kamera diisytihar di bahagian awal skrip.
+
+// Pustaka dan model MESTI daripada projek yang sama — face-api.js 0.22.2
+// mencari fail bernama *-weights_manifest.json, yang hanya wujud dalam
+// folder weights repo justadudewhohacks. Beberapa cermin disediakan
+// sekiranya satu CDN disekat oleh rangkaian.
+const FACEAPI_SRCS = [
+  'https://cdnjs.cloudflare.com/ajax/libs/face-api.js/0.22.2/face-api.min.js',
+  'https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js',
+  'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js'
+];
+const FACEAPI_MODELS = [
+  'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights',
+  'https://unpkg.com/face-api.js@0.22.2/weights',
+  'https://raw.githubusercontent.com/justadudewhohacks/face-api.js/master/weights'
+];
+
+let _pbRid = '';
+
+// ── Watermark gambar rekod ──
+const WM_LOGO    = './pkpj.png';
+const WM_OPACITY = 0.09;   // kelegapan logo watermark
+// Logo diregang (kekal nisbah) untuk menutup 100% gambar, termasuk jalur maklumat
+let _wmLogo = null;
+
+function muatLogoWM() {
+  if (_wmLogo) return Promise.resolve(_wmLogo);
+  return new Promise(ok => {
+    const im = new Image();
+    im.onload  = () => { _wmLogo = im; ok(im); };
+    im.onerror = () => ok(null);            // tiada logo → guna teks "PKPJ"
+    im.src = WM_LOGO;
+  });
+}
+
+// Hasilkan gambar rekod: foto (potong segi empat, tengah) + logo watermark
+// di atas wajah + jalur maklumat nama/IC di bawah.
+function bingkaiRekod(sumber, nama, ic, siri) {
+  const W = 640, FOTO = 640, JALUR = 150;
+  const c = document.createElement('canvas');
+  c.width = W; c.height = FOTO + JALUR;
+  const g = c.getContext('2d');
+
+  // Foto — potong tengah (cover) ke segi empat
+  const sw = sumber.width, sh = sumber.height, sisi = Math.min(sw, sh);
+  g.drawImage(sumber, (sw - sisi) / 2, (sh - sisi) / 2, sisi, sisi, 0, 0, W, FOTO);
+
+  // Jalur maklumat — ringkas
+  g.fillStyle = '#0e1526';
+  g.fillRect(0, FOTO, W, JALUR);
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+  const kiri = 28;
+  const muat = (teks, maks) => { teks = String(teks || '-');
+    while (g.measureText(teks).width > maks && teks.length > 4) teks = teks.slice(0, -2) + '…'; return teks; };
+  g.fillStyle = '#ffffff';
+  g.font = '700 30px Arial, sans-serif';
+  g.fillText(muat(String(nama).toUpperCase(), W - kiri * 2), kiri, FOTO + 50);
+  g.font = '600 28px Arial, sans-serif';
+  g.fillText(muat(ic, W - kiri * 2), kiri, FOTO + 92);
+  g.fillStyle = 'rgba(255,255,255,.6)';
+  g.font = '15px Arial, sans-serif';
+  g.fillText((siri ? siri + '  ·  ' : '') + new Date().toLocaleString('ms-MY', { hour12: false }), kiri, FOTO + 128);
+  // Watermark — menutup 100% gambar (foto + jalur), nisbah logo dikekalkan
+  g.save();
+  g.globalAlpha = WM_OPACITY;
+  if (_wmLogo) {
+    const k = Math.max(c.width / _wmLogo.width, c.height / _wmLogo.height);
+    const lw = _wmLogo.width * k, lh = _wmLogo.height * k;
+    g.drawImage(_wmLogo, (c.width - lw) / 2, (c.height - lh) / 2, lw, lh);
+  } else {
+    g.fillStyle = '#ffffff';
+    g.font = '800 260px Arial, sans-serif';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText('PKPJ', c.width / 2, c.height / 2);
+  }
+  g.restore();
+
+  return c.toDataURL('image/jpeg', 0.7);
+}
+const CAM_TIMEOUT_MS = 25000;   // had masa mencari wajah
+const CAM_SAH        = 3;       // bilangan bingkai berturut (wajah dalam bulatan) sebelum tangkap
+
+// Bulatan panduan — MESTI sepadan dengan CSS .cam-ring { inset:10% 24% }
+const RING = { x0: 0.24, x1: 0.76, y0: 0.10, y1: 0.90 };
+
+// Semak kedudukan wajah berbanding bulatan seperti yang DILIHAT pemohon.
+// Video guna object-fit:cover, jadi koordinat video perlu dipetakan ke paparan.
+function semakKedudukan(det, v) {
+  const W = v.clientWidth, H = v.clientHeight, vw = v.videoWidth, vh = v.videoHeight;
+  if (!W || !H || !vw || !vh) return 'in';
+  const sk = Math.max(W / vw, H / vh);
+  const ox = (W - vw * sk) / 2, oy = (H - vh * sk) / 2;
+  const b = det.box;
+  const L = (b.x * sk + ox) / W, R = ((b.x + b.width) * sk + ox) / W;
+  const T = (b.y * sk + oy) / H, B = ((b.y + b.height) * sk + oy) / H;
+  const cx = (L + R) / 2, cy = (T + B) / 2;
+  const rx = (RING.x1 - RING.x0) / 2, ry = (RING.y1 - RING.y0) / 2;
+  const ex = (RING.x0 + RING.x1) / 2, ey = (RING.y0 + RING.y1) / 2;
+  // Pusat wajah mesti dekat dengan pusat bulatan
+  const jarak = Math.pow((cx - ex) / rx, 2) + Math.pow((cy - ey) / ry, 2);
+  if (jarak > 0.18) return 'in';
+  // Tepi kotak wajah mesti dalam bulatan (dengan sedikit kelonggaran)
+  const tol = 0.04;
+  if (L < RING.x0 - tol || R > RING.x1 + tol || T < RING.y0 - tol || B > RING.y1 + tol) return 'far';
+  // Wajah tidak terlalu kecil
+  if ((R - L) < (RING.x1 - RING.x0) * 0.45) return 'near';
+  return 'ok';
+}
+
+function bukaPembetulan() {
+  const t = i18n[lang];
+  if (!_suratTarget) return;
+  $('pbNama').value = _suratTarget.nama || '';
+  $('pbIc').value   = _suratTarget.ic   || '';
+  $('pbRes').style.display = 'none';
+  $('pbHantar').disabled = false;
+  $('pbHantar').textContent = t.pbHantar;
+  $('camWrap').classList.remove('show', 'siap');
+  $('camShot').hidden = true;
+  $('camVid').hidden = false;
+  _shotData = null;
+  muatLogoWM();
+  _pbRid = 'PB' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2,6).toUpperCase();
+  $('stepSemak').hidden = true;
+  $('stepBetul').hidden = false;
+}
+
+$('pbIc').addEventListener('input', e => { e.target.value = formatIC(e.target.value); });
+
+function muatSkrip(src) {
+  return new Promise((ok, no) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload  = () => ok();
+    s.onerror = () => { s.remove(); no(new Error('gagal muat ' + src)); };
+    document.head.appendChild(s);
+  });
+}
+
+// Cuba setiap cermin sehingga satu berjaya
+async function cubaBerturut(senarai, fn) {
+  let akhir = null;
+  for (const item of senarai) {
+    try { await fn(item); return item; }
+    catch (e) { akhir = e; console.warn('[PKPJ] cermin gagal:', item, e.message); }
+  }
+  throw akhir || new Error('semua cermin gagal');
+}
+
+async function siapkanPengesan() {
+  if (_faceReady) return true;
+  if (typeof faceapi === 'undefined') {
+    await cubaBerturut(FACEAPI_SRCS, muatSkrip);
+  }
+  await cubaBerturut(FACEAPI_MODELS, u => faceapi.nets.tinyFaceDetector.loadFromUri(u));
+  _faceReady = true;
+  return true;
+}
+
+function setBadge(teks, kelas) {
+  const b = $('camBadge');
+  if (!b) return;
+  b.textContent = teks;
+  b.className = 'cam-badge' + (kelas ? ' ' + kelas : '');
+}
+
+function tunjukPbRes(jenis, teks) {
+  const r = $('pbRes');
+  r.style.display = 'block';
+  r.className = 'mres ' + jenis;
+  r.textContent = teks;
+}
+
+// Buka kamera, tunggu wajah, tangkap gambar. Pulangkan dataURL atau lempar ralat.
+async function tangkapWajahAuto() {
+  const t = i18n[lang];
+
+  // 1) Kamera
+  tunjukPbRes('info', t.camOpen);
+  try {
+    _camStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false
+    });
+  } catch (e) {
+    throw { jenis: 'deny', asal: e };
+  }
+
+  const v = $('camVid');
+  v.srcObject = _camStream;
+  v.hidden = false;
+  $('camShot').hidden = true;
+  $('camWrap').classList.add('show');
+  await v.play().catch(()=>{});
+  _camOn = true;
+  setBadge(t.camLoad, '');
+
+  // 2) Pengesan wajah
+  try {
+    await siapkanPengesan();
+  } catch (e) {
+    hentikanKamera();
+    throw { jenis: 'model', asal: e };
+  }
+
+  // 3) Cari wajah, tangkap automatik
+  tunjukPbRes('info', t.camHold);
+  setBadge(t.camSearch, '');
+
+  return await new Promise((selesai, gagal) => {
+    const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.45 });
+    let berturut = 0;
+    const mula = Date.now();
+
+    clearInterval(_faceLoop);
+    _faceLoop = setInterval(async () => {
+      if (!_camOn) return;
+      if (Date.now() - mula > CAM_TIMEOUT_MS) {
+        hentikanKamera();
+        gagal({ jenis: 'timeout' });
+        return;
+      }
+      if (v.readyState < 2) return;
+      try {
+        const det = await faceapi.detectSingleFace(v, opts);
+        _adaWajah = !!det;
+        const pos = det ? semakKedudukan(det, v) : null;
+        $('camWrap').classList.toggle('fit', pos === 'ok');
+        if (det && pos !== 'ok') {
+          berturut = 0;
+          setBadge(pos === 'near' ? t.camFitNear : pos === 'far' ? t.camFitFar : t.camFitIn, 'no');
+          return;
+        }
+        if (det) {
+          berturut++;
+          setBadge(t.camOk, 'ok');
+          if (berturut >= CAM_SAH) {
+            const c = document.createElement('canvas');
+            c.width  = v.videoWidth  || 640;
+            c.height = v.videoHeight || 480;
+            const cx2 = c.getContext('2d');
+            cx2.drawImage(v, 0, 0, c.width, c.height);
+            // Tolak bingkai hampir hitam (kamera belum stabil) — terus cuba bingkai seterusnya
+            const px = cx2.getImageData(0, 0, c.width, c.height).data;
+            let jum = 0, n = 0;
+            for (let i = 0; i < px.length; i += 400) { jum += px[i] + px[i+1] + px[i+2]; n++; }
+            if (jum / (n * 3) < 18) { berturut = 0; return; }
+            clearInterval(_faceLoop); _faceLoop = null;
+            const data = bingkaiRekod(c, $('pbNama').value.trim(), formatIC($('pbIc').value), _suratTarget && _suratTarget.siri);
+            $('camShot').src = data;
+            $('camShot').hidden = false;
+            v.hidden = true;
+            $('camWrap').classList.remove('fit');
+            $('camWrap').classList.add('siap');
+            setBadge(t.camShot, 'ok');
+            hentikanKamera(true);
+            buzz(25);
+            selesai(data);
+          }
+        } else {
+          berturut = 0;
+          $('camWrap').classList.remove('fit');
+          setBadge(t.camNo, 'no');
+        }
+      } catch (e) { /* abaikan bingkai gagal */ }
+    }, 400);
+  });
+}
+
+function hentikanKamera(kekalPaparan) {
+  clearInterval(_faceLoop); _faceLoop = null;
+  _camOn = false; _adaWajah = false;
+  if (_camStream) { _camStream.getTracks().forEach(tr => tr.stop()); _camStream = null; }
+  const v = $('camVid'); if (v) v.srcObject = null;
+  if (!kekalPaparan) { $('camWrap').classList.remove('show'); }
+}
+
+// Tanya pelayan (JSONP) sama ada rekod dengan rid ini sudah wujud.
+// Pulangkan 'ada' | 'tiada' | 'lama' (Code.gs belum dikemas kini / belum deploy)
+function sahkanPembetulan(rid) {
+  return new Promise(selesai => {
+    let cubaan = 0;
+    const semak = () => {
+      cubaan++;
+      jsonp(`${APPS_SCRIPT_URL}?action=semakpembetulan&rid=${encodeURIComponent(rid)}`, (err, d) => {
+        if (d && d.success && d.ada) return selesai('ada');
+        if (d && d.message === 'Unknown action.') return selesai('lama');   // tiada gunanya cuba lagi
+        if (cubaan >= 3) return selesai('tiada');
+        setTimeout(semak, 1000);
+      }, 10000);
+    };
+    semak();   // doPost sudah selesai bila fetch pulang — semak terus
+  });
+}
+
+async function hantarPembetulan() {
+  const t   = i18n[lang];
+  const btn = $('pbHantar');
+  const nama   = $('pbNama').value.trim();
+  const icBaru = $('pbIc').value.trim();
+
+  if (!nama || icBaru.replace(/\D/g,'').length !== 12) {
+    tunjukPbRes('err', t.pbNeedAll);
+    return;
+  }
+
+  btn.disabled = true;
+
+  // Gambar belum ada → buka kamera sendiri dan tangkap
+  if (!_shotData) {
+    try {
+      _shotData = await tangkapWajahAuto();
+    } catch (e) {
+      hentikanKamera();
+      if      (e && e.jenis === 'deny')    tunjukPbRes('err', t.camDeny);
+      else if (e && e.jenis === 'timeout') tunjukPbRes('err', t.camTimeout);
+      else {
+        console.error('[PKPJ] pengesan wajah:', e && e.asal ? e.asal : e);
+        tunjukPbRes('err', t.camFail);
+      }
+      btn.textContent = t.pbRetry;
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  tunjukPbRes('info', t.pbBusy);
+
+  const payload = {
+    action:    'hantarPembetulan',
+    rid:       _pbRid,
+    sheet:     _suratTarget.sheet,
+    row:       _suratTarget.row,
+    icAsal:    _suratTarget.ic,
+    namaAsal:  _suratTarget.nama,
+    icBaru:    icBaru,
+    namaBaru:  nama,
+    siri:      _suratTarget.siri,
+    imej:      _shotData
+  };
+
+  try {
+    // Jawapan POST Apps Script tidak boleh dipercayai: selepas redirect, sesetengah
+    // pelayar mengambilnya sebagai GET dan doGet yang menjawab. Jadi kita hantar
+    // (no-cors, tiada preflight), abaikan jawapan, dan sahkan rekod melalui JSONP.
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) {
+      console.warn('[PKPJ] POST pembetulan: ' + (e && e.message) + ' — tetap semak rekod');
+    }
+
+    tunjukPbRes('info', t.pbSemak);
+    const status = await sahkanPembetulan(_pbRid);
+    if (status === 'lama') throw new Error('Pelayan belum dikemas kini. Tampal Code.gs terbaru, kemudian Deploy → Manage deployments → Edit → New version.');
+    if (status !== 'ada')  throw new Error('Rekod tidak dijumpai selepas dihantar. Semak sambungan internet dan cuba lagi.');
+
+    // Kemas kini sasaran surat dengan butiran yang dibetulkan
+    _suratTarget.nama = nama.toUpperCase();
+    _suratTarget.ic   = formatIC(icBaru);
+    _suratTarget.dibetulkan = true;
+    tunjukPbRes('ok', t.pbOkSurat);
+    btn.textContent = '✓';
+    buzz([25,50,25]);
+    setTimeout(() => {
+      hentikanKamera();
+      paparSemakBaharu();
+      janaSurat();
+    }, 1200);
+  } catch (e) {
+    const sebab = (e && e.message) ? e.message : String(e);
+    console.error('[PKPJ] pembetulan: ' + sebab);
+    tunjukPbRes('err', t.pbErr + '\n(' + sebab + ')');
+    btn.textContent = t.pbRetry;
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// P · DEMO MODE (?demo=1)
 // ══════════════════════════════════════════════════
 if (_urlParams.get('demo') === '1') {
   const _demoData = {
@@ -1358,13 +2288,13 @@ if (_urlParams.get('demo') === '1') {
     sheets:["BSR","BMR","BBR"], allHadir:false, anyHadir:true, multiSheet:true,
     matches:[
       {row:5, sheet:"BSR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"12",
-       siri:"BSR-001", bantuan:"Bantuan Beli Rumah Pertama", kehadiran:"Ya", sudahHadir:true,
+       siri:"BSR0001", bantuan:"Bantuan Sewa Rumah Pertama", kehadiran:"Ya", sudahHadir:true,
        terima:"", sudahTerima:false, sesi:"1"},
       {row:8, sheet:"BMR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"3",
-       siri:"BMR-014", bantuan:"Bantuan Masuk Rumah Pertama", kehadiran:"Tidak", sudahHadir:false,
+       siri:"BMR0014", bantuan:"Bantuan Masuk Rumah Pertama", kehadiran:"Tidak", sudahHadir:false,
        terima:"", sudahTerima:false, sesi:"2"},
       {row:11, sheet:"BBR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"7",
-       siri:"BBR-022", bantuan:"Bantuan Baik Pulih Rumah", kehadiran:"Ya", sudahHadir:true,
+       siri:"BBR0022", bantuan:"Bantuan Beli Rumah Pertama", kehadiran:"Ya", sudahHadir:true,
        terima:"Ya", sudahTerima:true, sesi:"1"}
     ]
   };
