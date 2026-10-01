@@ -691,7 +691,7 @@ const i18n = {
     pendErr:"⚠️ Gagal merekod pendaftaran. Sila maklum kepada petugas.",
     terimaModeTitle:"Mod Pendaftaran Kehadiran",
     sesiLbl:"Sesi",sesiPagi:"Pagi",sesiPetang:"Petang",
-    knTitle:"Maklumat mengenai Kaunter",knSub:"Sila hadir di kaunter yang dinyatakan di atas mengikut sesi masing-masing. Tuan/Puan dinasihatkan tiba lebih awal dan membawa Kad Pengenalan asal untuk urusan pengesahan di kaunter.",
+    knTitle:"Maklumat mengenai Kaunter",knSub:"Sila hadir di kaunter yang dinyatakan di atas mengikut sesi masing-masing. Tuan/Puan dinasihatkan tiba 15 minit lebih awal dan membawa Kad Pengenalan asal bersama surat pemakluman ini untuk urusan pengesahan di kaunter.",
     recodOk:"Kehadiran berjaya direkodkan!", recodErr:"Gagal merekod kehadiran.",
     errEmpty:"Sila masukkan nombor IC.", errServer:"Gagal menghubungi pelayan.",
     errTimeout:"Masa tamat. Cuba semula.",
@@ -1222,23 +1222,37 @@ function resetAll(){
 // I · JSONP
 // ══════════════════════════════════════════════════
 let _jsonpSeq = 0;
+// Chrome yang log masuk beberapa akaun Google mengalihkan /exec ke /u/1/… dan
+// permintaan gagal. Menambah authuser=0 memaksa akaun pertama digunakan.
+let _authuser = false;
+
 function jsonp(url, cb, timeoutMs) {
-  const name = 'cb_' + Date.now() + '_' + (++_jsonpSeq);
-  const s = document.createElement('script');
-  let done = false, timer = null;
-  const finish = (err, d) => {
-    if (done) return;
-    done = true;
-    if (timer) clearTimeout(timer);
-    try { delete window[name]; } catch(e) { window[name] = undefined; }
-    if (s.parentNode) s.parentNode.removeChild(s);
-    cb(err, d);
+  // Sekali authuser diperlukan, semua panggilan seterusnya ikut sama
+  if (_authuser && url.indexOf('authuser=') === -1) url += '&authuser=0';
+  const cuba = (u, bolehUlang) => {
+    const name = 'cb_' + Date.now() + '_' + (++_jsonpSeq);
+    const s = document.createElement('script');
+    let done = false, timer = null;
+    const finish = (err, d) => {
+      if (done) return;
+      done = true;
+      if (timer) clearTimeout(timer);
+      try { delete window[name]; } catch(e) { window[name] = undefined; }
+      if (s.parentNode) s.parentNode.removeChild(s);
+      if (err && bolehUlang && !_authuser && u.indexOf('authuser=') === -1) {
+        console.warn('[PKPJ] panggilan gagal — cuba semula dengan authuser=0');
+        _authuser = true;                       // guna untuk semua panggilan seterusnya
+        return cuba(u + '&authuser=0', false);
+      }
+      cb(err, d);
+    };
+    window[name] = d => finish(null, d);
+    s.onerror   = () => finish(new Error('network'));
+    timer = setTimeout(() => finish(new Error('timeout')), timeoutMs || 7000);
+    s.src = u + '&callback=' + name + '&_=' + Date.now();
+    document.body.appendChild(s);
   };
-  window[name] = d => finish(null, d);
-  s.onerror   = () => finish(new Error('network'));
-  timer = setTimeout(() => finish(new Error('timeout')), timeoutMs || 7000);
-  s.src = url + '&callback=' + name + '&_=' + Date.now();
-  document.body.appendChild(s);
+  cuba(url, true);
 }
 
 // ══════════════════════════════════════════════════
@@ -1424,7 +1438,7 @@ function showSuccess(d) {
         </div>
         ${footerHTML}
         ${!_terimaMode && SURAT[m.sheet] ? `<div style="padding:10px 14px 12px">
-          <button class="btn-surat" style="margin-top:0" onclick="bukaSurat(${d.matches.indexOf(m)})">${esc(t.btnSurat)}</button>
+          <button class="btn-surat" style="margin-top:0" onclick="bukaSurat(${d.matches.findIndex(x => x.sheet === m.sheet && x.row === m.row)})">${esc(t.btnSurat)}</button>
         </div>` : ''}
       </div>`;
     }).join('');
@@ -1680,8 +1694,9 @@ function setPendStatus(state) {
 
 function bukaSurat(idx) {
   const t = i18n[lang];
-  if (!_lastResult || !_lastResult.matches || !_lastResult.matches[idx]) return;
+  if (!_lastResult || !_lastResult.matches) return;
   const m = _lastResult.matches[idx];
+  if (!m) { console.error('[PKPJ] bukaSurat: indeks tidak sah ' + idx); return; }
   _suratTarget = { sheet: m.sheet, row: m.row, siri: m.siri || '', nama: _lastResult.nama || m.nama || '', ic: _lastResult.ic || m.ic || '' };
 
   $('smNama').textContent = _suratTarget.nama || '—';
@@ -2244,7 +2259,7 @@ async function hantarPembetulan() {
     // pelayar mengambilnya sebagai GET dan doGet yang menjawab. Jadi kita hantar
     // (no-cors, tiada preflight), abaikan jawapan, dan sahkan rekod melalui JSONP.
     try {
-      await fetch(APPS_SCRIPT_URL, {
+      await fetch(APPS_SCRIPT_URL + (_authuser ? '?authuser=0' : ''), {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
