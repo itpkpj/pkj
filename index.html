@@ -570,6 +570,16 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 </div>
 
 <!-- ══ MODAL SEMAK BUTIRAN / JANA SURAT ══ -->
+<!-- ══ MODAL: SEMAKAN BELUM DIBUKA ══ -->
+<div class="ov" id="tutupModal">
+  <div class="mbox" style="text-align:center">
+    <div class="mico">🔒</div>
+    <div class="mttl" id="tutupTtl">Semakan Belum Dibuka</div>
+    <div class="msub" id="tutupMsg">Tarikh semakan belum dibuka, harap Tuan/Puan maklum dan sabar menunggu. Terima Kasih.</div>
+    <button class="mb-ok" style="width:100%" id="tutupBtn" onclick="tutupModalTutup()">Maklum</button>
+  </div>
+</div>
+
 <div class="ov" id="suratModal">
   <div class="mbox">
     <div id="stepSemak">
@@ -621,7 +631,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 // ─────────────────────────────────
 // ⚠️ TETAPAN — ISI BAHAGIAN INI
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzH5WAvOXtq-AJm-mY1GEJ7mElS0U0qQO8R4F9YxGcWB591xCjZwWpf8xdxyMnb5sy/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSzucdV9O-bJkCp1k2fGgMFmZuzYKbMEMWF_zReFNDYF7-7jOoWZ4oOTCQ3h1_iSK2/exec";
 
 // Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
 const TARIKH_SURAT = "1 Oktober 2026";
@@ -671,6 +681,7 @@ const SURAT = {
 const i18n = {
   ms:{
     badge:"Inisiatif Perumahan Kasih Johor",
+    tutupTtl:"Semakan Belum Dibuka", tutupOk:"Maklum", tutupMsg:"Tarikh semakan belum dibuka, harap Tuan/Puan maklum dan sabar menunggu. Terima Kasih.",
     title:"Masukkan <em>Nombor Kad Pengenalan</em> anda",
     label:"Nombor Kad Pengenalan (IC)", ph:"000000-00-0000",
     btnSearch:"Klik Disini", btnMotion:"Aktifkan sensor goncangan",
@@ -703,11 +714,11 @@ const i18n = {
     stages:["Menyambung ke pangkalan data…","Mengesahkan nombor kad pengenalan…","Mencari rekod permohonan…","Menyemak kelayakan bantuan…","Menyiapkan keputusan…"],
     btnSurat:"📄 Jana Surat Pemakluman",
     btnRekod:"🖼️ Simpan Rekod Sebagai Gambar",
-    notaRekod:"Sekiranya butang gagal menyimpan, tolong tangkap layar/screenshot rekod ini sebagai simpanan untuk rujukan.",
+    notaRekod:"Sekiranya rekod tidak berjaya disimpan, sila ambil tangkap layar (screenshot) sebagai simpanan untuk rujukan.",
     smTtl:"Semak butiran anda", smSub:"Pastikan nama dan nombor kad pengenalan di bawah adalah tepat sebelum surat dijana.",
     smKNama:"Nama", smKIc:"Nombor Kad Pengenalan", smKSiri:"Nombor Siri",
     smYes:"Betul", smNo:"Tidak betul", smTutup:"Tutup",
-    smPegawai:"Sila berhubung dengan pegawai bagi pembetulan maklumat yang silap.",
+    smPegawai:"Sila berhubung dengan pihak PKPJ sekiranya terdapat kesilapan pada nama atau nombor kad pengenalan.",
     suratBusy:"⏳ Menyediakan surat…", suratOk:"✅ Surat telah dimuat turun.",
     suratErr:"⚠️ Gagal menjana surat. Cuba semula.",
     pbTtl:"Pembetulan butiran", pbSub:"Masukkan butiran yang betul. Gambar wajah diperlukan sebagai rekod sebelum permohonan pembetulan dihantar.",
@@ -730,6 +741,7 @@ const i18n = {
   },
   en:{
     badge:"Inisiatif Perumahan Kasih Johor",
+    tutupTtl:"Checking Not Yet Open", tutupOk:"Understood", tutupMsg:"The checking period has not opened yet. Thank you for your patience and understanding.",
     title:"Enter Your <em>Identity Card Number</em>",
     label:"Identity Card Number (IC)", ph:"000000-00-0000",
     btnSearch:"Click Here", btnMotion:"Enable shake sensor",
@@ -762,11 +774,11 @@ const i18n = {
     stages:["Connecting to database…","Verifying identity card number…","Searching application records…","Checking aid eligibility…","Preparing your result…"],
     btnSurat:"📄 Generate Notification Letter",
     btnRekod:"🖼️ Save Record as Image",
-    notaRekod:"If the button fails to save, please take a screenshot of this record for your reference.",
+    notaRekod:"If the record is not saved successfully, please take a screenshot for your reference.",
     smTtl:"Check your details", smSub:"Make sure the name and IC number below are correct before the letter is generated.",
     smKNama:"Name", smKIc:"IC Number", smKSiri:"Serial Number",
     smYes:"Correct", smNo:"Not correct", smTutup:"Close",
-    smPegawai:"Please contact an officer to correct any incorrect details.",
+    smPegawai:"Please contact PKPJ if there is any error in the name or identity card number.",
     suratBusy:"⏳ Preparing letter…", suratOk:"✅ Letter downloaded.",
     suratErr:"⚠️ Failed to generate letter. Please try again.",
     pbTtl:"Correct your details", pbSub:"Enter the correct details. A face photo is required as a record before the correction request is submitted.",
@@ -789,6 +801,7 @@ const i18n = {
   },
   zh:{
     badge:"Inisiatif Perumahan Kasih Johor",
+    tutupTtl:"查询尚未开放", tutupOk:"明白", tutupMsg:"查询日期尚未开放，敬请耐心等候。谢谢。",
     title:"请输入您的<em>身份证号码</em>",
     label:"身份证号码（IC）", ph:"000000-00-0000",
     btnSearch:"点击这里", btnMotion:"启用摇动感应器",
@@ -821,11 +834,11 @@ const i18n = {
     stages:["正在连接数据库…","正在验证身份证号码…","正在搜索申请记录…","正在检查援助资格…","正在准备查询结果…"],
     btnSurat:"📄 生成通知函",
     btnRekod:"🖼️ 将记录保存为图片",
-    notaRekod:"如果按钮无法保存，请截屏保存此记录以供参考。",
+    notaRekod:"如果记录未能成功保存，请截屏保存以供参考。",
     smTtl:"请核对您的资料", smSub:"生成信函前，请确认以下姓名与身份证号码正确无误。",
     smKNama:"姓名", smKIc:"身份证号码", smKSiri:"系列号",
     smYes:"正确", smNo:"不正确", smTutup:"关闭",
-    smPegawai:"如资料有误，请联络现场工作人员进行更正。",
+    smPegawai:"如姓名或身份证号码有误，请联络 PKPJ。",
     suratBusy:"⏳ 正在准备信函…", suratOk:"✅ 信函已下载。",
     suratErr:"⚠️ 生成失败，请重试。",
     pbTtl:"更正资料", pbSub:"请输入正确资料。提交更正申请前需拍摄人脸照片作为记录。",
@@ -848,6 +861,7 @@ const i18n = {
   },
   ta:{
     badge:"Inisiatif Perumahan Kasih Johor",
+    tutupTtl:"சரிபார்ப்பு இன்னும் தொடங்கவில்லை", tutupOk:"புரிந்தது", tutupMsg:"சரிபார்ப்புத் தேதி இன்னும் தொடங்கவில்லை. பொறுமைக்கு நன்றி.",
     title:"உங்கள் <em>அடையாள அட்டை எண்ணை</em> உள்ளிடவும்",
     label:"அடையாள அட்டை எண் (IC)", ph:"000000-00-0000",
     btnSearch:"இங்கே கிளிக் செய்யவும்", btnMotion:"அசைவு சென்சாரை இயக்கு",
@@ -880,11 +894,11 @@ const i18n = {
     stages:["தரவுத்தளத்துடன் இணைக்கிறது…","அடையாள அட்டை எண் சரிபார்க்கப்படுகிறது…","விண்ணப்பப் பதிவுகள் தேடப்படுகின்றன…","உதவி தகுதி சரிபார்க்கப்படுகிறது…","முடிவு தயாராகிறது…"],
     btnSurat:"📄 அறிவிப்புக் கடிதம் உருவாக்கு",
     btnRekod:"🖼️ பதிவை படமாக சேமி",
-    notaRekod:"பொத்தான் சேமிக்கத் தவறினால், இந்தப் பதிவை ஸ்கிரீன்ஷாட் எடுத்து வைத்துக்கொள்ளவும்.",
+    notaRekod:"பதிவு வெற்றிகரமாக சேமிக்கப்படாவிட்டால், ஸ்கிரீன்ஷாட் எடுத்து வைத்துக்கொள்ளவும்.",
     smTtl:"உங்கள் விவரங்களைச் சரிபார்க்கவும்", smSub:"கடிதம் உருவாக்கப்படும் முன் கீழே உள்ள பெயர் மற்றும் IC எண் சரியானது என உறுதிப்படுத்தவும்.",
     smKNama:"பெயர்", smKIc:"IC எண்", smKSiri:"தொடர் எண்",
     smYes:"சரி", smNo:"சரியில்லை", smTutup:"மூடு",
-    smPegawai:"தவறான விவரங்களைத் திருத்த அலுவலரைத் தொடர்பு கொள்ளவும்.",
+    smPegawai:"பெயர் அல்லது அடையாள அட்டை எண்ணில் பிழை இருந்தால் PKPJ-ஐத் தொடர்பு கொள்ளவும்.",
     suratBusy:"⏳ கடிதம் தயாராகிறது…", suratOk:"✅ கடிதம் பதிவிறக்கப்பட்டது.",
     suratErr:"⚠️ உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
     pbTtl:"விவரத் திருத்தம்", pbSub:"சரியான விவரங்களை உள்ளிடவும். திருத்தக் கோரிக்கை அனுப்பும் முன் முகப் படம் தேவை.",
@@ -908,6 +922,18 @@ const i18n = {
 };
 
 const $ = id => document.getElementById(id);
+
+// Semakan belum dibuka bila URL pelayan belum ditetapkan
+const SISTEM_SEDIA = typeof APPS_SCRIPT_URL === 'string' && /^https?:\/\//i.test(APPS_SCRIPT_URL.trim());
+function paparModalTutup() {
+  const t = i18n[lang];
+  $('tutupTtl').textContent = t.tutupTtl;
+  $('tutupMsg').textContent = t.tutupMsg;
+  $('tutupBtn').textContent = t.tutupOk;
+  $('tutupModal').classList.add('show');
+  buzz(30);
+}
+function tutupModalTutup() { $('tutupModal').classList.remove('show'); }
 let lang = 'ms';
 let isDark = true;
 let _lastResult = null;
@@ -1288,35 +1314,41 @@ function fetchJson(url, timeoutMs) {
     .catch(e => { clearTimeout(timer); throw e; });
 }
 
-// Panggil pelayan melalui KEDUA-DUA laluan serentak; yang pertama berjaya menang.
+// Panggil pelayan. JSONP dahulu; fetch hanya dilepaskan jika JSONP senyap
+// selepas JEDA_SANDARAN. Ini mengelak dua pelaksanaan Apps Script bagi setiap
+// panggilan — penting kerana had serentak Apps Script ialah 1,000.
+const JEDA_SANDARAN = 1400;
+
 function panggil(url, cb, timeoutMs) {
-  let selesai = false, gagal = 0;
+  let selesai = false, jsonpGagal = false, fetchDilepas = false, timerSandaran = null;
   const siap = (err, d) => {
     if (selesai) return;
-    if (err) { if (++gagal < 2) return; selesai = true; return cb(err, null); }
-    selesai = true; cb(null, d);
+    selesai = true;
+    if (timerSandaran) clearTimeout(timerSandaran);
+    cb(err, d);
   };
-  jsonp(url, (e, d) => siap(e || (d ? null : new Error('kosong')), d), timeoutMs);
-  const u = url + (_authuser && url.indexOf('authuser=') === -1 ? '&authuser=0' : '');
-  fetchJson(u, timeoutMs).then(d => siap(null, d)).catch(e => siap(e, null));
+  const lepasSandaran = () => {
+    if (selesai || fetchDilepas) return;
+    fetchDilepas = true;
+    const u = url + (_authuser && url.indexOf('authuser=') === -1 ? '&authuser=0' : '');
+    fetchJson(u, timeoutMs).then(d => siap(null, d)).catch(e => { if (jsonpGagal) siap(e, null); });
+  };
+  timerSandaran = setTimeout(lepasSandaran, JEDA_SANDARAN);
+
+  jsonp(url, (e, d) => {
+    if (!e && d) return siap(null, d);
+    jsonpGagal = true;
+    if (fetchDilepas) return;       // biar fetch yang jawab
+    lepasSandaran();
+  }, timeoutMs);
 }
 
 // ══════════════════════════════════════════════════
 // I2 · PEMANASAN + PRA-AMBIL + CACHE
 // ══════════════════════════════════════════════════
-let _warmed = false, _warmDone = false;
-const _warmQueue = [];
-function warmUp(){
-  if (_warmed) return; _warmed = true;
-  panggil(`${APPS_SCRIPT_URL}?action=search&ic=000000000000`, () => {
-    _warmDone = true;
-    _warmQueue.splice(0).forEach(fn => fn());
-  }, 10000);
-}
-function afterWarm(fn){ _warmDone ? fn() : _warmQueue.push(fn); }
-if (document.readyState === 'loading')
-  document.addEventListener('DOMContentLoaded', () => setTimeout(warmUp, 250));
-else setTimeout(warmUp, 250);
+// Pemanasan dimatikan: ia menambah satu pelaksanaan Apps Script bagi setiap
+// pelawat, dan menjadi punca utama had serentak tercapai pada hari program.
+function afterWarm(fn){ fn(); }
 
 const _cache = new Map();
 const CACHE_TTL = 45000;
@@ -1332,6 +1364,7 @@ let _pf = null;
 let _lastErrKind = '';
 
 function startPrefetch(icVal){
+  if (!SISTEM_SEDIA) return;
   const key = icVal.replace(/\D/g,'');
   if (_pf && _pf.key === key) return;
   const hit = cacheGet(key);
@@ -1342,10 +1375,11 @@ function startPrefetch(icVal){
   let attempt = 0;
   const go = () => {
     attempt++;
-    const tmo = attempt === 1 ? 9000 : attempt === 2 ? 14000 : 20000;
+    const tmo = attempt === 1 ? 12000 : 20000;
     panggil(url, (err, data) => {
       if (_pf !== rec) return;
-      if ((err || !data) && attempt < 4) { setTimeout(go, 400 * attempt); return; }
+      // Beratur rawak (jitter) supaya semua telefon tidak mencuba serentak
+      if ((err || !data) && attempt < 3) { setTimeout(go, 700 * attempt + Math.random() * 600); return; }
       rec.status = 'done'; rec.data = data; rec.err = err;
       if (err) _lastErrKind = err.message || 'network';
       if (data && data.success !== undefined) cacheSet(key, data);
@@ -1376,6 +1410,7 @@ function doSearch(via) {
   const val = ic.value.trim();
   const t   = i18n[lang];
   if (busy) return;
+  if (!SISTEM_SEDIA) { paparModalTutup(); return; }
   if (digits().length !== 12) { errEl.textContent = t.errEmpty; return; }
 
   busy = true; stopShakeWatch(); buzz(30);
@@ -1420,7 +1455,7 @@ function sesiBadge(sesi) {
              : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
   if (!sCls) return '';
   const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
-  const sTime = sCls === 'pagi' ? '8.00 pagi' : '1.00 tengahari';
+  const sTime = sCls === 'pagi' ? '8.00 pagi-11.30 pagi' : '1.00 tengahari';
   return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
 }
 
@@ -1618,7 +1653,7 @@ async function simpanRekodGambar() {
     if (pagi || ptg) {
       g.fillStyle = pagi ? '#f0b429' : '#a5b4fc';
       g.font = '700 14px Arial, sans-serif';
-      g.fillText('🕒 ' + t.sesiLbl + ': ' + (pagi ? t.sesiPagi + ' · 8.00 pagi' : t.sesiPetang + ' · 1.00 tengahari'), x, y + 134);
+      g.fillText('🕒 ' + t.sesiLbl + ': ' + (pagi ? t.sesiPagi + ' · 8.00 pagi-11.30 pagi' : t.sesiPetang + ' · 1.00 tengahari'), x, y + 134);
     }
   });
 
@@ -1694,6 +1729,7 @@ function esc(s) {
 
 applyI18n(); updateCount();
 
+
 // ══════════════════════════════════════════════════
 // L · MOD PENDAFTARAN KEHADIRAN (?terima=1)
 // ══════════════════════════════════════════════════
@@ -1704,22 +1740,40 @@ if (_terimaMode) {
   else setTimeout(_focusIC, 100);
 }
 
-// ── PENDAFTARAN KEHADIRAN — tulis F, G dan H ──
+// ── PENDAFTARAN KEHADIRAN — satu panggilan menulis F, G dan H ──
+// Dahulu 3+ panggilan berasingan; kini satu pelaksanaan Apps Script sahaja.
 function recordKehadiranSemasa(matches) {
   if (!matches || !matches.length) return;
   const entries = encodeURIComponent(JSON.stringify(matches.map(m => ({ sheet: m.sheet, row: m.row }))));
+  const ic = encodeURIComponent(matches[0].ic || '');
+
+  const siap = () => {
+    invalidateCache();
+    matches.forEach(m => {
+      m.kehadiran='Ya'; m.sudahHadir=true;
+      m.hadir2='Ya';    m.sudahHadir2=true;
+      m.terima='Ya';    m.sudahTerima=true;
+    });
+    markSemuaTerima();
+    setPendStatus('done');
+  };
+
+  panggil(`${APPS_SCRIPT_URL}?action=rekodsemua&entries=${entries}&ic=${ic}`, (err, d) => {
+    if (d && d.success) return siap();
+    if (d && d.message === 'Unknown action.') {
+      // Code.gs lama — guna cara berperingkat seperti dahulu
+      console.warn('[PKPJ] rekodsemua tiada; guna panggilan berasingan');
+      return rekodBerperingkat(matches, entries, siap);
+    }
+    setPendStatus('err');
+  }, 20000);
+}
+
+// Sandaran untuk Code.gs yang belum dikemas kini
+function rekodBerperingkat(matches, entries, siap) {
   panggil(`${APPS_SCRIPT_URL}?action=rekodmulti&entries=${entries}`, () => {
     panggil(`${APPS_SCRIPT_URL}?action=rekodhadir2&entries=${entries}`, () => {
-      terimaBerturut(matches.slice(), () => {
-        invalidateCache();
-        matches.forEach(m => {
-          m.kehadiran='Ya'; m.sudahHadir=true;
-          m.hadir2='Ya';    m.sudahHadir2=true;
-          m.terima='Ya';    m.sudahTerima=true;
-        });
-        markSemuaTerima();
-        setPendStatus('done');
-      });
+      terimaBerturut(matches.slice(), siap);
     }, 20000);
   }, 20000);
 }
