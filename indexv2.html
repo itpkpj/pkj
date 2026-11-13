@@ -89,6 +89,16 @@
              background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
              filter:drop-shadow(0 0 18px rgba(34,211,238,.35))}
 
+  .duo{display:grid;grid-template-columns:1fr 1fr;margin:16px 0 18px;border:1px solid var(--stroke);border-radius:16px;overflow:hidden;background:rgba(4,10,28,.45)}
+  .duo>div{text-align:center;padding:16px 8px 18px;min-width:0}
+  .duo>div+div{border-left:1px solid var(--stroke)}
+  .duo small{display:block;font:500 .66rem "JetBrains Mono",monospace;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+  .duo b{display:block;margin-top:8px;font:700 2.6rem/1 "JetBrains Mono",monospace;
+         background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+         filter:drop-shadow(0 0 16px rgba(34,211,238,.3));white-space:nowrap}
+  .duo b.sm{font-size:clamp(1.4rem,7vw,2rem);padding-top:.3rem}
+  button.ghost{background:transparent;border:1px solid var(--stroke);box-shadow:none;color:var(--cyan)}
+  button.ghost:hover{border-color:var(--cyan);box-shadow:0 0 18px rgba(34,211,238,.2)}
   .row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px dashed rgba(120,180,255,.12);font-size:.92rem}
   .row span:first-child{color:var(--muted);flex-shrink:0}
   .row span:last-child{font-weight:500;text-align:right}
@@ -229,6 +239,7 @@ async function cari(){
     const r = await jsonp({action:'cari', ic});
     if(!r.ok){ elHasil.innerHTML='<div class="msg err">'+esc(r.msg)+'</div>'; return; }
     if(!r.data.length){elHasil.innerHTML='<div class="msg err">Rekod tidak dijumpai.</div>';return}
+    HASIL = r.data;
     elHasil.innerHTML = r.data.map(kad).join('');
   }catch(e){
     elHasil.innerHTML = '<div class="msg err">Semakan gagal. Sila cuba lagi.</div>';
@@ -251,19 +262,24 @@ function kad(x, i){
     aksi = `<button data-act="hadir" data-i="${i}">Sahkan Kehadiran</button>`;
   }
   return `<div class="card" data-t="${esc(x.t)}">
-    <div class="top"><span class="badge ${esc(x.kod)}">${esc(x.kod)}</span><span class="siri">#${esc(x.siri || '-')}</span></div>
-    <div class="kaunter"><small>NOMBOR KAUNTER</small><b>${esc(x.kaunter || '-')}</b></div>
+    <div class="top"><span class="badge ${esc(x.kod)}">${esc(x.kod)}</span><span class="siri">FASA 6</span></div>
+    <div class="duo">
+      <div><small>No Siri</small><b class="sm">${esc(x.siri || '-')}</b></div>
+      <div><small>No Kaunter</small><b>${esc(x.kaunter || '-')}</b></div>
+    </div>
     <div class="row"><span>Nama</span><span>${esc(x.nama)}</span></div>
     <div class="row"><span>No. KP</span><span class="mono">${esc(icDash(x.ic))}</span></div>
-    <div class="row"><span>No. Siri</span><span class="mono">${esc(x.siri || '-')}</span></div>
     <div class="row"><span>Bantuan</span><span>${esc(NAMA_BANTUAN[x.kod] || x.bantuan)}</span></div>
     <div class="row"><span>Tarikh Serahan</span><span class="mono">${esc(formatTarikh(x.tarikh))}</span></div>
     <div class="row"><span>Masa Serahan</span><span class="mono">${MASA_SERAHAN}</span></div>
     ${status}${aksi}
+    <button class="ghost" data-surat="${i}">⬇ Jana Surat Kelulusan</button>
   </div>`;
 }
 
 elHasil.addEventListener('click', async e=>{
+  const sb = e.target.closest('button[data-surat]');
+  if(sb){ janaSurat(sb); return; }
   const b = e.target.closest('button[data-act]'); if(!b) return;
   const c = b.closest('.card');
   b.disabled = true; b.textContent = 'Menyimpan...';
@@ -271,12 +287,101 @@ elHasil.addEventListener('click', async e=>{
     const q = {action:b.dataset.act, t:c.dataset.t};
     const r = await jsonp(q);
     if(!r.ok) throw new Error(r.msg);
+    HASIL[b.dataset.i] = r.data;
     c.outerHTML = kad(r.data, b.dataset.i);
   }catch(err){
     b.disabled = false; b.textContent = 'Cuba lagi';
     alert(err.message && err.message !== 'net' && err.message !== 'timeout' ? err.message : 'Gagal menyimpan. Sila cuba lagi.');
   }
 });
+
+/* ---------- JANA SURAT KELULUSAN (PDF dalam pelayar) ---------- */
+let HASIL = [];
+const LETTERHEAD_SRC = './letterhead.jpg';     // letak fail letterhead A4 penuh bersebelahan index.html
+const RUJ_KAMI = 'PKPJ.700-1/6/1';
+const TARIKH_SURAT = '';                        // kosong = tarikh hari ini
+const PERENGGAN_P2 = n => `Dimaklumkan bahawa, selaras dengan pengumuman YAB Menteri Besar Johor semasa Pembentangan Belanjawan Johor 2026 di bawah Teras 3: Jaringan Keselamatan Sosial (Perumahan), permohonan ${n} secara one-off berjumlah `;
+const PERENGGAN_P3 = n => `Sehubungan itu, kelulusan bantuan ini adalah tertakluk kepada terma dan syarat yang ditetapkan oleh pihak Perbadanan Kemajuan Perumahan Negeri Johor (PKPJ). Penyaluran ${n} ini akan dilaksanakan melalui pengeluaran 'Banker Cheque' kepada penerima yang berjaya.`;
+const SURAT = {
+  BBR:{nama:'Bantuan Beli Rumah Pertama',  rm:'RM5,000'},
+  BMR:{nama:'Bantuan Masuk Rumah Pertama', rm:'RM2,000'},
+  BSR:{nama:'Bantuan Sewa Rumah',          rm:'RM2,500'}
+};
+let _pdfLib = null, _lh;
+function muatPdfLib(){
+  if(window.PDFLib) return Promise.resolve();
+  if(_pdfLib) return _pdfLib;
+  return _pdfLib = new Promise((ok,no)=>{
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js';
+    s.onload = ok; s.onerror = ()=>{_pdfLib=null;no(new Error('lib'))};
+    document.head.appendChild(s);
+  });
+}
+async function ambilLetterhead(){
+  if(_lh !== undefined) return _lh;
+  try{ const r = await fetch(LETTERHEAD_SRC); _lh = r.ok ? await r.arrayBuffer() : null; }catch(_){ _lh = null; }
+  return _lh;
+}
+function tarikhPanjang(){
+  if(TARIKH_SURAT) return TARIKH_SURAT;
+  const b = ['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'], d = new Date();
+  return `${d.getDate()} ${b[d.getMonth()]} ${d.getFullYear()}`;
+}
+async function janaSurat(btn){
+  const x = HASIL[btn.dataset.surat], isi = x && SURAT[x.kod];
+  if(!isi) return;
+  const asal = btn.textContent; btn.disabled = true; btn.textContent = 'Menjana surat...';
+  try{
+    await muatPdfLib();
+    const {PDFDocument, StandardFonts, rgb} = PDFLib;
+    const pdf = await PDFDocument.create(), W = 595.28, H = 841.89;
+    const page = pdf.addPage([W,H]);
+    const reg = await pdf.embedFont(StandardFonts.TimesRoman);
+    const bold = await pdf.embedFont(StandardFonts.TimesRomanBold);
+    const ital = await pdf.embedFont(StandardFonts.TimesRomanItalic);
+    const lh = await ambilLetterhead();
+    if(lh){
+      let img; try{ img = await pdf.embedJpg(lh); }catch(_){ img = await pdf.embedPng(lh); }
+      page.drawImage(img,{x:0,y:0,width:W,height:H});
+    }
+    const L = 72, LEBAR = W - 144; let y = lh ? 688 : 760;
+    const balut = (t,f,sz) => { const out=[]; let cur='';
+      for(const w of String(t).split(/\s+/)){ const c = cur ? cur+' '+w : w;
+        if(f.widthOfTextAtSize(c,sz) > LEBAR && cur){ out.push(cur); cur = w; } else cur = c; }
+      if(cur) out.push(cur); return out; };
+    const tulis = (t,f,sz,gap,o={}) => {
+      for(const b of (o.nowrap ? [t] : balut(t,f,sz))){
+        const x0 = o.center ? (W - f.widthOfTextAtSize(b,sz))/2 : o.right ? W - L - o.right : L;
+        page.drawText(b,{x:x0,y,size:sz,font:f,color:rgb(0,0,0)}); y -= sz*1.42;
+      }
+      y -= gap || 0;
+    };
+    const kanan = Math.max(reg.widthOfTextAtSize('Ruj. Kami : '+RUJ_KAMI,11), reg.widthOfTextAtSize('Tarikh      : '+tarikhPanjang(),11));
+    tulis('Ruj. Kami : ' + RUJ_KAMI, reg, 11, 0, {nowrap:true, right:kanan});
+    tulis('Tarikh      : ' + tarikhPanjang(), reg, 11, 16, {nowrap:true, right:kanan});
+    tulis('NOMBOR SIRI: ' + (x.siri || '-'), bold, 11, 10, {nowrap:true});
+    tulis(String(x.nama || '').toUpperCase(), bold, 11, 0, {nowrap:true});
+    tulis(icDash(x.ic), reg, 11, 18, {nowrap:true});
+    tulis('Tuan/Puan,', reg, 11, 14, {nowrap:true});
+    tulis(`PEMAKLUMAN KELULUSAN ${isi.nama.toUpperCase()} (${isi.rm}) DI BAWAH INISIATIF PERUMAHAN KASIH JOHOR BELANJAWAN JOHOR 2026`, bold, 11, 14);
+    tulis('Dengan segala hormatnya perkara di atas adalah dirujuk.', reg, 11, 12);
+    tulis('2.    ' + PERENGGAN_P2(isi.nama) + isi.rm + '.00 telah diluluskan.', reg, 11, 12);
+    tulis('3.    ' + PERENGGAN_P3(isi.nama), reg, 11, 16);
+    tulis('Sekian, untuk makluman pihak Tuan/Puan.', reg, 11, 26);
+    tulis('Surat ini adalah janaan komputer, tandatangan tidak diperlukan', ital, 9.5, 0, {center:true});
+
+    const url = URL.createObjectURL(new Blob([await pdf.save()],{type:'application/pdf'}));
+    const a = document.createElement('a');
+    a.href = url; a.download = `Surat_Kelulusan_${x.kod}_${String(x.siri||'PKPJ').replace(/[^A-Za-z0-9_-]/g,'')}.pdf`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 30000);
+    btn.textContent = '✔ Surat dimuat turun';
+    setTimeout(()=>{btn.textContent = asal; btn.disabled = false}, 2500);
+  }catch(e){
+    btn.textContent = 'Gagal jana surat. Cuba lagi'; btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
