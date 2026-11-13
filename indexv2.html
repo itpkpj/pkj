@@ -112,6 +112,30 @@
 
   footer{text-align:center;margin-top:30px;font:500 .68rem "JetBrains Mono",monospace;letter-spacing:.15em;color:#4b5a82}
 
+  /* ---------- MOBILE ---------- */
+  input{padding-right:62px}
+  .duo b.sm{font-size:clamp(1.15rem,6.2vw,2rem);letter-spacing:-.02em}
+  .row span:last-child{min-width:0;overflow-wrap:anywhere}
+  .row .mono{white-space:nowrap}
+  button{min-height:48px}
+  @media (max-width:400px){
+    .wrap{padding:28px 14px 48px}
+    h1{font-size:1.6rem}
+    .card{padding:18px 16px;border-radius:18px}
+    input{font-size:1.1rem;letter-spacing:.08em;padding:14px 58px 14px 14px}
+    .duo{margin:14px 0 14px}
+    .duo>div{padding:14px 6px 16px}
+    .duo b{font-size:2.2rem}
+    .row{flex-direction:column;align-items:flex-start;gap:3px;padding:10px 0}
+    .row span:first-child{font-size:.78rem}
+    .row span:last-child{text-align:left}
+    .row .mono{white-space:normal}
+  }
+  @media (max-width:340px){
+    .duo b{font-size:1.9rem}
+    .duo b.sm{font-size:1.25rem}
+    input{font-size:1rem;letter-spacing:.05em}
+  }
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes pulse{50%{opacity:.35}}
   @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
