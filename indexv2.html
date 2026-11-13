@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Semakan Kaunter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#060b18;--bg2:#0b1430;--glass:rgba(255,255,255,.045);--stroke:rgba(120,180,255,.16);
+    --text:#e8eefc;--muted:#8a9bc4;--cyan:#22d3ee;--blue:#3b82f6;--violet:#8b5cf6;
+    --ok:#34d399;--warn:#fbbf24;--bad:#f87171;
+    --grad:linear-gradient(135deg,#22d3ee 0%,#3b82f6 50%,#8b5cf6 100%);
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{min-height:100%}
+  body{
+    font-family:"Space Grotesk",system-ui,sans-serif;color:var(--text);
+    background:radial-gradient(1200px 600px at 10% -10%,#12306b 0%,transparent 60%),
+               radial-gradient(900px 500px at 110% 10%,#3a1a6e 0%,transparent 55%),var(--bg);
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  body::before{ /* grid */
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:linear-gradient(rgba(120,180,255,.06) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(120,180,255,.06) 1px,transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse at 50% 0%,#000 30%,transparent 75%);
+  }
+  .wrap{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:40px 16px 60px}
+
+  header{text-align:center;margin-bottom:28px}
+  .logo{
+    width:56px;height:56px;margin:0 auto 14px;border-radius:16px;display:grid;place-items:center;
+    background:var(--grad);box-shadow:0 0 30px rgba(59,130,246,.5);
+  }
+  .logo svg{width:28px;height:28px}
+  .tag{display:inline-flex;align-items:center;gap:6px;font:500 .7rem "JetBrains Mono",monospace;letter-spacing:.15em;
+       color:var(--cyan);padding:4px 10px;border:1px solid var(--stroke);border-radius:99px;margin-bottom:10px}
+  .tag i{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:pulse 1.6s infinite}
+  h1{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;
+     background:linear-gradient(180deg,#fff,#a9c1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:.9rem;margin-top:4px}
+
+  .card{
+    position:relative;background:var(--glass);border:1px solid var(--stroke);border-radius:20px;padding:22px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);margin-bottom:16px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.06);
+    animation:rise .45s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .card::before{content:"";position:absolute;top:0;left:20px;right:20px;height:1px;background:var(--grad);opacity:.7}
+
+  label{display:block;font:500 .72rem "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+  .field{position:relative}
+  input{
+    width:100%;padding:16px 16px;font:700 1.25rem "JetBrains Mono",monospace;letter-spacing:.12em;color:var(--text);
+    background:rgba(4,10,28,.6);border:1px solid var(--stroke);border-radius:14px;outline:none;transition:.2s;
+  }
+  input::placeholder{color:#3c4a6e;letter-spacing:.08em}
+  input:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(34,211,238,.12),0 0 24px rgba(34,211,238,.18)}
+  .count{position:absolute;right:14px;top:50%;transform:translateY(-50%);font:500 .75rem "JetBrains Mono",monospace;color:var(--muted)}
+
+  button{
+    width:100%;margin-top:14px;padding:15px;font:700 .95rem "Space Grotesk",sans-serif;letter-spacing:.06em;
+    border:0;border-radius:14px;color:#fff;cursor:pointer;background:var(--grad);background-size:200% 200%;
+    box-shadow:0 8px 24px rgba(59,130,246,.35);transition:transform .15s,box-shadow .2s,background-position .4s;
+  }
+  button:hover{background-position:100% 0;box-shadow:0 10px 30px rgba(139,92,246,.45)}
+  button:active{transform:scale(.98)}
+  button:disabled{opacity:.55;cursor:default;transform:none}
+  button.ok{background:linear-gradient(135deg,#10b981,#22d3ee);box-shadow:0 8px 24px rgba(16,185,129,.35)}
+
+  .msg{text-align:center;padding:18px;color:var(--muted);font-size:.92rem}
+  .msg.err{color:var(--bad)}
+  .scan{height:3px;border-radius:3px;background:rgba(255,255,255,.06);overflow:hidden;margin:6px 30px 0}
+  .scan::after{content:"";display:block;width:40%;height:100%;background:var(--grad);animation:scan 1s ease-in-out infinite}
+
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .badge{font:700 .72rem "JetBrains Mono",monospace;letter-spacing:.12em;padding:5px 11px;border-radius:8px;border:1px solid}
+  .BBR{color:#60a5fa;border-color:rgba(96,165,250,.4);background:rgba(59,130,246,.12)}
+  .BMR{color:#c4b5fd;border-color:rgba(196,181,253,.4);background:rgba(139,92,246,.12)}
+  .BSR{color:#5eead4;border-color:rgba(94,234,212,.4);background:rgba(20,184,166,.12)}
+  .siri{font:500 .78rem "JetBrains Mono",monospace;color:var(--muted)}
+
+  .kaunter{text-align:center;padding:18px 0 20px}
+  .kaunter small{display:block;font:500 .7rem "JetBrains Mono",monospace;letter-spacing:.25em;color:var(--muted)}
+  .kaunter b{display:block;font:700 4rem/1 "JetBrains Mono",monospace;margin-top:6px;
+             background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+             filter:drop-shadow(0 0 18px rgba(34,211,238,.35))}
+
+  .row{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-top:1px dashed rgba(120,180,255,.12);font-size:.92rem}
+  .row span:first-child{color:var(--muted);flex-shrink:0}
+  .row span:last-child{font-weight:500;text-align:right}
+  .mono{font-family:"JetBrains Mono",monospace}
+
+  .status{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:12px;border-radius:12px;font-weight:600;font-size:.9rem;border:1px solid}
+  .status i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+  .s-ok{color:var(--ok);background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3)}
+  .s-warn{color:var(--warn);background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3)}
+  .s-warn i{animation:pulse 1.4s infinite}
+
+  footer{text-align:center;margin-top:30px;font:500 .68rem "JetBrains Mono",monospace;letter-spacing:.15em;color:#4b5a82}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes pulse{50%{opacity:.35}}
+  @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></div>
+    <div class="tag"><i></i>SISTEM AKTIF</div>
+    <h1>Semakan Kaunter</h1>
+    <div id="demoBar" hidden style="margin-top:12px;font:500 .72rem 'JetBrains Mono',monospace;color:#fbbf24;border:1px dashed rgba(251,191,36,.4);border-radius:10px;padding:8px">MOD DEMO · Cuba IC: 900101015555 · 920202025555 · 880303035555 · 950404045555<br>PIN petugas demo: 123456</div>
+    <p class="sub">Inisiatif Perumahan Kasih Johor</p>
+  </header>
+
+  <div class="card">
+    <label for="ic">No. Kad Pengenalan</label>
+    <div class="field">
+      <input id="ic" inputmode="numeric" maxlength="12" placeholder="000000000000" autocomplete="off">
+      <span class="count" id="count">0/12</span>
+    </div>
+    <button id="btnCari">SEMAK SEKARANG →</button>
+  </div>
+
+  <div id="hasil"></div>
+  <footer>PKPJ</footer>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyp6uAGngk5hiIJ6GkrqPuYBPwOI6rem0RrylwGp_Y57i2maBCF1pLtXBjw2GNRCJp_/exec';
+const params  = new URLSearchParams(location.search);
+const MOD_TERIMA = params.get('terima') === '1';
+const MOD_DEMO = params.get('demo') === '1';
+
+/* ---------- DEMO (?demo=1) — data contoh, tiada sambungan ke server ---------- */
+const DEMO_DB = (()=>{
+  const t = (h,m)=>{const d=new Date();d.setHours(h,m,0,0);return d.getTime()};
+  return [
+    {kod:'BBR',nama:'AHMAD FAIZAL BIN ROSLAN',ic:'900101015555',kaunter:'3',siri:'BBR-0012',tarikh:t(9,30),pengesahan:'',terima:'',semasa:''},
+    {kod:'BMR',nama:'NUR AISYAH BINTI KAMAL',ic:'920202025555',kaunter:'7',siri:'BMR-0045',tarikh:t(10,15),pengesahan:'YA',terima:'',semasa:t(9,52)},
+    {kod:'BSR',nama:'LIM WEI JIE',ic:'880303035555',kaunter:'12',siri:'BSR-0101',tarikh:t(11,0),pengesahan:'YA',terima:'YA',semasa:t(10,40)},
+    {kod:'BBR',nama:'SITI HAJAR BINTI OMAR',ic:'950404045555',kaunter:'5',siri:'BBR-0033',tarikh:t(14,0),pengesahan:'',terima:'',semasa:''},
+    {kod:'BSR',nama:'SITI HAJAR BINTI OMAR',ic:'950404045555',kaunter:'9',siri:'BSR-0077',tarikh:t(14,30),pengesahan:'',terima:'',semasa:''}
+  ].map((x,i)=>({...x,t:'demo'+i,bantuan:''}));
+})();
+function demoApi(q){
+  return new Promise(res=>setTimeout(()=>{
+    if(q.action==='cari') return res({ok:true,data:DEMO_DB.filter(x=>x.ic===q.ic).map(x=>({...x}))});
+    const x = DEMO_DB.find(r=>r.t===q.t); if(!x) return res({ok:false,msg:'Rekod tidak sah.'});
+    if(q.action==='hadir'){ if(x.pengesahan!=='YA'){x.pengesahan='YA';x.semasa=Date.now()} }
+    else if(q.action==='terima'){
+      if(q.pin!=='123456') return res({ok:false,msg:'PIN petugas tidak sah.'});
+      if(x.pengesahan!=='YA') return res({ok:false,msg:'Kehadiran belum disahkan.'});
+      x.terima='YA';
+    }
+    res({ok:true,data:{...x}});
+  },500));
+}
+
+const NAMA_BANTUAN = {
+  BBR:'BANTUAN BELI RUMAH PERTAMA',
+  BMR:'BANTUAN MASUK RUMAH PERTAMA',
+  BSR:'BANTUAN SEWA RUMAH'
+};
+const HARI = ['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+
+// dd/mm/yyyy(Hari) hh:mm
+function formatTarikh(v){
+  if(v === '' || v == null) return '-';
+  const d = new Date(v);
+  if(isNaN(d)) return String(v);
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()}(${HARI[d.getDay()]}) ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function esc(s){return String(s ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+let cbSeq = 0;
+function jsonp(query){
+  if(MOD_DEMO) return demoApi(query);
+  return new Promise((resolve,reject)=>{
+    const cb = 'cb_' + Date.now() + '_' + (cbSeq++);
+    const s = document.createElement('script');
+    const t = setTimeout(()=>{cleanup();reject(new Error('timeout'))},20000);
+    function cleanup(){clearTimeout(t);delete window[cb];s.remove()}
+    window[cb] = d => {cleanup();resolve(d)};
+    s.onerror = () => {cleanup();reject(new Error('net'))};
+    s.src = API_URL + '?' + new URLSearchParams({...query, callback:cb, _:Date.now()});
+    document.body.appendChild(s);
+  });
+}
+
+if(MOD_DEMO) document.getElementById('demoBar').hidden = false;
+const elIC = document.getElementById('ic');
+const elBtn = document.getElementById('btnCari');
+const elHasil = document.getElementById('hasil');
+
+elIC.addEventListener('input',()=>{elIC.value = elIC.value.replace(/\D/g,'');document.getElementById('count').textContent=elIC.value.length+'/12'});
+elIC.addEventListener('keydown',e=>{if(e.key==='Enter') cari()});
+elBtn.addEventListener('click',cari);
+
+async function cari(){
+  const ic = elIC.value.trim();
+  if(ic.length !== 12){elHasil.innerHTML='<div class="msg err">Sila masukkan 12 digit No. Kad Pengenalan.</div>';return}
+  elBtn.disabled = true; elBtn.textContent = 'MENYEMAK...';
+  elHasil.innerHTML = '<div class="msg">Menyemak rekod...<div class="scan"></div></div>';
+  try{
+    const r = await jsonp({action:'cari', ic});
+    if(!r.ok){ elHasil.innerHTML='<div class="msg err">'+esc(r.msg)+'</div>'; return; }
+    if(!r.data.length){elHasil.innerHTML='<div class="msg err">Rekod tidak dijumpai.</div>';return}
+    elHasil.innerHTML = r.data.map(kad).join('');
+  }catch(e){
+    elHasil.innerHTML = '<div class="msg err">Semakan gagal. Sila cuba lagi.</div>';
+  }finally{
+    elBtn.disabled = false; elBtn.textContent = 'SEMAK SEKARANG →';
+  }
+}
+
+function kad(x, i){
+  const hadir  = String(x.pengesahan).toUpperCase() === 'YA';
+  const terima = String(x.terima).toUpperCase() === 'YA';
+  let status, aksi = '';
+  if(terima){
+    status = `<div class="status s-ok"><i></i>Bantuan telah diterima</div>`;
+  }else if(hadir){
+    status = `<div class="status s-ok"><i></i>Kehadiran disahkan ${x.semasa ? '· '+esc(formatTarikh(x.semasa)) : ''}</div>`;
+    if(MOD_TERIMA) aksi = `<button class="ok" data-act="terima" data-i="${i}">Sahkan Terima Bantuan</button>`;
+  }else{
+    status = `<div class="status s-warn"><i></i>Kehadiran belum disahkan</div>`;
+    aksi = `<button data-act="hadir" data-i="${i}">Sahkan Kehadiran</button>`;
+  }
+  return `<div class="card" data-t="${esc(x.t)}">
+    <div class="top"><span class="badge ${esc(x.kod)}">${esc(x.kod)}</span><span class="siri">#${esc(x.siri || '-')}</span></div>
+    <div class="kaunter"><small>NOMBOR KAUNTER</small><b>${esc(x.kaunter || '-')}</b></div>
+    <div class="row"><span>Nama</span><span>${esc(x.nama)}</span></div>
+    <div class="row"><span>No. KP</span><span class="mono">${esc(x.ic)}</span></div>
+    <div class="row"><span>No. Siri</span><span class="mono">${esc(x.siri || '-')}</span></div>
+    <div class="row"><span>Bantuan</span><span>${esc(NAMA_BANTUAN[x.kod] || x.bantuan)}</span></div>
+    <div class="row"><span>Tarikh Serahan</span><span class="mono">${esc(formatTarikh(x.tarikh))}</span></div>
+    ${status}${aksi}
+  </div>`;
+}
+
+elHasil.addEventListener('click', async e=>{
+  const b = e.target.closest('button[data-act]'); if(!b) return;
+  const c = b.closest('.card');
+  b.disabled = true; b.textContent = 'Menyimpan...';
+  try{
+    const q = {action:b.dataset.act, t:c.dataset.t};
+    if(q.action === 'terima'){
+      let pin = sessionStorage.getItem('pkpj_pin');
+      if(!pin){ pin = prompt('Masukkan PIN petugas:'); if(!pin){ b.disabled=false; b.textContent='Sahkan Terima Bantuan'; return; } }
+      q.pin = pin;
+    }
+    const r = await jsonp(q);
+    if(!r.ok && /PIN/.test(r.msg)) sessionStorage.removeItem('pkpj_pin');
+    else if(q.pin) sessionStorage.setItem('pkpj_pin', q.pin);
+    if(!r.ok) throw new Error(r.msg);
+    c.outerHTML = kad(r.data, b.dataset.i);
+  }catch(err){
+    b.disabled = false; b.textContent = 'Cuba lagi';
+    alert(err.message && err.message !== 'net' && err.message !== 'timeout' ? err.message : 'Gagal menyimpan. Sila cuba lagi.');
+  }
+});
+</script>
+</body>
+</html>
