@@ -3,7 +3,6 @@
 وَإِلَٰهُكُمۡ إِلَٰهٞ وَٰحِدٞۖ لَّآ إِلَٰهَ إِلَّا هُوَ ٱلرَّحْمَٰنُ ٱلرَّحِيمُ. اللَّهُمَّ صَلَّ عَلَى سَيْدِنَا مُحَمَّدِ الْفَاتِحِ لِمَا أَعْلِقَ وَالْخَاتِمِ لِمَا سَبَقَ نَاصِرِ الْحَقِّ بِالْحَقِّ وَالْهَادِي إِلَى صِرَاطِكَ الْمُسْتَقِيمِ وَعَلَى آلِهِ حَق َّ قَدْرِهِ وَمِقْدَارِهِ الْعَظِيمِ        
 --->
 
-
 <!DOCTYPE html>
 <html lang="ms" data-theme="dark" data-lang="ms">
 <head>
@@ -352,8 +351,12 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 .mc-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:8px;
   background:var(--surface);border:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--text);}
 .mc-tag .mk{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);line-height:1;}
-.mc-sesi{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;padding:3px 9px;border-radius:99px;
-  font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:2px;}
+/* Sesi dan masa sentiasa pada baris berasingan — lajur kad ini sempit
+   walaupun pada desktop, jadi satu baris akan bercantum dan mengelirukan. */
+.mc-sesi{display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px;align-self:flex-start;
+  padding:6px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.05em;
+  margin-top:2px;line-height:1.35;}
+.mc-sesi .ms-masa{opacity:.92;}
 .mc-sesi.pagi{background:rgba(245,158,11,.14);color:#f0b429;border:1px solid rgba(245,158,11,.32);}
 .mc-sesi.petang{background:rgba(129,140,248,.14);color:#a5b4fc;border:1px solid rgba(129,140,248,.32);}
 [data-theme="light"] .mc-sesi.pagi{color:#8a5a06;} [data-theme="light"] .mc-sesi.petang{color:#3f3a9e;}
@@ -639,7 +642,7 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyW2rH8yowFtP8UCvDm8z_pqeclnCHW2r9HO6TBtEpN21WNq4AGgoQEVYROPSx7yl-X3Q/exec";
 
 // Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
-const TARIKH_SURAT = "25 November 2026";
+const TARIKH_SURAT = "1 Oktober 2026";
 
 // Letterhead (imej daripada LetterHead_PKPJ.docx), diletak bersebelahan index.html
 const LETTERHEAD_SRC = "./letterhead.jpg";
@@ -1467,9 +1470,12 @@ function sesiBadge(sesi, masa) {
              : (low === '1' || low.indexOf('pagi')   > -1) ? 'pagi' : '';
   // Sesi dipaparkan seperti dalam lajur; nombor 1/2 ditukar kepada Pagi/Petang
   const sTxt = (low === '1') ? t.sesiPagi : (low === '2') ? t.sesiPetang : sv;
-  const isi  = [sTxt, mv].filter(Boolean).join(' · ');
-  if (!isi) return '';
-  return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(isi)}</span>`;
+  if (!sTxt && !mv) return '';
+  // Dua span: pada telefon ia disusun menegak supaya sesi dan masa tidak bercantum
+  return `<span class="mc-sesi ${sCls}">` +
+           (sTxt ? `<span class="ms-sesi">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)}</span>` : '') +
+           (mv   ? `<span class="ms-masa">${esc(mv)}</span>` : '') +
+         `</span>`;
 }
 
 function pendBlockHTML(){
