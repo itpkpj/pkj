@@ -347,16 +347,8 @@ input.done{border-color:var(--green);box-shadow:0 0 0 4px rgba(92,232,164,.13);}
 body.mode-pendaftaran .mc-terima-strip.pending,
 body.mode-pendaftaran .mc-terima-strip.received{display:none;}
 
-.mc-wilayah{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
-.mc-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:8px;
-  background:var(--surface);border:1px solid var(--border);font-size:11.5px;font-weight:700;color:var(--text);}
-.mc-tag .mk{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);line-height:1;}
-/* Sesi dan masa sentiasa pada baris berasingan — lajur kad ini sempit
-   walaupun pada desktop, jadi satu baris akan bercantum dan mengelirukan. */
-.mc-sesi{display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px;align-self:flex-start;
-  padding:6px 10px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.05em;
-  margin-top:2px;line-height:1.35;}
-.mc-sesi .ms-masa{opacity:.92;}
+.mc-sesi{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;padding:3px 9px;border-radius:99px;
+  font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:2px;}
 .mc-sesi.pagi{background:rgba(245,158,11,.14);color:#f0b429;border:1px solid rgba(245,158,11,.32);}
 .mc-sesi.petang{background:rgba(129,140,248,.14);color:#a5b4fc;border:1px solid rgba(129,140,248,.32);}
 [data-theme="light"] .mc-sesi.pagi{color:#8a5a06;} [data-theme="light"] .mc-sesi.petang{color:#3f3a9e;}
@@ -635,11 +627,11 @@ body.mode-pendaftaran .mc-terima-strip.received{display:none;}
   <div class="stage-txt" id="stageTxt">Menyambung ke pangkalan data…</div>
 </div>
 
-<>
+<script>
 // ─────────────────────────────────
 // ⚠️ TETAPAN — ISI BAHAGIAN INI
 // ─────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC8pX_700tJqYANb7vJ_lkoW71kRRPOMG8Tf1e9q3A1_Oz_fRc7Jze_jLJ_P-tIyEoHg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1h7IGpEzAYSemftMwsxApiFQdG_CZfuEO9zaWVPjSxZP4t89TVc18PkSECKnnz37BGQ/exec";
 
 // Tarikh yang dicetak pada surat. Kosongkan ("") untuk guna tarikh hari ini.
 const TARIKH_SURAT = "1 Oktober 2026";
@@ -703,7 +695,6 @@ const i18n = {
     multiLabel:"Anda mempunyai {n} kaunter ditetapkan",
     keyIC:"Nombor IC", keyNama:"Nama", keySheet:"Kumpulan",
     keyKaunter:"Nombor Kaunter", keyNoSiri:"No Siri", keyBantuan:"Nama Bantuan",
-    keyDUN:"DUN", keyDaerah:"Daerah",
     keyStatus:"Status Kehadiran", statusHadir:"✅ Sudah Hadir", statusTidak:"⏳ Belum Hadir",
     kehTitle:"Rekod Kehadiran", kehQ:"Adakah anda ingin mengesahkan kehadiran?",
     btnYa:"✅ Ya, Sahkan", btnTidak:"✕ Tidak",
@@ -764,7 +755,6 @@ const i18n = {
     multiLabel:"You have {n} assigned counters",
     keyIC:"IC Number", keyNama:"Name", keySheet:"Group",
     keyKaunter:"Counter No.", keyNoSiri:"Serial No.", keyBantuan:"Aid Name",
-    keyDUN:"State Seat (DUN)", keyDaerah:"District",
     keyStatus:"Attendance Status", statusHadir:"✅ Attended", statusTidak:"⏳ Not Yet",
     kehTitle:"Record Attendance", kehQ:"Would you like to confirm your attendance?",
     btnYa:"✅ Yes, Confirm", btnTidak:"✕ No",
@@ -825,7 +815,6 @@ const i18n = {
     multiLabel:"您有 {n} 个指定柜台",
     keyIC:"身份证号码", keyNama:"姓名", keySheet:"组别",
     keyKaunter:"柜台号码", keyNoSiri:"系列号", keyBantuan:"援助名称",
-    keyDUN:"州席位 (DUN)", keyDaerah:"县",
     keyStatus:"出席状态", statusHadir:"✅ 已出席", statusTidak:"⏳ 未出席",
     kehTitle:"记录出席", kehQ:"您是否要确认出席？",
     btnYa:"✅ 是，确认", btnTidak:"✕ 否",
@@ -886,7 +875,6 @@ const i18n = {
     multiLabel:"உங்களுக்கு {n} கவுண்டர்கள் நியமிக்கப்பட்டுள்ளன",
     keyIC:"IC எண்", keyNama:"பெயர்", keySheet:"குழு",
     keyKaunter:"கவுண்டர் எண்", keyNoSiri:"தொடர் எண்", keyBantuan:"உதவி பெயர்",
-    keyDUN:"DUN", keyDaerah:"மாவட்டம்",
     keyStatus:"வருகை நிலை", statusHadir:"✅ வந்தார்", statusTidak:"⏳ வரவில்லை",
     kehTitle:"வருகை பதிவு", kehQ:"உங்கள் வருகையை உறுதிப்படுத்த விரும்புகிறீர்களா?",
     btnYa:"✅ ஆம், உறுதிப்படுத்து", btnTidak:"✕ இல்லை",
@@ -1459,23 +1447,16 @@ function finishUI(){
 // ══════════════════════════════════════════════════
 // K · PAPAR KEPUTUSAN
 // ══════════════════════════════════════════════════
-// Sesi dari lajur K, masa dari lajur L — dipaparkan sebagaimana dalam data.
-function sesiBadge(sesi, masa) {
+function sesiBadge(sesi) {
   const t = i18n[lang];
-  const sv = String(sesi === undefined || sesi === null ? '' : sesi).trim();
-  const mv = String(masa === undefined || masa === null ? '' : masa).trim();
-  if (!sv && !mv) return '';
-  const low  = sv.toLowerCase();
-  const sCls = (low === '2' || low.indexOf('petang') > -1) ? 'petang'
-             : (low === '1' || low.indexOf('pagi')   > -1) ? 'pagi' : '';
-  // Sesi dipaparkan seperti dalam lajur; nombor 1/2 ditukar kepada Pagi/Petang
-  const sTxt = (low === '1') ? t.sesiPagi : (low === '2') ? t.sesiPetang : sv;
-  if (!sTxt && !mv) return '';
-  // Dua span: pada telefon ia disusun menegak supaya sesi dan masa tidak bercantum
-  return `<span class="mc-sesi ${sCls}">` +
-           (sTxt ? `<span class="ms-sesi">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)}</span>` : '') +
-           (mv   ? `<span class="ms-masa">${esc(mv)}</span>` : '') +
-         `</span>`;
+  if (sesi === undefined || sesi === null || String(sesi).trim() === '') return '';
+  const sv = String(sesi).trim().toLowerCase();
+  const sCls = (sv === '2' || sv.indexOf('petang') > -1) ? 'petang'
+             : (sv === '1' || sv.indexOf('pagi')   > -1) ? 'pagi' : '';
+  if (!sCls) return '';
+  const sTxt  = sCls === 'petang' ? t.sesiPetang : t.sesiPagi;
+  const sTime = sCls === 'pagi' ? '8.00 pagi-11.30 pagi' : '1.00 tengahari';
+  return `<span class="mc-sesi ${sCls}">🕒 ${esc(t.sesiLbl)}: ${esc(sTxt)} · ${esc(sTime)}</span>`;
 }
 
 function pendBlockHTML(){
@@ -1512,7 +1493,7 @@ function showSuccess(d) {
   const groupsHTML = Object.entries(groups).map(([sheetName, matches]) => {
     const matchCards = matches.map(m => {
       const cardId = ('mc_' + m.sheet + '_' + m.row).replace(/[^a-zA-Z0-9_]/g, '_');
-      const sesiHTML = sesiBadge(m.sesi, m.masa);
+      const sesiHTML = sesiBadge(m.sesi);
       const footerHTML = `<div class="mc-terima-strip ${m.sudahTerima ? 'received' : 'pending'}">
           <span class="mc-terima-dot"></span>
           ${m.sudahTerima ? `<span>${esc(t.statusTerima)}</span>` : `<span>${esc(t.statusBelumTerima)}</span>`}
@@ -1528,10 +1509,6 @@ function showSuccess(d) {
           <div class="mc-info">
             <div class="mc-info-row"><span class="mk">${esc(t.keyNoSiri)}</span><span class="mv">${esc(m.siri||'—')}</span></div>
             <div class="mc-info-row"><span class="mk">${esc(t.keyBantuan)}</span><span class="mv">${esc(m.bantuan||'—')}</span></div>
-            ${(m.dun || m.daerah) ? `<div class="mc-wilayah">
-              ${m.dun ? `<span class="mc-tag"><span class="mk">${esc(t.keyDUN)}</span>${esc(m.dun)}</span>` : ''}
-              ${m.daerah ? `<span class="mc-tag"><span class="mk">${esc(t.keyDaerah)}</span>${esc(m.daerah)}</span>` : ''}
-            </div>` : ''}
             ${sesiHTML}
           </div>
           <div class="mc-status">
@@ -1610,7 +1587,7 @@ async function simpanRekodGambar() {
   await muatLogoWM();
 
   const W = 760, PAD = 32;
-  const TINGGI_KAD = 176, KEPALA = 230, KAKI = 64;
+  const TINGGI_KAD = 150, KEPALA = 230, KAKI = 64;
   const c = document.createElement('canvas');
   c.width = W; c.height = KEPALA + d.matches.length * (TINGGI_KAD + 12) + KAKI;
   const g = c.getContext('2d');
@@ -1670,26 +1647,13 @@ async function simpanRekodGambar() {
     g.fillStyle = '#ffffff';
     g.fillText(potong(m.bantuan, '700 17px Arial, sans-serif'), x, y + 106);
 
-    // DUN · Daerah
-    const wil = [m.dun ? t.keyDUN + ': ' + m.dun : '', m.daerah ? t.keyDaerah + ': ' + m.daerah : '']
-                  .filter(Boolean).join('   ·   ');
-    if (wil) {
-      g.fillStyle = 'rgba(255,255,255,.75)';
-      g.font = '600 14px Arial, sans-serif';
-      g.fillText(potong(wil, '600 14px Arial, sans-serif'), x, y + 132);
-    }
-
-    // Sesi · masa — mengikut lajur data
-    const sv   = String(m.sesi || '').trim();
-    const low  = sv.toLowerCase();
-    const pagi = low === '1' || low.indexOf('pagi') > -1;
-    const ptg  = low === '2' || low.indexOf('petang') > -1;
-    const sTxt = low === '1' ? t.sesiPagi : low === '2' ? t.sesiPetang : sv;
-    const isiSesi = [sTxt, String(m.masa || '').trim()].filter(Boolean).join(' · ');
-    if (isiSesi) {
-      g.fillStyle = pagi ? '#f0b429' : ptg ? '#a5b4fc' : '#d9b45c';
+    const sv = String(m.sesi || '').trim().toLowerCase();
+    const pagi = sv === '1' || sv.indexOf('pagi') > -1;
+    const ptg  = sv === '2' || sv.indexOf('petang') > -1;
+    if (pagi || ptg) {
+      g.fillStyle = pagi ? '#f0b429' : '#a5b4fc';
       g.font = '700 14px Arial, sans-serif';
-      g.fillText(potong('🕒 ' + t.sesiLbl + ': ' + isiSesi, '700 14px Arial, sans-serif'), x, y + (wil ? 156 : 134));
+      g.fillText('🕒 ' + t.sesiLbl + ': ' + (pagi ? t.sesiPagi + ' · 8.00 pagi-11.30 pagi' : t.sesiPetang + ' · 1.00 tengahari'), x, y + 134);
     }
   });
 
@@ -2464,16 +2428,13 @@ if (_urlParams.get('demo') === '1') {
     matches:[
       {row:5, sheet:"BSR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"12",
        siri:"BSR0001", bantuan:"Bantuan Sewa Rumah", kehadiran:"Ya", sudahHadir:true,
-       terima:"", sudahTerima:false, dun:"N.35 Skudai", daerah:"Johor Bahru",
-       sesi:"1", masa:"8.00 pagi - 11.30 pagi"},
+       terima:"", sudahTerima:false, sesi:"1"},
       {row:8, sheet:"BMR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"3",
        siri:"BMR0014", bantuan:"Bantuan Masuk Rumah Pertama", kehadiran:"Tidak", sudahHadir:false,
-       terima:"", sudahTerima:false, dun:"N.35 Skudai", daerah:"Johor Bahru",
-       sesi:"2", masa:"1.00 tengahari"},
+       terima:"", sudahTerima:false, sesi:"2"},
       {row:11, sheet:"BBR", nama:"AHMAD BIN ALI", ic:"900101-01-1234", kaunter:"7",
        siri:"BBR0022", bantuan:"Bantuan Beli Rumah Pertama", kehadiran:"Ya", sudahHadir:true,
-       terima:"Ya", sudahTerima:true, dun:"N.35 Skudai", daerah:"Johor Bahru",
-       sesi:"1", masa:"8.00 pagi - 11.30 pagi"}
+       terima:"Ya", sudahTerima:true, sesi:"1"}
     ]
   };
   const _runDemo = () => {
@@ -2490,6 +2451,7 @@ if (_urlParams.get('demo') === '1') {
 </script>
 </body>
 </html>
+
 
 <!-------------------------------------------------------- Kepada Allah Berserah ---------------------------------------------------------------->
 <!-------------------------------------------------------- Allah Peliharakan Sultan ---------------------------------------------------------------->
